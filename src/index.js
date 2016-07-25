@@ -1,7 +1,7 @@
 import MapSet from './components/MapSet';
 import Map from './components/Map';
 import Feature from './components/Feature/Feature';
-import CameraFeature from './components/Feature/Type/CameraFeature';
+import CameraFeature from './components/Feature/FeatureCamera';
 import OverLayer from './components/OverLayer';
 
 
@@ -55,5 +55,3 @@ var overlayMaps = {
 };
 
 L.control.layers(baseMaps, overlayMaps).addTo(mapSet);
-
-console.log('ftw');
