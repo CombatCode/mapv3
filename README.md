@@ -5,18 +5,18 @@ Map widget based on the leaflet
 Tasks
 ----------
 ##### 1. Features  (geometries: markers, polygons)
--	Pobieranie z BE
-    -	Ustalenie struktury protokołów
-    -	Geojson
-    -	Websocket’y
-    -	Filtracja przesłanych elementów na podstawie praw dostępu.
--	Statusowanie
-    -	Cache (BE)
-    -	Rejestracja (optymalizacja, nasłuchiwanie)
+- Pobieranie z BE
+    - Ustalenie struktury protokołów
+    - Geojson
+    - Websocket’y
+    - Filtracja przesłanych elementów na podstawie praw dostępu.
+- Statusowanie
+    - Cache (BE)
+    - Rejestracja (optymalizacja, nasłuchiwanie)
 - Rysowanie na mapie
-    -	iconsety
-    -	stylowanie polignów
-    -	stożki kamer
+    - iconsety
+    - stylowanie polignów
+    - stożki kamer
 - Grupowanie 
 - Filtrowanie
 - Przenoszenie
