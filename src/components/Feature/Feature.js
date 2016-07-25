@@ -1,13 +1,25 @@
-const L = L || window.L;
-
-
+/**
+ * Class representing Features a.k.a. Markers
+ * @module components/Feature/Feature
+ * @augments L.Marker
+ */
 export default class Feature extends L.Marker {
+    /**
+     * See {@link http://leafletjs.com/reference-1.0.0.html#marker} for more details.
+     * @param {array} latlng - geographical point [latitude, longitude]
+     * @param {object} [options]
+     */
     constructor(latlng, options = {}){
         super(latlng, options);
         this.origin = options.origin || '50% 50%';
         this.angle = options.angle || 0;
     }
 
+    /**
+     * Additional support of the rotation.
+     * @param pos
+     * @private
+     */
     _setPos(pos) {
         super._setPos(pos);
 

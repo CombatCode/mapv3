@@ -2,7 +2,7 @@ import MapSet from './components/MapSet';
 import Map from './components/Map';
 import Feature from './components/Feature/Feature';
 import CameraFeature from './components/Feature/FeatureCamera';
-import OverLayer from './components/OverLayer';
+import Overlay from './components/Overlay';
 
 
 const littleton = new Feature([39.61, -105.02]);
@@ -42,7 +42,7 @@ const mapSet = new MapSet('mapv3', {
 
 var imageUrl = 'http://www.lib.utexas.edu/maps/historical/newark_nj_1922.jpg',
     imageBounds = [[39.73, -104.99], [39.77, -105.23]];
-let over = new OverLayer(imageUrl, imageBounds);
+let over = new Overlay(imageUrl, imageBounds);
 
 var baseMaps = {
     "nightMap": nightMap,
