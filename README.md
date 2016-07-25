@@ -32,16 +32,15 @@ Tasks
 - D&D
     - z mapy np na inne widgety aplikacji
     - na mapę lokalizacja istniejących lub dodawanie nowego obiektu
+
 ##### 2. Mapsety
 ##### 3. Mapy
-- nawigacja pomiędzy mapami (tył / przód)
-wybór docelowej mapy z listy, przemieszczanie się za pomocą place’ów, itp
+- nawigacja pomiędzy mapami (tył / przód) wybór docelowej mapy z listy, przemieszczanie się za pomocą place’ów, itp
 - narzędzie do mierzenia odległości i obszaru
 - API zewnętrzne widget’a
-    - listowanie obiektów po typie na widocznych obszarze mapy
-(wyszukiwanie w drzewie kamer)
-    - dynamiczne dorysowywanie obiektów
-np scenariusze alarmowe
+    - listowanie obiektów po typie na widocznych obszarze mapy (wyszukiwanie w drzewie kamer)
+    - dynamiczne dorysowywanie obiektów np scenariusze alarmowe
+
 ##### 4. Warstwy dodatkowe (overlays)
 ##### 5. Moduł komunikacji via REST
 ##### 6. Moduł komunikacji via Websockets
