@@ -1,3 +1,5 @@
+import L from 'leaflet';
+
 /**
  * Class representing Features a.k.a. Markers
  * @module components/Feature/Feature

@@ -1,6 +1,5 @@
 import MapSet from './components/MapSet';
 import Map from './components/Map';
-import Feature from './components/Feature/Feature';
 import CameraFeature from './components/Feature/FeatureCamera';
 import Overlay from './components/Overlay';
 

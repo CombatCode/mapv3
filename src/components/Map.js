@@ -1,3 +1,5 @@
+import L from 'leaflet';
+
 /**
  * Class representing Maps
  * @module components/Map

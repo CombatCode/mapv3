@@ -1,3 +1,4 @@
+import L from 'leaflet';
 import Feature from './Feature';
 
 /**

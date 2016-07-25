@@ -4,16 +4,19 @@
   "description": "Map widget based on the leaflet",
   "main": "index.js",
   "dependencies": {
+    "babel-preset-es2015": "^6.9.0",
     "grunt": "^0.4.5",
     "leaflet": "Leaflet/Leaflet#e02b5c92986ecdf796a50f6cab71133ceda84982"
   },
   "devDependencies": {
     "babelify": "^6.1.0",
     "grunt-browserify": "^3.8.0",
-    "grunt-contrib-watch": "^0.6.1"
+    "grunt-contrib-watch": "^0.6.1",
+    "jasmine": "^2.4.1",
+    "window-mock": "0.0.7"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "babel-node node_modules/.bin/jasmine"
   },
   "author": "CombatCode",
   "license": ""
