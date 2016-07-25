@@ -62,3 +62,4 @@ Nie margujemy nic do mastera. Po wypchnięciu brancha, tworzymy PullRequesta do 
 ###### Rule no. 3
 Trzymamy się założonej architektury
 
+![x](http://66.media.tumblr.com/94185caa6fa578cdf2492e62cb0666ab/tumblr_inline_o91sjrJiGK1raprkq_500.gif)
