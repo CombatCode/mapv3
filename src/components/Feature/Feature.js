@@ -6,7 +6,7 @@
 export default class Feature extends L.Marker {
     /**
      * See {@link http://leafletjs.com/reference-1.0.0.html#marker} for more details.
-     * @param {array} latlng - geographical point [latitude, longitude]
+     * @param {object} latlng - geographical point [latitude, longitude]
      * @param {object} [options]
      */
     constructor(latlng, options = {}){

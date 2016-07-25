@@ -8,7 +8,7 @@ import Feature from './Feature';
 export default class FeatureCamera extends Feature {
     /**
      * Feature of the camera marker.
-     * @param {array} latlng - geographical point [latitude, longitude]
+     * @param {object} latlng - geographical point [latitude, longitude]
      * @param {object} [options]
      */
     constructor(latlng, options = {}){
