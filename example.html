@@ -1,10 +1,42 @@
 <html>
     <head>
-        <link rel="stylesheet" href="https://npmcdn.com/leaflet@1.0.0-rc.2/dist/leaflet.css" />
+        <link href="https://npmcdn.com/hack@0.5.2" rel="stylesheet">
+        <link href="https://npmcdn.com/leaflet@1.0.0-rc.2/dist/leaflet.css" rel="stylesheet">
         <script src="https://npmcdn.com/leaflet@1.0.0-rc.2/dist/leaflet-src.js"></script>
+        <style>
+            /* Local css styles for example.html page */
+            body.container {
+                color: #222;
+                background-color: #fdfdfd;
+            }
+            body.container header,
+            body.container footer {
+                background-color: #d9d9d9;
+                height: 30px;
+                text-align: center;
+                line-height: 30px;
+            }
+            body.container article.grid > section.cell {
+                background-color: #d9d9d9;
+                padding: 5px;
+            }
+            body.container article.grid > section.cell.middle #mapv3 {
+                height: 600px;
+            }
+        </style>
     </head>
-    <body>
-        <div id="mapid" style="width: 600px; height: 600px;"></div>
+    <body class="container">
+        <header>Mocked up top bar</header>
+        <article class="grid">
+            <section class="cell -2of12">Mocked up left sidebar</section>
+            <section class="cell -8of12 middle">
+                <div id="mapv3"></div>
+            </section>
+            <section class="cell -2of12">Mocked up right sidebar</section>
+        </article>
+        <footer>
+            Mocked up bottom content
+        </footer>
         <script src="dist/module.js"></script>
     </body>
 </html>

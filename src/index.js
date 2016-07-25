@@ -33,7 +33,7 @@ const streetMap = new Map(
     }
 );
 
-const mapSet = new MapSet('mapid', {
+const mapSet = new MapSet('mapv3', {
     center: [39.73, -104.99],
     zoom: 10,
     layers: [nightMap, streetMap]
