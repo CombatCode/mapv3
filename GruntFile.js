@@ -6,7 +6,7 @@ module.exports=function(grunt){
                     transform:[['babelify',{'loose':"all"}]]
                 },
                 files: {
-                    './dist/module.js':['./src/index.js']
+                    './dist/app.js':['./src/app.js']
                 }
             }
         },
