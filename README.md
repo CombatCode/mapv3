@@ -44,7 +44,7 @@ Tasks
 ##### 4. ![](http://progressed.io/bar/10) Warstwy dodatkowe (overlays)
 ##### 5. ![](http://progressed.io/bar/0) Moduł komunikacji via REST
 ##### 6. ![](http://progressed.io/bar/0) Moduł komunikacji via Websockets
-##### 7. ![](http://progressed.io/bar/90) Architektura aplikacji, transpilacji
+##### 7. ![](http://progressed.io/bar/92) Architektura aplikacji, transpilacji
 ##### 8. ![](http://progressed.io/bar/0) Moduł widget’a do systemu VMXwebbp
 
 Contributors rulezz
