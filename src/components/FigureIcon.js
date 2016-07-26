@@ -9,6 +9,11 @@ export default class FigureIcon extends L.Icon {
         super(options);
     }
 
+    /**
+     * Overwrite inherited createIcon method to return figure type node
+     * @param oldIcon
+     * @returns {Element}
+     */
     createIcon(oldIcon) {
         let figure = document.createElement('figure');
         let { title, iconUrl } = this.options;
@@ -28,6 +33,10 @@ export default class FigureIcon extends L.Icon {
         return figure;
     }
 
+    /**
+     * Disable inherited createShadow method for FigureIcon's
+     * @returns {null}
+     */
     static createShadow() {
         return null;
     }

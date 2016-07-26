@@ -4,7 +4,7 @@ Map widget based on the leaflet
 
 Tasks
 ----------
-##### 1. ![](http://progressed.io/bar/2) Features  (geometries: markers, polygons)
+##### 1. ![](http://progressed.io/bar/4) Features  (geometries: markers, polygons)
 - Pobieranie z BE
     - Ustalenie struktury protokołów
     - Geojson
@@ -24,7 +24,7 @@ Tasks
 - Obsługa polygonów (edycja)
 - Menu kontekstowe
 - Tooltip’y
-- Podpisy pod markerami
+- https://github.com/CombatCode/mapv3/pull/1 ~~Podpisy pod markerami~~ 
 - Zaznaczanie feature’ów
     - pojedyncze (klik na obszarze mapy)
     - grupowe “box”
