@@ -24,7 +24,7 @@ Tasks
 - Obsługa polygonów (edycja)
 - Menu kontekstowe
 - Tooltip’y
-- https://github.com/CombatCode/mapv3/pull/1 ~~Podpisy pod markerami~~ 
+- [PR#1](https://github.com/CombatCode/mapv3/pull/1) ~~Podpisy pod markerami~~ 
 - Zaznaczanie feature’ów
     - pojedyncze (klik na obszarze mapy)
     - grupowe “box”
