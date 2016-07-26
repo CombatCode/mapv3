@@ -19,6 +19,7 @@ export default class Feature extends L.Marker {
 
     /**
      * Additional support of the rotation.
+     * Apply rotation on the icon node or child img element.
      * @param pos
      * @private
      */
@@ -27,12 +28,22 @@ export default class Feature extends L.Marker {
 
         if(this.angle) {
             const oldIE = (L.DomUtil.TRANSFORM === 'msTransform');
-            this._icon.style[`${ L.DomUtil.TRANSFORM }Origin`] = this.origin;
-            if(oldIE) {
-                this._icon.style[L.DomUtil.TRANSFORM] = `rotate(${ this.angle }deg)`;
+            let isNestedIcon = this._icon.hasChildNodes();
+            let iconElement;
+
+            if (isNestedIcon) {
+                iconElement = this._icon.getElementsByTagName('img')[0];
+            } else {
+                iconElement = this._icon;
+            }
+
+            iconElement.style[`${ L.DomUtil.TRANSFORM }Origin`] = this.origin;
+
+            if(oldIE || isNestedIcon) {
+                iconElement.style[L.DomUtil.TRANSFORM] = `rotate(${ this.angle }deg)`;
             } else {
                 // Use 3D accelerated version for the modern browsers
-                this._icon.style[L.DomUtil.TRANSFORM] += ` rotate(${ this.angle }deg)`;
+                iconElement.style[L.DomUtil.TRANSFORM] += ` rotate(${ this.angle }deg)`;
             }
         }
     }

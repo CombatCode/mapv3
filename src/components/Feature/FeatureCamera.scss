@@ -1,3 +1,10 @@
 .FeatureCamera {
-    background: url('../assets/feature-camera-inuse.png');
+    padding: 2px;
+    text-align: center;
+    figcaption {
+        color: #fff;
+        font-weight: 600;
+        text-shadow: 0 0 4px #000;
+        white-space: nowrap;
+    }
 }

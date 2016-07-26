@@ -1,5 +1,6 @@
 import L from 'leaflet';
 import Feature from './Feature';
+import FigureIcon from './../FigureIcon';
 
 /**
  * Class representing Camera Feature
@@ -13,10 +14,11 @@ export default class FeatureCamera extends Feature {
      * @param {object} [options]
      */
     constructor(latlng, options = {}){
-        options.icon = L.divIcon({
+        options.icon = new FigureIcon({
             className: 'FeatureCamera',
             iconUrl: 'assets/feature-camera-inuse.png',
-            iconSize: [26, 26]
+            iconSize: [56, 50],
+            title: options.title || ''
         });
         super(latlng, options);
     }
