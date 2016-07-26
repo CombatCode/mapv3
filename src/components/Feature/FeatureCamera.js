@@ -13,7 +13,8 @@ export default class FeatureCamera extends Feature {
      * @param {object} [options]
      */
     constructor(latlng, options = {}){
-        options.icon = L.icon({
+        options.icon = L.divIcon({
+            className: 'FeatureCamera',
             iconUrl: 'assets/feature-camera-inuse.png',
             iconSize: [26, 26]
         });
