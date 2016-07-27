@@ -1,4 +1,5 @@
 import L from 'leaflet';
+import 'leaflet-draw';
 import 'leaflet.markercluster';
 
 import MapSet from './components/MapSet';
@@ -57,7 +58,8 @@ const mapSet = new MapSet('mapv3', {
         [51.100, 8.23]
     ],
     zoom: 15,
-    layers: [nightMap, streetMap]
+    layers: [nightMap, streetMap],
+    drawControl: true
 });
 
 let imageUrl = 'http://www.lib.utexas.edu/maps/historical/newark_nj_1922.jpg';
@@ -71,6 +73,6 @@ let overlayMaps = {
     "over": over
 };
 
- L.control.layers(baseMaps, overlayMaps).addTo(mapSet);
+L.control.layers(baseMaps, overlayMaps).addTo(mapSet);
 
 mapSet.addLayer(markers);
