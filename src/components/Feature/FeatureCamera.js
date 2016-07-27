@@ -1,4 +1,3 @@
-import L from 'leaflet';
 import Feature from './Feature';
 import FigureIcon from './../FigureIcon';
 

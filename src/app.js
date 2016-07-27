@@ -1,10 +1,11 @@
+
 import MapSet from './components/MapSet';
 import Map from './components/Map';
 import CameraFeature from './components/Feature/FeatureCamera';
 import Overlay from './components/Overlay';
 
 
-const cameras = L.layerGroup([
+const cameras = [
     new CameraFeature([48.867029, 2.320647], {
         angle: 156,
         title: 'top left'
@@ -20,8 +21,11 @@ const cameras = L.layerGroup([
     new CameraFeature([48.864022, 2.321462], {
         angle: -16,
         title: 'bottom right'
-    }),
-]);
+    })
+];
+
+var markers = L.markerClusterGroup();
+markers.addLayers(cameras);
 
 const nightMap = new Map(
     'https://api.mapbox.com/styles/v1/combatcode/{id}/tiles/256/{z}/{x}/{y}?access_token={accessToken}',
@@ -66,5 +70,5 @@ var overlayMaps = {
     "over": over
 };
 
-L.control.layers(baseMaps, overlayMaps).addTo(mapSet);
-
+// L.control.layers(baseMaps, overlayMaps).addTo(mapSet);
+mapSet.addLayer(markers);

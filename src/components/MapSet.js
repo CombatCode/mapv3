@@ -1,4 +1,4 @@
-import L from 'leaflet';
+
 
 /**
  * Class representing MapSets
