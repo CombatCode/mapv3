@@ -36,7 +36,7 @@ Tasks
 ##### 2. ![](http://progressed.io/bar/30) Mapsety
 ##### 3. ![](http://progressed.io/bar/10) Mapy
 - nawigacja pomiędzy mapami (tył / przód) wybór docelowej mapy z listy, przemieszczanie się za pomocą place’ów, itp
-- narzędzie do mierzenia odległości i obszaru
+- [PR#3](https://github.com/CombatCode/mapv3/pull/3) ![](http://progressed.io/bar/50) Leaflet.draw is not supporting yet leaflet 1.x ~~narzędzie do mierzenia odległości i obszaru~~
 - API zewnętrzne widget’a
     - listowanie obiektów po typie na widocznych obszarze mapy (wyszukiwanie w drzewie kamer)
     - dynamiczne dorysowywanie obiektów np scenariusze alarmowe
