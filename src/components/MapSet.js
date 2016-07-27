@@ -1,5 +1,6 @@
 import L from 'leaflet';
 
+
 /**
  * Class representing MapSets
  * @module components/MapSet

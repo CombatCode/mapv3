@@ -4,7 +4,7 @@ Map widget based on the leaflet
 
 Tasks
 ----------
-##### 1. ![](http://progressed.io/bar/4) Features  (geometries: markers, polygons)
+##### 1. ![](http://progressed.io/bar/6) Features  (geometries: markers, polygons)
 - Pobieranie z BE
     - Ustalenie struktury protokołów
     - Geojson
@@ -17,7 +17,7 @@ Tasks
     - iconsety
     - stylowanie polignów
     - stożki kamer
-- Grupowanie 
+- [PR#2](https://github.com/CombatCode/mapv3/pull/2) ~~Grupowanie~~
 - Filtrowanie
 - Przenoszenie
 - Obracanie (PTZ  - sterowanie, kalibracja)
@@ -65,3 +65,7 @@ Trzymamy się założonej architektury
 ![x](http://66.media.tumblr.com/94185caa6fa578cdf2492e62cb0666ab/tumblr_inline_o91sjrJiGK1raprkq_500.gif)
 ###### Rule no. 4
 Piszemy podstawowe unit testy, używamy JSDoc'a do dokumentacji
+
+Style Guide
+----------
+- Please import at the first place vendor modules, leave blank line, import internal modules and leave two blank lines (very similar to Python imports rule)

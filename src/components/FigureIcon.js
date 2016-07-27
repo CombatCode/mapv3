@@ -1,5 +1,6 @@
 import L from 'leaflet';
 
+
 export default class FigureIcon extends L.Icon {
     /**
      * See {@link http://leafletjs.com/reference-1.0.0.html#icon} for more details.
