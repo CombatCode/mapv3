@@ -15,7 +15,7 @@ Tasks
     - Rejestracja (optymalizacja, nasłuchiwanie)
 - Rysowanie na mapie
     - iconsety
-    - stylowanie polignów
+    - [PR#3](https://github.com/CombatCode/mapv3/pull/3) ![](http://progressed.io/bar/10) Leaflet.draw is not supporting yet leaflet 1.x ~~stylowanie polignów~~
     - stożki kamer
 - [PR#2](https://github.com/CombatCode/mapv3/pull/2) ~~Grupowanie~~
 - Filtrowanie
