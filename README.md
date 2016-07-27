@@ -4,7 +4,7 @@ Map widget based on the leaflet
 
 Tasks
 ----------
-##### 1. ![](http://progressed.io/bar/4) Features  (geometries: markers, polygons)
+##### 1. ![](http://progressed.io/bar/6) Features  (geometries: markers, polygons)
 - Pobieranie z BE
     - Ustalenie struktury protokołów
     - Geojson
@@ -17,7 +17,7 @@ Tasks
     - iconsety
     - stylowanie polignów
     - stożki kamer
-- Grupowanie 
+- [PR#2](https://github.com/CombatCode/mapv3/pull/2) ~~Grupowanie~~
 - Filtrowanie
 - Przenoszenie
 - Obracanie (PTZ  - sterowanie, kalibracja)
