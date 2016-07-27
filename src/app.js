@@ -1,3 +1,5 @@
+import L from 'leaflet';
+import 'leaflet.markercluster';
 
 import MapSet from './components/MapSet';
 import Map from './components/Map';
@@ -5,6 +7,9 @@ import CameraFeature from './components/Feature/FeatureCamera';
 import Overlay from './components/Overlay';
 
 
+/**
+ * Just an a playground for the example.html page [!]
+ */
 const cameras = [
     new CameraFeature([48.867029, 2.320647], {
         angle: 156,
@@ -24,7 +29,7 @@ const cameras = [
     })
 ];
 
-var markers = L.markerClusterGroup();
+let markers = L.markerClusterGroup();
 markers.addLayers(cameras);
 
 const nightMap = new Map(
@@ -55,20 +60,17 @@ const mapSet = new MapSet('mapv3', {
     layers: [nightMap, streetMap]
 });
 
-
-var imageUrl = 'http://www.lib.utexas.edu/maps/historical/newark_nj_1922.jpg',
-    imageBounds = [[48.867029, 2.320647], [48.864022, 2.321462]];
+let imageUrl = 'http://www.lib.utexas.edu/maps/historical/newark_nj_1922.jpg';
+let imageBounds = [[48.867029, 2.320647], [48.864022, 2.321462]];
 let over = new Overlay(imageUrl, imageBounds);
-
-var baseMaps = {
+let baseMaps = {
     "nightMap": nightMap,
     "streetMap": streetMap
 };
-
-var overlayMaps = {
-    "Features": cameras,
+let overlayMaps = {
     "over": over
 };
 
-// L.control.layers(baseMaps, overlayMaps).addTo(mapSet);
+ L.control.layers(baseMaps, overlayMaps).addTo(mapSet);
+
 mapSet.addLayer(markers);

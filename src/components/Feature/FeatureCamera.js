@@ -1,6 +1,7 @@
 import Feature from './Feature';
 import FigureIcon from './../FigureIcon';
 
+
 /**
  * Class representing Camera Feature
  * @module components/Feature/FeatureCamera
