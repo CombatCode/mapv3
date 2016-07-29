@@ -1,0 +1,33 @@
+<h2>Show gis overlayer</h2>
+
+<ul>
+
+  <li>
+    <strong>Ovl name:</strong>
+    <%= @gis_overlayer.ovl_name %>
+  </li>
+
+  <li>
+    <strong>Ovl description:</strong>
+    <%= @gis_overlayer.ovl_description %>
+  </li>
+
+  <li>
+    <strong>Ovl icon:</strong>
+    <%= @gis_overlayer.ovl_icon %>
+  </li>
+
+  <li>
+    <strong>Ovl attributes:</strong>
+    <%= @gis_overlayer.ovl_attributes %>
+  </li>
+
+  <li>
+    <strong>Ovl type:</strong>
+    <%= @gis_overlayer.ovl_type %>
+  </li>
+
+</ul>
+
+<%= link "Edit", to: gis_overlayer_path(@conn, :edit, @gis_overlayer) %>
+<%= link "Back", to: gis_overlayer_path(@conn, :index) %>

@@ -1,0 +1,23 @@
+<h2>Show gis icon set item</h2>
+
+<ul>
+
+  <li>
+    <strong>Icon set:</strong>
+    <%= @gis_icon_set_item.icon_set_id %>
+  </li>
+
+  <li>
+    <strong>Icon name:</strong>
+    <%= @gis_icon_set_item.icon_name %>
+  </li>
+
+  <li>
+    <strong>Icon image:</strong>
+    <%= @gis_icon_set_item.icon_image %>
+  </li>
+
+</ul>
+
+<%= link "Edit", to: gis_icon_set_item_path(@conn, :edit, @gis_icon_set_item) %>
+<%= link "Back", to: gis_icon_set_item_path(@conn, :index) %>

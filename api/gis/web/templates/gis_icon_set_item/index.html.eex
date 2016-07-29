@@ -1,0 +1,30 @@
+<h2>Listing gisiconsetitems</h2>
+
+<table class="table">
+  <thead>
+    <tr>
+      <th>Icon set</th>
+      <th>Icon name</th>
+      <th>Icon image</th>
+
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+<%= for gis_icon_set_item <- @gisiconsetitems do %>
+    <tr>
+      <td><%= gis_icon_set_item.icon_set_id %></td>
+      <td><%= gis_icon_set_item.icon_name %></td>
+      <td><%= gis_icon_set_item.icon_image %></td>
+
+      <td class="text-right">
+        <%= link "Show", to: gis_icon_set_item_path(@conn, :show, gis_icon_set_item), class: "btn btn-default btn-xs" %>
+        <%= link "Edit", to: gis_icon_set_item_path(@conn, :edit, gis_icon_set_item), class: "btn btn-default btn-xs" %>
+        <%= link "Delete", to: gis_icon_set_item_path(@conn, :delete, gis_icon_set_item), method: :delete, data: [confirm: "Are you sure?"], class: "btn btn-danger btn-xs" %>
+      </td>
+    </tr>
+<% end %>
+  </tbody>
+</table>
+
+<%= link "New gis icon set item", to: gis_icon_set_item_path(@conn, :new) %>

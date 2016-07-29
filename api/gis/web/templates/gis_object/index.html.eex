@@ -1,0 +1,34 @@
+<h2>Listing gisobjects</h2>
+
+<table class="table">
+  <thead>
+    <tr>
+      <th>Go</th>
+      <th>Go description</th>
+      <th>Go attributes</th>
+      <th>Go enabled</th>
+      <th>Go angle</th>
+
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+<%= for gis_object <- @gisobjects do %>
+    <tr>
+      <td><%= gis_object.go_id %></td>
+      <td><%= gis_object.go_description %></td>
+      <td><%= gis_object.go_attributes %></td>
+      <td><%= gis_object.go_enabled %></td>
+      <td><%= gis_object.go_angle %></td>
+
+      <td class="text-right">
+        <%= link "Show", to: gis_object_path(@conn, :show, gis_object), class: "btn btn-default btn-xs" %>
+        <%= link "Edit", to: gis_object_path(@conn, :edit, gis_object), class: "btn btn-default btn-xs" %>
+        <%= link "Delete", to: gis_object_path(@conn, :delete, gis_object), method: :delete, data: [confirm: "Are you sure?"], class: "btn btn-danger btn-xs" %>
+      </td>
+    </tr>
+<% end %>
+  </tbody>
+</table>
+
+<%= link "New gis object", to: gis_object_path(@conn, :new) %>

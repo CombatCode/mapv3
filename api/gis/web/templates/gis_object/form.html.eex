@@ -1,0 +1,47 @@
+<%= form_for @changeset, @action, fn f -> %>
+  <%= if @changeset.action do %>
+    <div class="alert alert-danger">
+      <p>Oops, something went wrong! Please check the errors below.</p>
+    </div>
+  <% end %>
+
+  <div class="form-group">
+    <%= label f, :go_id, class: "control-label" %>
+    <%= number_input f, :go_id, class: "form-control" %>
+    <%= error_tag f, :go_id %>
+  </div>
+
+  <div class="form-group">
+    <%= label f, :go_description, class: "control-label" %>
+    <%= textarea f, :go_description, class: "form-control" %>
+    <%= error_tag f, :go_description %>
+  </div>
+
+  <div class="form-group">
+    <%= label f, :go_attributes, class: "control-label" %>
+    <%= text_input f, :go_attributes, class: "form-control" %>
+    <%= error_tag f, :go_attributes %>
+  </div>
+
+  <div class="form-group">
+    <%= label f, :go_enabled, class: "control-label" %>
+    <%= checkbox f, :go_enabled, class: "form-control" %>
+    <%= error_tag f, :go_enabled %>
+  </div>
+
+  <div class="form-group">
+    <%= label f, :go_angle, class: "control-label" %>
+    <%= number_input f, :go_angle, step: "any", class: "form-control" %>
+    <%= error_tag f, :go_angle %>
+  </div>
+
+  <div class="form-group">
+    <%= label f, :go_position, class: "control-label" %>
+    <%= number_input f, :go_position, step: "any", class: "form-control" %>
+    <%= error_tag f, :go_position %>
+  </div>
+
+  <div class="form-group">
+    <%= submit "Submit", class: "btn btn-primary" %>
+  </div>
+<% end %>

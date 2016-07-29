@@ -1,0 +1,32 @@
+<h2>Listing gismaps</h2>
+
+<table class="table">
+  <thead>
+    <tr>
+      <th>Map name</th>
+      <th>Map zoom</th>
+      <th>Map features</th>
+      <th>Map default</th>
+
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+<%= for gis_map <- @gismaps do %>
+    <tr>
+      <td><%= gis_map.map_name %></td>
+      <td><%= gis_map.map_zoom %></td>
+      <td><%= gis_map.map_features %></td>
+      <td><%= gis_map.map_default %></td>
+
+      <td class="text-right">
+        <%= link "Show", to: gis_map_path(@conn, :show, gis_map), class: "btn btn-default btn-xs" %>
+        <%= link "Edit", to: gis_map_path(@conn, :edit, gis_map), class: "btn btn-default btn-xs" %>
+        <%= link "Delete", to: gis_map_path(@conn, :delete, gis_map), method: :delete, data: [confirm: "Are you sure?"], class: "btn btn-danger btn-xs" %>
+      </td>
+    </tr>
+<% end %>
+  </tbody>
+</table>
+
+<%= link "New gis map", to: gis_map_path(@conn, :new) %>

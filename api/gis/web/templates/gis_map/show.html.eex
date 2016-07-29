@@ -1,0 +1,28 @@
+<h2>Show gis map</h2>
+
+<ul>
+
+  <li>
+    <strong>Map name:</strong>
+    <%= @gis_map.map_name %>
+  </li>
+
+  <li>
+    <strong>Map zoom:</strong>
+    <%= @gis_map.map_zoom %>
+  </li>
+
+  <li>
+    <strong>Map features:</strong>
+    <%= @gis_map.map_features %>
+  </li>
+
+  <li>
+    <strong>Map default:</strong>
+    <%= @gis_map.map_default %>
+  </li>
+
+</ul>
+
+<%= link "Edit", to: gis_map_path(@conn, :edit, @gis_map) %>
+<%= link "Back", to: gis_map_path(@conn, :index) %>

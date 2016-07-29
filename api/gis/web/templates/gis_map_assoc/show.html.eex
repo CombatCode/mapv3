@@ -1,0 +1,8 @@
+<h2>Show gis map assoc</h2>
+
+<ul>
+
+</ul>
+
+<%= link "Edit", to: gis_map_assoc_path(@conn, :edit, @gis_map_assoc) %>
+<%= link "Back", to: gis_map_assoc_path(@conn, :index) %>

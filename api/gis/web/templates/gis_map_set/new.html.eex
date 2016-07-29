@@ -1,0 +1,6 @@
+<h2>New gis map set</h2>
+
+<%= render "form.html", changeset: @changeset,
+                        action: gis_map_set_path(@conn, :create) %>
+
+<%= link "Back", to: gis_map_set_path(@conn, :index) %>
