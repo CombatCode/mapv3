@@ -1,0 +1,6 @@
+<h2>Edit gis overlayer set</h2>
+
+<%= render "form.html", changeset: @changeset,
+                        action: gis_overlayer_set_path(@conn, :update, @gis_overlayer_set) %>
+
+<%= link "Back", to: gis_overlayer_set_path(@conn, :index) %>

@@ -1,0 +1,24 @@
+<h2>Listing gismapassocs</h2>
+
+<table class="table">
+  <thead>
+    <tr>
+
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+<%= for gis_map_assoc <- @gismapassocs do %>
+    <tr>
+
+      <td class="text-right">
+        <%= link "Show", to: gis_map_assoc_path(@conn, :show, gis_map_assoc), class: "btn btn-default btn-xs" %>
+        <%= link "Edit", to: gis_map_assoc_path(@conn, :edit, gis_map_assoc), class: "btn btn-default btn-xs" %>
+        <%= link "Delete", to: gis_map_assoc_path(@conn, :delete, gis_map_assoc), method: :delete, data: [confirm: "Are you sure?"], class: "btn btn-danger btn-xs" %>
+      </td>
+    </tr>
+<% end %>
+  </tbody>
+</table>
+
+<%= link "New gis map assoc", to: gis_map_assoc_path(@conn, :new) %>

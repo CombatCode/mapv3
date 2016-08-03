@@ -1,0 +1,6 @@
+<h2>New gis icon set item</h2>
+
+<%= render "form.html", changeset: @changeset,
+                        action: gis_icon_set_item_path(@conn, :create) %>
+
+<%= link "Back", to: gis_icon_set_item_path(@conn, :index) %>

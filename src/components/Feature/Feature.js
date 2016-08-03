@@ -14,7 +14,7 @@ export default class Feature extends L.Marker {
      */
     constructor(latlng, options = {}){
         super(latlng, options);
-        this.origin = options.origin || '50% 50%';
+        this.options.origin = '50% 50%';
         this.angle = options.angle || 0;
     }
 

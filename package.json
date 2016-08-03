@@ -8,7 +8,10 @@
     "grunt": "^0.4.5",
     "leaflet": "Leaflet/Leaflet#e02b5c92986ecdf796a50f6cab71133ceda84982",
     "leaflet-draw": "Leaflet/Leaflet.draw#master",
-    "leaflet.markercluster": "^1.0.0-rc.1.0"
+    "leaflet.markercluster": "^1.0.0-rc.1.0",
+    "restful.js": "^0.9.6",
+    "uuid4": "^1.0.0",
+    "whatwg-fetch": "^1.0.0"
   },
   "devDependencies": {
     "babelify": "^6.1.0",

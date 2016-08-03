@@ -1,0 +1,13 @@
+<h2>Show gis map set</h2>
+
+<ul>
+
+  <li>
+    <strong>Ms name:</strong>
+    <%= @gis_map_set.ms_name %>
+  </li>
+
+</ul>
+
+<%= link "Edit", to: gis_map_set_path(@conn, :edit, @gis_map_set) %>
+<%= link "Back", to: gis_map_set_path(@conn, :index) %>

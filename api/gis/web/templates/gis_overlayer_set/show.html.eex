@@ -1,0 +1,23 @@
+<h2>Show gis overlayer set</h2>
+
+<ul>
+
+  <li>
+    <strong>Olvs name:</strong>
+    <%= @gis_overlayer_set.olvs_name %>
+  </li>
+
+  <li>
+    <strong>Ovls params:</strong>
+    <%= @gis_overlayer_set.ovls_params %>
+  </li>
+
+  <li>
+    <strong>Ovls order:</strong>
+    <%= @gis_overlayer_set.ovls_order %>
+  </li>
+
+</ul>
+
+<%= link "Edit", to: gis_overlayer_set_path(@conn, :edit, @gis_overlayer_set) %>
+<%= link "Back", to: gis_overlayer_set_path(@conn, :index) %>
