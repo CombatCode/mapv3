@@ -46,6 +46,7 @@ Tasks
 ##### 6. ![](http://progressed.io/bar/0) Moduł komunikacji via Websockets
 ##### 7. ![](http://progressed.io/bar/92) Architektura aplikacji, transpilacji
 ##### 8. ![](http://progressed.io/bar/0) Moduł widget’a do systemu VMXwebbp
+##### 9. ![](http://progressed.io/bar/80) Moduł komponentów (one-way binding)
 
 Contributors rulezz
 ----------
