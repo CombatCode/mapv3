@@ -43,8 +43,9 @@ export default class MapSetComponent extends Component {
     }
 
     fetchMap(mapID, mapSetID) {
-        let mapEndPoint = (new Rest()).client.one('maps', mapID);
-        mapEndPoint.get().then((response) => {
+        let mapSetResource = (new Rest()).client.one('mapsets', mapSetID);
+        let mapResource = mapSetResource.one('maps', mapID);
+        mapResource.get().then((response) => {
             let mapData = (response.body()).data();
             this.applyMapSet(mapSetID);
             const streetMap = new Map(
@@ -68,23 +69,24 @@ export default class MapSetComponent extends Component {
                         mapData.map_restricted_extent[1].lon
                     ]
                 ],
-                zoom: 15,
+                zoom: 6,
             };
 
             this.mapSet.initialize();
             streetMap.addTo(this.mapSet.instance);
-            this.fetchFeatures(mapID);
+            this.fetchFeatures(mapID, mapSetID);
         });
     }
 
-    fetchFeatures(mapID) {
-        let mapEndPoint = (new Rest()).client.one('objects', 1);
-        mapEndPoint.get().then((response) => {
+    fetchFeatures(mapID, mapSetID) {
+        let mapSetResource = (new Rest()).client.one('mapsets', mapSetID);
+        let mapResource = mapSetResource.one('maps', mapID);
+        mapResource.custom('features').get().then((response) => {
             let featuresList = [];
             let featuresEntities = response.body();
             let featureData = featuresEntities.data();
             for (let feature of featureData.objects) {
-                if (feature.og_type === 'camera_ptz') {
+                if (feature.go_type === 'camera_ptz') {
                     featuresList.push(
                         new CameraFeature(
                             [
@@ -98,14 +100,15 @@ export default class MapSetComponent extends Component {
                     );
                 }
             }
-            console.log(featuresList);
-            (L.markerClusterGroup()).addLayers(featuresList);
+            let markers = (L.markerClusterGroup()).addLayers(featuresList);
+            this.mapSet.instance.addLayer(markers);
         });
     }
 
     fetchMapsList(mapSetID) {
-        let mapsCollection = (new Rest()).client.one('mapsets', mapSetID);
-        mapsCollection.get().then((response) => {
+        let mapSetResource = (new Rest()).client.one('mapsets', mapSetID);
+        let mapsCollection = mapSetResource.all('maps');
+        mapsCollection.getAll().then((response) => {
             this.setState({
                 mapsEntities: {
                     mapSetID: mapSetID,
