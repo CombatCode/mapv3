@@ -2,6 +2,7 @@ import Rest from './../../core/Rest';
 import Component from './../../core/Component';
 import MapSet from './MapSet';
 import Map from './../Map';
+import CameraFeature from './../Feature/FeatureCamera';
 
 
 /**
@@ -72,6 +73,33 @@ export default class MapSetComponent extends Component {
 
             this.mapSet.initialize();
             streetMap.addTo(this.mapSet.instance);
+            this.fetchFeatures(mapID);
+        });
+    }
+
+    fetchFeatures(mapID) {
+        let mapEndPoint = (new Rest()).client.one('objects', 1);
+        mapEndPoint.get().then((response) => {
+            let featuresList = [];
+            let featuresEntities = response.body();
+            let featureData = featuresEntities.data();
+            for (let feature of featureData.objects) {
+                if (feature.og_type === 'camera_ptz') {
+                    featuresList.push(
+                        new CameraFeature(
+                            [
+                                feature.go_position.lat,
+                                feature.go_position.lon
+                            ], {
+                                angle: feature.go_angle,
+                                title: feature.go_name
+                            }
+                        ),
+                    );
+                }
+            }
+            console.log(featuresList);
+            (L.markerClusterGroup()).addLayers(featuresList);
         });
     }
 
