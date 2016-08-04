@@ -5,7 +5,7 @@ defmodule Gis.GisObjectType do
     field :ot_name, :string
     field :ot_params, :map
     has_many :gisobjects, Gis.GisObject
-    belongs_to :gisiconsets, Gis.GisIconSets
+    belongs_to :gisiconsets, Gis.GisIconSet
     timestamps()
   end
 

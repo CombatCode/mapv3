@@ -10,10 +10,9 @@ defmodule Gis.Api.MapSetsController do
         render conn, "show.json", data: mapsets
     end
 
-    def show(conn, %{"id" => id}) do
-        IO.inspect(id)
+    def show(conn, %{"ms_id" => ms_id}) do
         maps_name = Gis.Repo.all(from u in Gis.GisMap,
-                               where: u.gismapsets_id == ^id, 
+                               where: u.gismapsets_id == ^ms_id, 
                                select: %{map_name: u.map_name, id: u.id} )
         render conn, "show.json", data: maps_name
     end

@@ -4,7 +4,7 @@ defmodule Gis.GisIconSetItem do
   schema "gisiconsetitems" do
     field :icon_name, :string
     field :icon_image, :string
-    belongs_to :icon_set, Gis.GisIconSet
+    belongs_to :gisiconsets, Gis.GisIconSet, foreign_key: :gis_icon_set_id
 
     timestamps()
   end

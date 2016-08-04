@@ -33,11 +33,12 @@ defmodule Gis.Router do
       pipe_through :api
 
       get "/mapsets/", Api.MapSetsController, :index
-      get "/mapsets/:id", Api.MapSetsController, :show
-      get "/maps/:id", Api.MapsController, :show
-      get "/overlayersets/:id", Api.OverlayerSetsController, :index
-      get "/overlayer/:id", Api.OverlayersController, :show
-      get "/objects/:id" , Api.ObjectsController, :index
-      # get "/objects/:id/:latmin/:lonmin/:latmax/:lonmax", Api.ObjectsController, :on_map
+      get "/mapsets/:ms_id/maps/", Api.MapSetsController, :show
+      get "/mapsets/:ms_id/maps/:map_id", Api.MapsController, :show
+      get "/mapsets/:ms_id/maps/:map_id/features" , Api.ObjectsController, :index
+      get "/mapsets/:ms_id/maps/:map_id/overlayersets/", Api.OverlayerSetsController, :index
+      get "/mapsets/:ms_id/maps/:map_id/overlayersets/:ovs_id/overlayers", Api.OverlayersController, :show
+      get "/mapsets/:ms_id/maps/:map_id/features/:latmin/:lonmin/:latmax/:lonmax", Api.ObjectsController, :on_map
+      get "/objecttypes/", Api.ObjectTypesController, :index
     end
 end
