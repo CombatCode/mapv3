@@ -2,6 +2,7 @@ import Rest from './../../core/Rest';
 import Component from './../../core/Component';
 import MapSet from './MapSet';
 import Map from './../Map';
+import CameraFeature from './../Feature/FeatureCamera';
 
 
 /**
@@ -42,8 +43,9 @@ export default class MapSetComponent extends Component {
     }
 
     fetchMap(mapID, mapSetID) {
-        let mapEndPoint = (new Rest()).client.one('maps', mapID);
-        mapEndPoint.get().then((response) => {
+        let mapSetResource = (new Rest()).client.one('mapsets', mapSetID);
+        let mapResource = mapSetResource.one('maps', mapID);
+        mapResource.get().then((response) => {
             let mapData = (response.body()).data();
             this.applyMapSet(mapSetID);
             const streetMap = new Map(
@@ -67,17 +69,46 @@ export default class MapSetComponent extends Component {
                         mapData.map_restricted_extent[1].lon
                     ]
                 ],
-                zoom: 15,
+                zoom: 6,
             };
 
             this.mapSet.initialize();
             streetMap.addTo(this.mapSet.instance);
+            this.fetchFeatures(mapID, mapSetID);
+        });
+    }
+
+    fetchFeatures(mapID, mapSetID) {
+        let mapSetResource = (new Rest()).client.one('mapsets', mapSetID);
+        let mapResource = mapSetResource.one('maps', mapID);
+        mapResource.custom('features').get().then((response) => {
+            let featuresList = [];
+            let featuresEntities = response.body();
+            let featureData = featuresEntities.data();
+            for (let feature of featureData.objects) {
+                if (feature.go_type === 'camera_ptz') {
+                    featuresList.push(
+                        new CameraFeature(
+                            [
+                                feature.go_position.lat,
+                                feature.go_position.lon
+                            ], {
+                                angle: feature.go_angle,
+                                title: feature.go_name
+                            }
+                        ),
+                    );
+                }
+            }
+            let markers = (L.markerClusterGroup()).addLayers(featuresList);
+            this.mapSet.instance.addLayer(markers);
         });
     }
 
     fetchMapsList(mapSetID) {
-        let mapsCollection = (new Rest()).client.one('mapsets', mapSetID);
-        mapsCollection.get().then((response) => {
+        let mapSetResource = (new Rest()).client.one('mapsets', mapSetID);
+        let mapsCollection = mapSetResource.all('maps');
+        mapsCollection.getAll().then((response) => {
             this.setState({
                 mapsEntities: {
                     mapSetID: mapSetID,

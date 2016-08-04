@@ -38,7 +38,8 @@ defmodule Gis.Mixfile do
      {:phoenix_live_reload, "~> 1.0", only: :dev},
      {:gettext, "~> 0.11"},
      {:cowboy, "~> 1.0"},
-     {:geo, "~> 1.1"}]
+     {:geo, "~> 1.1"},
+     {:credo, "~> 0.4", only: [:dev, :test]}]
   end
 
   # Aliases are shortcuts or tasks specific to the current project.

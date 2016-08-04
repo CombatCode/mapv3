@@ -35,10 +35,9 @@ config :phoenix, :stacktrace_depth, 20
 # Configure your database
 config :gis, Gis.Repo,
   adapter: Ecto.Adapters.Postgres,
-  username: "postgres",
-  password: "dupa123",
+  username: "app-mine",
+  password: "postgres",
   database: "gis_dev",
   hostname: "localhost",
-  port: 8432,
   extensions: [{Geo.PostGIS.Extension, library: Geo}],
   pool_size: 10

@@ -3,8 +3,8 @@ defmodule Gis.Api.OverlayersController do
 
     alias Gis.Overlayers
 
-    def show(conn, %{"id" => id}) do
-        overlayer = Gis.Repo.get(Gis.GisOverlayer, id)
+    def show(conn, %{"ovs_id" => ovs_id}) do
+        overlayer = Gis.Repo.get(Gis.GisOverlayer, ovs_id)
         render conn, "show.json", data: overlayer
     end
 end
