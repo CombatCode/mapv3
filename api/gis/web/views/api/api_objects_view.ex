@@ -3,7 +3,7 @@ defmodule Gis.Api.ObjectsView do
 
 
   def render("index.json", %{objects: objects}) do
-      %{objects: render_many(objects, Gis.Api.ObjectsView, "object.json", as: :object)}
+      render_many(objects, Gis.Api.ObjectsView, "object.json", as: :object)
   end
 
   def render("show.json", %{object: object}) do
