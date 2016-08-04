@@ -1,0 +1,23 @@
+# Gis
+
+To start your Phoenix app:
+
+  * Install dependencies with `mix deps.get`
+  * Create and migrate your database with `mix ecto.create && mix ecto.migrate`
+  * Fill your database with random data around France `mix run priv/repo/seeds.exs`
+  * Start Phoenix endpoint with `mix phoenix.server`
+
+Now you can visit [`localhost:4000`](http://localhost:4000) from your browser.
+
+## Commit code rules:
+  * before each commit run `mix credo --strict` and try to remove all "Software Design", 
+    "Code Readability", "Warnings" issues. 
+
+### Learn more
+
+  * Official website: http://www.phoenixframework.org/
+  * Guides: http://phoenixframework.org/docs/overview
+  * Docs: https://hexdocs.pm/phoenix
+  * Mailing list: http://groups.google.com/group/phoenix-talk
+  * Source: https://github.com/phoenixframework/phoenix
+  * Ready to run in production? Please [check our deployment guides](http://www.phoenixframework.org/docs/deployment).

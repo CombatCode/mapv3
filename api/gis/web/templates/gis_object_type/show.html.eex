@@ -1,0 +1,18 @@
+<h2>Show gis object type</h2>
+
+<ul>
+
+  <li>
+    <strong>Ot name:</strong>
+    <%= @gis_object_type.ot_name %>
+  </li>
+
+  <li>
+    <strong>Ot params:</strong>
+    <%= @gis_object_type.ot_params %>
+  </li>
+
+</ul>
+
+<%= link "Edit", to: gis_object_type_path(@conn, :edit, @gis_object_type) %>
+<%= link "Back", to: gis_object_type_path(@conn, :index) %>

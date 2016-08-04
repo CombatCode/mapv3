@@ -1,0 +1,33 @@
+<h2>Show gis object</h2>
+
+<ul>
+
+  <li>
+    <strong>Go:</strong>
+    <%= @gis_object.go_id %>
+  </li>
+
+  <li>
+    <strong>Go description:</strong>
+    <%= @gis_object.go_description %>
+  </li>
+
+  <li>
+    <strong>Go attributes:</strong>
+    <%= @gis_object.go_attributes %>
+  </li>
+
+  <li>
+    <strong>Go enabled:</strong>
+    <%= @gis_object.go_enabled %>
+  </li>
+
+  <li>
+    <strong>Go angle:</strong>
+    <%= @gis_object.go_angle %>
+  </li>
+
+</ul>
+
+<%= link "Edit", to: gis_object_path(@conn, :edit, @gis_object) %>
+<%= link "Back", to: gis_object_path(@conn, :index) %>

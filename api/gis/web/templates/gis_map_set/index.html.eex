@@ -1,0 +1,26 @@
+<h2>Listing gismapsets</h2>
+
+<table class="table">
+  <thead>
+    <tr>
+      <th>Ms name</th>
+
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+<%= for gis_map_set <- @gismapsets do %>
+    <tr>
+      <td><%= gis_map_set.ms_name %></td>
+
+      <td class="text-right">
+        <%= link "Show", to: gis_map_set_path(@conn, :show, gis_map_set), class: "btn btn-default btn-xs" %>
+        <%= link "Edit", to: gis_map_set_path(@conn, :edit, gis_map_set), class: "btn btn-default btn-xs" %>
+        <%= link "Delete", to: gis_map_set_path(@conn, :delete, gis_map_set), method: :delete, data: [confirm: "Are you sure?"], class: "btn btn-danger btn-xs" %>
+      </td>
+    </tr>
+<% end %>
+  </tbody>
+</table>
+
+<%= link "New gis map set", to: gis_map_set_path(@conn, :new) %>

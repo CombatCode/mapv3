@@ -1,0 +1,28 @@
+<h2>Listing gisobjecttypes</h2>
+
+<table class="table">
+  <thead>
+    <tr>
+      <th>Ot name</th>
+      <th>Ot params</th>
+
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+<%= for gis_object_type <- @gisobjecttypes do %>
+    <tr>
+      <td><%= gis_object_type.ot_name %></td>
+      <td><%= gis_object_type.ot_params %></td>
+
+      <td class="text-right">
+        <%= link "Show", to: gis_object_type_path(@conn, :show, gis_object_type), class: "btn btn-default btn-xs" %>
+        <%= link "Edit", to: gis_object_type_path(@conn, :edit, gis_object_type), class: "btn btn-default btn-xs" %>
+        <%= link "Delete", to: gis_object_type_path(@conn, :delete, gis_object_type), method: :delete, data: [confirm: "Are you sure?"], class: "btn btn-danger btn-xs" %>
+      </td>
+    </tr>
+<% end %>
+  </tbody>
+</table>
+
+<%= link "New gis object type", to: gis_object_type_path(@conn, :new) %>

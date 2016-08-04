@@ -1,0 +1,18 @@
+<h2>Show gis icon set</h2>
+
+<ul>
+
+  <li>
+    <strong>Iset name:</strong>
+    <%= @gis_icon_set.iset_name %>
+  </li>
+
+  <li>
+    <strong>Iset category:</strong>
+    <%= @gis_icon_set.iset_category %>
+  </li>
+
+</ul>
+
+<%= link "Edit", to: gis_icon_set_path(@conn, :edit, @gis_icon_set) %>
+<%= link "Back", to: gis_icon_set_path(@conn, :index) %>

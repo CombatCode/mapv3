@@ -1,0 +1,6 @@
+<h2>Edit gis object type</h2>
+
+<%= render "form.html", changeset: @changeset,
+                        action: gis_object_type_path(@conn, :update, @gis_object_type) %>
+
+<%= link "Back", to: gis_object_type_path(@conn, :index) %>

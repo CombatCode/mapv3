@@ -1,0 +1,170 @@
+localhost:4000/api/mapsets  -> 
+[
+   {
+      "ms_name":"MapSets 20",
+      "ms_equal":false,
+      "id":114
+   },
+   {
+      "ms_name":"MapSets 17",
+      "ms_equal":false,
+      "id":115
+   },
+   {
+      "ms_name":"MapSets 14",
+      "ms_equal":false,
+      "id":116
+   },
+   {
+      "ms_name":"MapSets 11",
+      "ms_equal":false,
+      "id":117
+   },
+   {
+      "ms_name":"MapSets 8",
+      "ms_equal":false,
+      "id":118
+   },
+   {
+      "ms_name":"MapSets 5",
+      "ms_equal":false,
+      "id":119
+   }
+]
+
+
+localhost:4000/api/mapsets/118/ ->
+[  
+   {  
+      "map_name":"Map 3",
+      "id":87
+   },
+   {  
+      "map_name":"Map 2",
+      "id":88
+   },
+   {  
+      "map_name":"Map 1",
+      "id":89
+   }
+]
+
+localhost:4000/api/maps/88/ -> 
+{
+   "map_zoom":{
+      "zoom_levels":[
+
+      ]
+   },
+   "map_restricted_extent":[
+      {
+         "lon":-1.6707615412011583,
+         "lat":46.18339276415539
+      },
+      {
+         "lon":7.894163979450387,
+         "lat":48.97991129317714
+      }
+   ],
+   "map_name":"Map 2",
+   "map_geographic":true,
+   "map_default":false,
+   "map_center":{
+      "lon":3.1117012191246145,
+      "lat":47.58165202866627
+   },
+   "map_attributes":{
+      "features":[
+
+      ]
+   },
+   "id":88,
+   "gisoverlayersets_id":71
+}
+
+
+localhost:4000/api/overlayersets/71/ ->
+[
+   {
+      "ovl_name":"OVLTEST 3",
+      "id":69
+   },
+   {
+      "ovl_name":"OVLTEST 2",
+      "id":70
+   },
+   {
+      "ovl_name":"OVLTEST 1",
+      "id":71
+   }
+]
+
+
+localhost:4000/api/overlayers/71/ ->
+{
+   "ovl_type":"Graphical",
+   "ovl_name":"OVLTEST 1",
+   "ovl_icon":"icon.png",
+   "ovl_description":"Overlayer test descritpion",
+   "ovl_attributes":{
+
+   },
+   "id":71
+}
+
+http://localhost:4000/api/objecttypes/ ->
+{
+   "objecttypes":[
+      {
+         "ot_params":{
+
+         },
+         "ot_name":"camera",
+         "id":6782,
+         "iconset":{
+            "id":39,
+            "iconsetitem":[
+               {
+                  "id":39,
+                  "icon_name":"Icon",
+                  "icon_image":"icon.png"
+               }
+            ]
+         }
+      },
+      {
+         "ot_params":{
+
+         },
+         "ot_name":"sensor",
+         "id":6783,
+         "iconset":{
+            "id":39,
+            "iconsetitem":[
+               {
+                  "id":39,
+                  "icon_name":"Icon",
+                  "icon_image":"icon.png"
+               }
+            ]
+         }
+      },
+      {
+         "ot_params":{
+
+         },
+         "ot_name":"camera_ptz",
+         "id":6784,
+         "iconset":{
+            "id":39,
+            "iconsetitem":[
+               {
+                  "id":39,
+                  "icon_name":"Icon",
+                  "icon_image":"icon.png"
+               }
+            ]
+         }
+      }
+   ]
+}

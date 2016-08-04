@@ -1,0 +1,34 @@
+<h2>Listing gisoverlayer</h2>
+
+<table class="table">
+  <thead>
+    <tr>
+      <th>Ovl name</th>
+      <th>Ovl description</th>
+      <th>Ovl icon</th>
+      <th>Ovl attributes</th>
+      <th>Ovl type</th>
+
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+<%= for gis_overlayer <- @gisoverlayer do %>
+    <tr>
+      <td><%= gis_overlayer.ovl_name %></td>
+      <td><%= gis_overlayer.ovl_description %></td>
+      <td><%= gis_overlayer.ovl_icon %></td>
+      <td><%= gis_overlayer.ovl_attributes %></td>
+      <td><%= gis_overlayer.ovl_type %></td>
+
+      <td class="text-right">
+        <%= link "Show", to: gis_overlayer_path(@conn, :show, gis_overlayer), class: "btn btn-default btn-xs" %>
+        <%= link "Edit", to: gis_overlayer_path(@conn, :edit, gis_overlayer), class: "btn btn-default btn-xs" %>
+        <%= link "Delete", to: gis_overlayer_path(@conn, :delete, gis_overlayer), method: :delete, data: [confirm: "Are you sure?"], class: "btn btn-danger btn-xs" %>
+      </td>
+    </tr>
+<% end %>
+  </tbody>
+</table>
+
+<%= link "New gis overlayer", to: gis_overlayer_path(@conn, :new) %>
