@@ -69,7 +69,7 @@ export default class MapSetComponent extends Component {
                         mapData.map_restricted_extent[1].lon
                     ]
                 ],
-                zoom: 6,
+                zoom: 8,
             };
 
             this.mapSet.initialize();
@@ -81,11 +81,11 @@ export default class MapSetComponent extends Component {
     fetchFeatures(mapID, mapSetID) {
         let mapSetResource = (new Rest()).client.one('mapsets', mapSetID);
         let mapResource = mapSetResource.one('maps', mapID);
-        mapResource.custom('features').get().then((response) => {
+        mapResource.all('features').getAll().then((response) => {
             let featuresList = [];
-            let featuresEntities = response.body();
-            let featureData = featuresEntities.data();
-            for (let feature of featureData.objects) {
+            let featureData = response.body();
+            for (let featureEntity of featureData) {
+                let feature = featureEntity.data();
                 if (feature.go_type === 'camera_ptz') {
                     featuresList.push(
                         new CameraFeature(
