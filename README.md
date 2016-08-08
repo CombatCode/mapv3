@@ -34,7 +34,7 @@ Tasks
     - na mapę lokalizacja istniejących lub dodawanie nowego obiektu
 
 ##### 2. ![](http://progressed.io/bar/30) Mapsety
-##### 3. ![](http://progressed.io/bar/10) Mapy
+##### 3. ![](http://progressed.io/bar/50) Mapy
 - nawigacja pomiędzy mapami (tył / przód) wybór docelowej mapy z listy, przemieszczanie się za pomocą place’ów, itp
 - [PR#3](https://github.com/CombatCode/mapv3/pull/3) ![](http://progressed.io/bar/50) Leaflet.draw is not supporting yet leaflet 1.x ~~narzędzie do mierzenia odległości i obszaru~~
 - API zewnętrzne widget’a
@@ -42,11 +42,11 @@ Tasks
     - dynamiczne dorysowywanie obiektów np scenariusze alarmowe
 
 ##### 4. ![](http://progressed.io/bar/10) Warstwy dodatkowe (overlays)
-##### 5. ![](http://progressed.io/bar/0) Moduł komunikacji via REST
+##### 5. ![](http://progressed.io/bar/100) Moduł komunikacji via REST
 ##### 6. ![](http://progressed.io/bar/0) Moduł komunikacji via Websockets
-##### 7. ![](http://progressed.io/bar/92) Architektura aplikacji, transpilacji
+##### 7. ![](http://progressed.io/bar/100) Architektura aplikacji, transpilacji
 ##### 8. ![](http://progressed.io/bar/0) Moduł widget’a do systemu VMXwebbp
-##### 9. ![](http://progressed.io/bar/80) Moduł komponentów (one-way binding)
+##### 9. ![](http://progressed.io/bar/100) Moduł komponentów (one-way binding)
 
 Contributors rulezz
 ----------
