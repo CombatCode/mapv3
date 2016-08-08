@@ -6,6 +6,7 @@ defmodule Gis.GisOverlayerSet do
     field :ovls_params, :map
     field :ovls_order, :integer
     has_many :gismaps, Gis.GisMap
+    has_many :gisoverlayers, Gis.GisOverlayer
     timestamps()
   end
 
@@ -18,3 +19,6 @@ defmodule Gis.GisOverlayerSet do
     |> validate_required([:olvs_name, :ovls_params, :ovls_order])
   end
 end
+
+
+ # `Gis.GisOverlayer.gis_overlayer_set_id` in `where` does not exist in the schema in query:
