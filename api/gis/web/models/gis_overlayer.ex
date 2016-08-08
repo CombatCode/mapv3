@@ -9,7 +9,7 @@ defmodule Gis.GisOverlayer do
     field :ovl_icon, :string
     field :ovl_attributes, :map
     field :ovl_type, :string
-    belongs_to :gisoverlayersets, Gis.GisOverlayerSet
+    belongs_to :gisoverlayersets, Gis.GisOverlayerSet,  foreign_key: :gis_overlayer_set_id
     timestamps()
   end
 
