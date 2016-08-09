@@ -9,6 +9,7 @@ import './handlers/rotation/Marker.Rotate';
 
 import { applyComponent } from './core/Component';
 import MapSetComponent from './components/MapSet/MapSetComponent';
+import './components/Control/Control.Rotate';
 
 
 (function() {
