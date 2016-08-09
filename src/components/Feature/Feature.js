@@ -1,4 +1,5 @@
 import L from 'leaflet';
+import 'leaflet.markercluster';
 
 
 /**
@@ -19,3 +20,28 @@ export default class Feature extends L.Marker {
 
 /** Inherit options (don't mutate L.Marker defaults) */
 Feature.prototype.options = Object.create(L.Marker.prototype.options);
+
+Feature.mergeOptions({
+    contextmenu: true,
+    contextmenuItems: [{
+        text: 'Unknown feature',
+        disabled: true,
+        index:    0
+    }, {
+        separator: true,
+        index:     1
+    }],
+});
+
+
+L.MarkerCluster && L.MarkerCluster.mergeOptions({
+    contextmenu:      true,
+    contextmenuItems: [{
+        text:     'Group',
+        disabled: true,
+        index:    0
+    }, {
+        separator: true,
+        index:     1
+    }],
+});

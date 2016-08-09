@@ -1,6 +1,7 @@
 import L from 'leaflet';
 import 'leaflet-draw';
 import 'leaflet.markercluster';
+import 'leaflet-contextmenu';
 
 import './handlers/selection/Marker.Select';
 import './handlers/selection/Map.ClickDeselect';
