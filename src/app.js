@@ -4,6 +4,7 @@ import 'leaflet.markercluster';
 
 import './handlers/selection/Marker.Select';
 import './handlers/selection/Map.ClickDeselect';
+import './handlers/selection/Map.BoxSelect';
 
 import { applyComponent } from './core/Component';
 import MapSetComponent from './components/MapSet/MapSetComponent';
