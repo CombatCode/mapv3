@@ -1,5 +1,6 @@
 import L from 'leaflet';
 
+
 // @section Marker options
 L.Marker.mergeOptions({
     // @option selectable: Boolean = true
@@ -7,54 +8,57 @@ L.Marker.mergeOptions({
     rotatable: false,
 });
 
-L.Handler.RotateMarker = L.Handler.extend({
+/**
+ * Handler providing rotation for L.Marker instance. Disabled by default.
+ * @class L.Handler.MarkerRotate
+ * @extends L.Handler
+ */
+L.Handler.MarkerRotate = class Rotate extends L.Handler {
     initialize(marker) {
         this._marker = marker;
-    },
+    }
 
     addHooks() {
         this._marker.on({
-            add:    this._onAdd,
-            remove: this._onRemove
+            'add': this._onAdd,
+            'remove': this._onRemove
         }, this);
         if (this._marker._map) {
             this._onAdd();
         }
-    },
+    }
 
     removeHooks() {
         this._marker.off({
-            add:    this._onAdd,
-            remove: this._onRemove
+            'add': this._onAdd,
+            'remove': this._onRemove
         }, this);
         if (this._marker._map) {
             this._onRemove();
         }
-    },
+    }
 
     _onAdd() {
         if (this._marker._map) {
             this._marker._map.on({
-                mousedown: this._onMapMouseDown,
-                mouseup:   this._onMapMouseUp,
+                'mousedown': this._onMapMouseDown,
+                'mouseup': this._onMapMouseUp,
             }, this);
         }
-    },
+    }
 
     _onRemove() {
         if (this._marker._map) {
             this._marker._map.off({
-                mousedown:  this._onMapMouseDown,
-                mouseup:    this._onMapMouseUp,
-                mousemove:  this._onMapMouseMove,
+                'mousedowm': this._onMapMouseDown,
+                'mouseup': this._onMapMouseUp,
+                'mousemove': this._onMapMouseMove,
             }, this);
         }
-    },
+    }
 
     _onMapMouseDown(event) {
-        var map = event.target, marker = this._marker, mPoint = map.latLngToContainerPoint(marker.getLatLng()),
-            cPoint = event.containerPoint, angle = Math.atan2(cPoint.x - mPoint.x, mPoint.y - cPoint.y);
-        angle = angle / Math.PI * 180;
+        const map = event.target, marker = this._marker;
 
         this._startAngle = marker.options.angle;
         if (map.dragging.enabled()) {
@@ -64,13 +68,12 @@ L.Handler.RotateMarker = L.Handler.extend({
         map.on('mousemove', this._onMapMouseMove, this);
         L.DomUtil.addClass(map.getContainer(), 'leaflet-crosshair');
 
-        marker.options.angle = angle;
-        marker.update();
-        marker.fireEvent('rotatestart', {angle: angle, startAngle: this._startAngle});
-    },
+        this._onMapMouseMove(event, true);
+        marker.fireEvent('rotatestart', {angle: marker.options.angle, startAngle: this._startAngle});
+    }
 
     _onMapMouseUp(event) {
-        var map = event.target, marker = this._marker, angle = marker.options.angle;
+        const map = event.target, marker = this._marker;
 
         delete this._startAngle;
         if (this._reenableMapDragging) {
@@ -80,24 +83,26 @@ L.Handler.RotateMarker = L.Handler.extend({
         map.off('mousemove', this._onMapMouseMove, this);
         L.DomUtil.removeClass(map.getContainer(), 'leaflet-crosshair');
 
-        marker.fireEvent('rotateend', {angle: angle, startAngle: this._startAngle});
-    },
+        this._onMapMouseMove(event, true);
+        marker.fireEvent('rotateend', {angle: marker.options.angle, startAngle: this._startAngle});
+    }
 
-    _onMapMouseMove(event) {
-        var map = event.target, marker = this._marker, mPoint = map.latLngToContainerPoint(marker.getLatLng()),
-            cPoint = event.containerPoint, angle = Math.atan2(cPoint.x - mPoint.x, mPoint.y - cPoint.y);
-        angle = angle / Math.PI * 180;
+    _onMapMouseMove(event, skipFire) {
+        const map = event.target, marker = this._marker;
+        const mPoint = map.latLngToContainerPoint(marker.getLatLng()), cPoint = event.containerPoint;
+        let angle = Math.atan2(cPoint.x - mPoint.x, mPoint.y - cPoint.y);
+        angle = angle / Math.PI * 180; // Rad --> Degrees
 
         marker.options.angle = angle;
         marker.update();
-        marker.fireEvent('rotate', {angle: angle, startAngle: this._startAngle});
+        skipFire || marker.fireEvent('rotate', {angle: angle, startAngle: this._startAngle});
     }
-});
+};
 
 // Add init hook for MarkerSelect handler
 L.Marker.addInitHook(function() {
-    if (L.Handler.RotateMarker) {
-        this.rotating = new L.Handler.RotateMarker(this);
+    if (L.Handler.MarkerRotate) {
+        this.rotating = new L.Handler.MarkerRotate(this);
 
         if (this.options.rotatable) {
             this.rotating.enable();
@@ -105,7 +110,7 @@ L.Marker.addInitHook(function() {
     }
 });
 
-
+// Overwrites L.Marker setPos method.
 function setPos(pos) {
     setPos.base.call(this, pos);
 
