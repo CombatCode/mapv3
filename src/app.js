@@ -3,6 +3,7 @@ import 'leaflet-draw';
 import 'leaflet.markercluster';
 
 import './handlers/selection/Marker.Select';
+import './handlers/selection/Map.ClickDeselect';
 
 import { applyComponent } from './core/Component';
 import MapSetComponent from './components/MapSet/MapSetComponent';
