@@ -6,7 +6,7 @@
   "dependencies": {
     "babel-preset-es2015": "^6.9.0",
     "grunt": "^0.4.5",
-    "leaflet": "Leaflet/Leaflet#e02b5c92986ecdf796a50f6cab71133ceda84982",
+    "leaflet": "Leaflet/Leaflet#27f05a22c5a6b77f9a06c4854860408251f10c14",
     "leaflet-draw": "Leaflet/Leaflet.draw#master",
     "leaflet.markercluster": "^1.0.0-rc.1.0",
     "restful.js": "^0.9.6",
