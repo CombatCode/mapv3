@@ -4,7 +4,9 @@ defmodule Gis.Api.MapsController do
     alias Gis.Maps
 
     def show(conn, %{"map_id" => map_id}) do
-        maps = Gis.Repo.get!(Gis.GisMap, map_id)
+        maps = Gis.Repo.one!(from u in Gis.GisMap,
+        					where: u.id == ^map_id,
+        					preload: [{:gisoverlayersets, [{:gisoverlayers, []}]}] )
         render conn, "show.json", data: maps
     end
 end
