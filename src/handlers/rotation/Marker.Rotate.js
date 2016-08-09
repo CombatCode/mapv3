@@ -8,11 +8,11 @@ L.Marker.mergeOptions({
 });
 
 L.Handler.RotateMarker = L.Handler.extend({
-    initialize: function(marker) {
+    initialize(marker) {
         this._marker = marker;
     },
 
-    addHooks: function() {
+    addHooks() {
         this._marker.on({
             add:    this._onAdd,
             remove: this._onRemove
@@ -22,7 +22,7 @@ L.Handler.RotateMarker = L.Handler.extend({
         }
     },
 
-    removeHooks: function() {
+    removeHooks() {
         this._marker.off({
             add:    this._onAdd,
             remove: this._onRemove
@@ -32,7 +32,7 @@ L.Handler.RotateMarker = L.Handler.extend({
         }
     },
 
-    _onAdd: function() {
+    _onAdd() {
         if (this._marker._map) {
             this._marker._map.on({
                 mousedown: this._onMapMouseDown,
@@ -41,7 +41,7 @@ L.Handler.RotateMarker = L.Handler.extend({
         }
     },
 
-    _onRemove: function() {
+    _onRemove() {
         if (this._marker._map) {
             this._marker._map.off({
                 mousedown:  this._onMapMouseDown,
@@ -51,14 +51,16 @@ L.Handler.RotateMarker = L.Handler.extend({
         }
     },
 
-    _onMapMouseDown: function(event) {
+    _onMapMouseDown(event) {
         var map = event.target, marker = this._marker, mPoint = map.latLngToContainerPoint(marker.getLatLng()),
             cPoint = event.containerPoint, angle = Math.atan2(cPoint.x - mPoint.x, mPoint.y - cPoint.y);
         angle = angle / Math.PI * 180;
 
-        this._restoreMapDragging = map.dragging.enabled();
         this._startAngle = marker.options.angle;
-        map.dragging.disable();
+        if (map.dragging.enabled()) {
+            this._reenableMapDragging = true;
+            map.dragging.disable();
+        }
         map.on('mousemove', this._onMapMouseMove, this);
         L.DomUtil.addClass(map.getContainer(), 'leaflet-crosshair');
 
@@ -67,21 +69,21 @@ L.Handler.RotateMarker = L.Handler.extend({
         marker.fireEvent('rotatestart', {angle: angle, startAngle: this._startAngle});
     },
 
-    _onMapMouseUp: function(event) {
+    _onMapMouseUp(event) {
         var map = event.target, marker = this._marker, angle = marker.options.angle;
 
-        if (this._restoreMapDragging) {
+        delete this._startAngle;
+        if (this._reenableMapDragging) {
+            delete this._reenableMapDragging;
             map.dragging.enable();
         }
-        delete this._startAngle;
-        delete this._restoreMapDragging;
         map.off('mousemove', this._onMapMouseMove, this);
         L.DomUtil.removeClass(map.getContainer(), 'leaflet-crosshair');
 
         marker.fireEvent('rotateend', {angle: angle, startAngle: this._startAngle});
     },
 
-    _onMapMouseMove: function(event) {
+    _onMapMouseMove(event) {
         var map = event.target, marker = this._marker, mPoint = map.latLngToContainerPoint(marker.getLatLng()),
             cPoint = event.containerPoint, angle = Math.atan2(cPoint.x - mPoint.x, mPoint.y - cPoint.y);
         angle = angle / Math.PI * 180;
@@ -112,7 +114,7 @@ function setPos(pos) {
         let isNestedIcon = this._icon.hasChildNodes(), rotatableElement = this._icon;
 
         if (isNestedIcon) {
-            rotatableElement = this._icon.getElementsByClassName('leaflet-marker-rotatable')[0] || rotatableElement;
+            rotatableElement = this._icon.getElementsByClassName('leaflet-rotatable')[0] || rotatableElement;
         }
         if (oldIE || isNestedIcon) {
             rotatableElement.style[L.DomUtil.TRANSFORM] = `rotate(${ this.options.angle }deg)`;

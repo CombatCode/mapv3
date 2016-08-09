@@ -20,7 +20,7 @@ export default class FigureIcon extends L.Icon {
 
         if (iconUrl) {
             let img = this._createImg(iconUrl, oldIcon && oldIcon.tagName === 'IMG'? oldIcon : null);
-            img.className = 'leaflet-marker-rotatable';
+            img.className = 'leaflet-rotatable';
             figure.appendChild(img);
         }
 
