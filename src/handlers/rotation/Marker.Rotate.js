@@ -13,7 +13,7 @@ L.Marker.mergeOptions({
  * @class L.Handler.MarkerRotate
  * @extends L.Handler
  */
-L.Handler.MarkerRotate = class Rotate extends L.Handler {
+L.Handler.MarkerRotate = class MarkerRotate extends L.Handler {
     initialize(marker) {
         this._marker = marker;
     }
@@ -50,7 +50,7 @@ L.Handler.MarkerRotate = class Rotate extends L.Handler {
     _onRemove() {
         if (this._marker._map) {
             this._marker._map.off({
-                'mousedowm': this._onMapMouseDown,
+                'mousedown': this._onMapMouseDown,
                 'mouseup': this._onMapMouseUp,
                 'mousemove': this._onMapMouseMove,
             }, this);

@@ -49,9 +49,9 @@ L.Map.BoxSelect = class BoxSelect extends L.Map.BoxZoom {
 
         L.DomEvent.on(document, {
             contextmenu: L.DomEvent.stop,
-            mousemove:   this._onMouseMove,
-            mouseup:     this._onMouseUp,
-            keydown:     this._onKeyDown
+            mousemove: this._onMouseMove,
+            mouseup: this._onMouseUp,
+            keydown: this._onKeyDown
         }, this);
     }
 

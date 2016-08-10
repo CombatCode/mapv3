@@ -25,8 +25,7 @@ export default class FigureIcon extends L.Icon {
         }
 
         if (title) {
-            let figCaption = document.createElement('figcaption'),
-                titleNode  = document.createTextNode(title);
+            let figCaption = document.createElement('figcaption'), titleNode  = document.createTextNode(title);
             figCaption.appendChild(titleNode);
             figure.appendChild(figCaption);
         }
