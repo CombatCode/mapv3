@@ -2,6 +2,7 @@ import Rest from './../../core/Rest';
 import Component from './../../core/Component';
 import MapSet from './MapSet';
 import Map from './../Map';
+import Overlay from './../Overlay';
 import CameraFeature from './../Feature/FeatureCamera';
 
 
@@ -78,6 +79,8 @@ export default class MapSetComponent extends Component {
             this.mapSet.initialize();
             streetMap.addTo(this.mapSet.instance);
             this.fetchFeatures(mapID, mapSetID);
+            // XXX: Only for example.html as now
+            document.querySelector('#mapv3 .intro').remove();
         });
     }
 
