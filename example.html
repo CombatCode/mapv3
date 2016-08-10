@@ -1,6 +1,6 @@
 <html>
     <head>
-        <link href="https://npmcdn.com/hack@0.5.2" rel="stylesheet">
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.2/semantic.min.css" rel="stylesheet">
         <link href="https://npmcdn.com/leaflet@1.0.0-rc.2/dist/leaflet.css" rel="stylesheet">
         <link href="http://leaflet.github.io/Leaflet.markercluster/dist/MarkerCluster.css" rel="stylesheet">
         <link href="http://leaflet.github.io/Leaflet.markercluster/dist/MarkerCluster.Default.css" rel="stylesheet">
@@ -10,38 +10,191 @@
             /* Local css styles for example.html page */
             body.container {
                 color: #222;
-                background-color: #fdfdfd;
+                background-color: #fafafa;
+                min-width: 1200px;
             }
-            body.container header,
-            body.container footer {
-                background-color: #d9d9d9;
-                height: 30px;
-                text-align: center;
-                line-height: 30px;
+            body.container > header {
+                margin-bottom: 40px;
             }
-            body.container article.grid > section.cell {
-                background-color: #d9d9d9;
-                padding: 5px;
+            body.container > header > img {
+                height: 50px;
             }
-            body.container article.grid > section.cell.middle #mapv3 {
+            #mapv3 {
                 height: 600px;
+            }
+            #mapv3 .intro {
+                text-align: center;
+                background: #333;
+                color: #fff;
+                padding: 3px;
+                margin: 47px -14px 0;
+            }
+            #mapsetsList li {
+                cursor: pointer;
+                padding: 4px 0;
+            }
+            #mapsetsList > ul {
+                padding-left: 20px;
+                list-style-image: url('assets/dir.png');
+            }
+            #mapsetsList > ul ul {
+                padding-left: 20px;
+                list-style-image: url('assets/map.png');
+            }
+            .ui.card {
+                display: inline-block;
+                margin: 10px 17px !important;
+                width: 256px;
             }
         </style>
     </head>
-    <body class="container">
-        <header>Mocked up top bar</header>
-        <article class="grid">
-            <section class="cell -2of12">Mocked up left sidebar</section>
-            <section class="cell -8of12 middle">
-                <div id="mapv3"></div>
+    <body class="ui container">
+        <header>
+            <img src="assets/logo.png">
+        </header>
+        <article class="ui grid">
+            <section class="three wide column">
+                <div class="ui top attached tabular menu">
+                    <a class="active item">
+                        Cameras
+                    </a>
+                    <a class="item">
+                        Recorders
+                    </a>
+                </div>
+                <div class="ui bottom attached segment">
+                    <div class="ui transparent icon input" style="width: 100%; margin-bottom: 20px">
+                        <input type="text" placeholder="Search camera...">
+                        <i class="search icon"></i>
+                    </div>
+                    <p>
+                        <img src="assets/wire-list.png">
+                    </p>
+                </div>
+                <div class="ui top attached tabular menu">
+                    <a class="active item">
+                        Scenarios
+                    </a>
+                </div>
+                <div class="ui bottom attached segment">
+                    <p>
+                        <img src="assets/wire-list.png">
+                    </p>
+                </div>
             </section>
-            <section class="cell -2of12">
-                <h1>Mapsets</h1>
-                <section id="mapsetsList"></section>
+            <section class="thirteen wide column">
+                <div class="ui secondary pointing menu">
+                    <a class="active item">
+                        Map
+                    </a>
+                    <a class="item">
+                        Recording browser
+                    </a>
+                    <a class="item">
+                        Snapshot
+                    </a>
+                    <a class="item">
+                        Files browser
+                    </a>
+                    <a class="item">
+                        External application
+                    </a>
+                </div>
+                <div class="ui segment grid">
+                    <div id="mapv3" class="thirteen wide column">
+                        <p class="intro"><i class="folder open icon"></i> Please select a Map</p>
+                    </div>
+                    <div class="three wide column" style="border-left: 1px solid #dedede;">
+                        <h2>Mapsets</h2>
+                        <section id="mapsetsList"></section>
+                    </div>
+                </div>
             </section>
         </article>
         <footer>
-            Mocked up bottom content
+            <div class="ui top attached tabular menu">
+                <a class="active item">
+                    Scenarios
+                </a>
+                <a class="item">
+                    Search alarms
+                </a>
+                <a class="item">
+                    Recent alarms
+                </a>
+                <a class="item">
+                    Transaction log
+                </a>
+                <a class="item">
+                    Download status
+                </a>
+            </div>
+            <div class="ui bottom attached segment">
+                <div class="ui card">
+                    <div class="content">
+                        <div class="right floated meta">No communication</div>
+                        Fake Valley #1
+                    </div>
+                    <div class="image">
+                        <img src="assets/noise.gif">
+                    </div>
+                    <div class="content">
+                    <span class="right floated">
+                      <i class="settings icon"></i>
+                    </span>
+                        <i class="warning sign icon"></i>
+                        0 notifications
+                    </div>
+                </div>
+                <div class="ui card">
+                    <div class="content">
+                        <div class="right floated meta">No communication</div>
+                        Fake Valley #2
+                    </div>
+                    <div class="image">
+                        <img src="assets/noise.gif">
+                    </div>
+                    <div class="content">
+                    <span class="right floated">
+                      <i class="settings icon"></i>
+                    </span>
+                        <i class="warning sign icon"></i>
+                        3 notifications
+                    </div>
+                </div>
+                <div class="ui card">
+                    <div class="content">
+                        <div class="right floated meta">No communication</div>
+                        Fake Valley #3
+                    </div>
+                    <div class="image">
+                        <img src="assets/noise.gif">
+                    </div>
+                    <div class="content">
+                    <span class="right floated">
+                      <i class="settings icon"></i>
+                    </span>
+                        <i class="warning sign icon"></i>
+                        0 notifications
+                    </div>
+                </div>
+                <div class="ui card">
+                    <div class="content">
+                        <div class="right floated meta">No communication</div>
+                        Fake Valley #4
+                    </div>
+                    <div class="image">
+                        <img src="assets/noise.gif">
+                    </div>
+                    <div class="content">
+                    <span class="right floated">
+                      <i class="settings icon"></i>
+                    </span>
+                        <i class="warning sign icon"></i>
+                        1 notifications
+                    </div>
+                </div>
+            </div>
         </footer>
         <script src="dist/app.js"></script>
     </body>
