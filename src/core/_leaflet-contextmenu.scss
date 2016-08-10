@@ -1,0 +1,11 @@
+.leaflet-contextmenu {
+    .leaflet-contextmenu-item-disabled:first-child {
+        opacity: 1;
+        text-align: center;
+        font-weight: bold;
+        & > img {
+            opacity: 1;
+            transform: rotate(90deg);
+        }
+    }
+}

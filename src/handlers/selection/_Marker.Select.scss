@@ -1,0 +1,19 @@
+.leaflet-bar a.active {
+    background: rgba(255, 140, 35, 1);
+}
+
+.leaflet-bar a.active:hover {
+    background: rgba(235, 125, 0, 1);
+}
+
+.leaflet-marker-selectable:not(figure):hover,
+figure.leaflet-marker-selectable:hover > img {
+    background: rgba(0, 188, 212, 0.1);
+    outline: 1px solid rgba(0, 188, 212, 0.4) !important;
+}
+
+.leaflet-marker-selectable.leaflet-marker-selected:not(figure),
+figure.leaflet-marker-selectable.leaflet-marker-selected > img {
+    background: rgba(255, 80, 80, 0.1);
+    outline: 4px dashed rgba(255, 80, 80, 0.6) !important;
+}

@@ -32,13 +32,16 @@ export default class MapSetComponent extends Component {
     }
 
     applyMapSet(mapSetID) {
-        for(let mapSetEntity of this.state.mapSetsEntitiesList) {
+
+        for (let mapSetEntity of this.state.mapSetsEntitiesList) {
             if (mapSetEntity.id() === mapSetID) {
                 let mapSetData = mapSetEntity.data();
                 if (this.mapSet.instance) {
                     this.mapSet.instance.remove();
                 }
-                this.mapSet = new MapSet(mapSetData.id, mapSetData.ms_name);
+
+                this.mapSet = new MapSet(mapSetData.id, mapSetData.ms_name,
+                    Object.assign({}, this._initContextMenu()));
             }
         }
     }
@@ -177,5 +180,31 @@ export default class MapSetComponent extends Component {
             }
         }
         return $mapSetsElements;
+    }
+
+    _initContextMenu() {
+        return {
+            contextmenu:      true,
+            contextmenuWidth: 140,
+            contextmenuItems: [{
+                text:     'Center map here',
+                iconCls:  'fa fa-dot-circle-o',
+                callback: function centerMap(event) {
+                    this.panTo(event.latlng);
+                }
+            }, '-', {
+                text:     'Zoom in',
+                iconCls:  'fa fa-search-plus',
+                callback: function zoomIn(event) {
+                    this.zoomIn();
+                }
+            }, {
+                text:     'Zoom out',
+                iconCls:  'fa fa-search-minus',
+                callback: function zoomOut(event) {
+                    this.zoomOut();
+                }
+            }]
+        }
     }
 }
