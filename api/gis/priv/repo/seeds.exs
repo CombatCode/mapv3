@@ -117,7 +117,7 @@ defmodule Seeds do
 
 # icon_name, icon_image, icon_set_id
     def import_iconsetitem(iconset) do
-        icon = Gis.Repo.insert!(%Gis.GisIconSetItem{icon_name: "Icon", icon_image: "icon.png", icon_set_id: iconset.id})
+        icon = Gis.Repo.insert!(%Gis.GisIconSetItem{icon_name: "Icon", icon_image: "icon.png", gis_icon_set_id: iconset.id})
     end
 
 
@@ -175,7 +175,7 @@ defmodule Seeds do
     def import_overlayer(name, ovl_set) do
         overlayer = Gis.Repo.insert!(%Gis.GisOverlayer{ovl_name: name, ovl_description: "Overlayer test descritpion",
                                              ovl_icon: "icon.png", ovl_attributes: %{}, ovl_type: "Graphical",
-                                             gisoverlayersets_id: ovl_set.id
+                                             gis_overlayer_set_id: ovl_set.id
                                              })
     end
 
