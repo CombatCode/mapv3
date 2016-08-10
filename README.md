@@ -4,7 +4,7 @@ Map widget based on the leaflet
 
 Tasks
 ----------
-##### 1. ![](http://progressed.io/bar/6) Features  (geometries: markers, polygons)
+##### 1. ![](http://progressed.io/bar/61) Features  (geometries: markers, polygons)
 - Pobieranie z BE
     - Ustalenie struktury protokołów
 - Rysowanie na mapie
@@ -34,18 +34,19 @@ Tasks
 ##### 6. ![](http://progressed.io/bar/0) Moduł komunikacji via Websockets
 ##### 7. ![](http://progressed.io/bar/100) Architektura aplikacji, transpilacji
 ##### 8. ![](http://progressed.io/bar/100) Moduł komponentów (one-way binding)
+##### 9. ![](http://progressed.io/bar/0) Design dla prezentacji
 
 Tasks v2
 -------
 
-##### 1. ![](http://progressed.io/bar/0) Moduł widget’a do systemu VMXwebbp
-##### 2. ![](http://progressed.io/bar/50) Mapy
+##### 1. Moduł widget’a do systemu VMXwebbp
+##### 2. Mapy
 - API zewnętrzne widget’a
     - listowanie obiektów po typie na widocznych obszarze mapy (wyszukiwanie w drzewie kamer)
     - dynamiczne dorysowywanie obiektów np scenariusze alarmowe
 - nawigacja pomiędzy mapami (tył / przód), przemieszczanie się za pomocą place’ów, itp
 
-##### 3. ![](http://progressed.io/bar/6) Features  (geometries: markers, polygons)
+##### 3. Features  (geometries: markers, polygons)
 - Pobieranie z BE
     - Geojson
     - Websocket’y
