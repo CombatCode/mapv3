@@ -80,7 +80,8 @@ export default class MapSetComponent extends Component {
             streetMap.addTo(this.mapSet.instance);
             this.fetchFeatures(mapID, mapSetID);
             // XXX: Only for example.html as now
-            document.querySelector('#mapv3 .intro').remove();
+            let el = document.querySelector('#mapv3 .intro');
+            el && el.remove();
         });
     }
 
