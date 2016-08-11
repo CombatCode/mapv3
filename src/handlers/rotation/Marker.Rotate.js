@@ -1,13 +1,6 @@
 import L from 'leaflet';
 
 
-// @section Marker options
-L.Marker.mergeOptions({
-    // @option selectable: Boolean = true
-    // Whether the marker can be rotated using mouse/touch events or not.
-    rotatable: false,
-});
-
 /**
  * Handler providing rotation for L.Marker instance. Disabled by default.
  * @class L.Handler.MarkerRotate
@@ -42,7 +35,7 @@ L.Handler.MarkerRotate = class MarkerRotate extends L.Handler {
         if (this._marker._map) {
             this._marker._map.on({
                 'mousedown': this._onMapMouseDown,
-                'mouseup': this._onMapMouseUp,
+                'mouseup': this._onMapMouseUp
             }, this);
         }
     }
@@ -52,14 +45,18 @@ L.Handler.MarkerRotate = class MarkerRotate extends L.Handler {
             this._marker._map.off({
                 'mousedown': this._onMapMouseDown,
                 'mouseup': this._onMapMouseUp,
-                'mousemove': this._onMapMouseMove,
+                'mousemove': this._onMapMouseMove
             }, this);
         }
     }
 
     _onMapMouseDown(event) {
         const map = event.target, marker = this._marker;
+        if (marker.options.rotateCondition && !marker.options.rotateCondition(event)) {
+            return;
+        }
 
+        this._rotating = true;
         this._startAngle = marker.options.angle;
         if (map.dragging.enabled()) {
             this._reenableMapDragging = true;
@@ -73,8 +70,10 @@ L.Handler.MarkerRotate = class MarkerRotate extends L.Handler {
     }
 
     _onMapMouseUp(event) {
+        if (!this._rotating) {return;}
         const map = event.target, marker = this._marker;
 
+        delete this._rotating;
         delete this._startAngle;
         if (this._reenableMapDragging) {
             delete this._reenableMapDragging;
@@ -99,6 +98,18 @@ L.Handler.MarkerRotate = class MarkerRotate extends L.Handler {
     }
 };
 
+// @namespace L.Marker
+// @section Options
+L.Marker.mergeOptions({
+    // Whether the marker can be rotated using mouse/touch events or not.
+    // @type {boolean}
+    rotatable: false,
+    // Condition to start rotation
+    // @type {Function(Event):boolean=}
+    rotateCondition: undefined
+});
+
+
 // Add init hook for MarkerSelect handler
 L.Marker.addInitHook(function() {
     if (L.Handler.MarkerRotate) {
@@ -110,7 +121,7 @@ L.Marker.addInitHook(function() {
     }
 });
 
-// Overwrites L.Marker setPos method.
+// Overwrites L.Marker _setPos method.
 function setPos(pos) {
     setPos.base.call(this, pos);
 

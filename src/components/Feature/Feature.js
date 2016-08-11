@@ -31,6 +31,14 @@ Feature.mergeOptions({
         separator: true,
         index: 1
     }],
+
+    // no alt, ctrl, or shift pressed; not over another marker
+    rotateCondition: function(event) {
+        const targetEl = event.originalEvent.target, oEvent = event.originalEvent;
+        return !oEvent.altKey && !oEvent.shiftKey && !oEvent.shiftKey && !(
+            L.DomUtil.hasClass(targetEl, 'leaflet-marker-selectable') ||
+            L.DomUtil.hasClass(targetEl.parentNode, 'leaflet-marker-selectable'));
+    }
 });
 
 
@@ -43,5 +51,5 @@ L.MarkerCluster && L.MarkerCluster.mergeOptions({
     }, {
         separator: true,
         index: 1
-    }],
+    }]
 });
