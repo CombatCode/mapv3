@@ -71,7 +71,7 @@ defmodule Seeds do
                                              map_restricted_extent: map_extent, gismapsets_id: ms.id,
                                              gisoverlayersets_id: ovl_set.id
                                              })
-            ovl = import_overlayer("OVLTEST #{m_per_ms}", ovl_set)
+            ovl = import_overlayer("OVLTEST #{m_per_ms}", ovl_set, map_boundary)
             objects = import_objects(object_types, objects_per_map, map_boundary)
             import_mapassoc(objects, m)
             import_map(ms, md, ot, m_per_ms - 1, ovl_set, object_types, objects_per_map)
@@ -117,7 +117,7 @@ defmodule Seeds do
 
 # icon_name, icon_image, icon_set_id
     def import_iconsetitem(iconset) do
-        icon = Gis.Repo.insert!(%Gis.GisIconSetItem{icon_name: "Icon", icon_image: "icon.png", icon_set_id: iconset.id})
+        icon = Gis.Repo.insert!(%Gis.GisIconSetItem{icon_name: "Icon", icon_image: "icon.png", gis_icon_set_id: iconset.id})
     end
 
 
@@ -172,11 +172,18 @@ defmodule Seeds do
 
 # ovl_name, ovl_description, ovl_icon, ovl_attributes, ovl_type, inserted_at, updated_at, 
 # gisoverlayersets_id
-    def import_overlayer(name, ovl_set) do
+    def import_overlayer(name, ovl_set, map_boundary) do
+        image_url = "http://elixir-lang.org/images/logo/logo.png"
+        ovl_boudary = get_boundary(map_boundary)
+        bounds = [%{"latmin" => Map.get(ovl_boudary, :latmin), "lonmin" => Map.get(ovl_boudary, :lonmin)},
+                  %{"latmax" => Map.get(ovl_boudary, :latmax), "lonmax" => Map.get(ovl_boudary, :lonmax)}]
         overlayer = Gis.Repo.insert!(%Gis.GisOverlayer{ovl_name: name, ovl_description: "Overlayer test descritpion",
-                                             ovl_icon: "icon.png", ovl_attributes: %{}, ovl_type: "Graphical",
-                                             gisoverlayersets_id: ovl_set.id
-                                             })
+                                                       ovl_icon: "icon.png", 
+                                                       ovl_attributes: %{"bounds" => bounds, "image_url" => image_url},
+                                                       ovl_type: "Graphical",
+                                                       gis_overlayer_set_id: ovl_set.id
+                                                      }
+                                    )
     end
 
 
