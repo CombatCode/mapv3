@@ -1,5 +1,5 @@
-import L from "leaflet";
-import "leaflet.markercluster";
+import L from 'leaflet';
+import './Cluster';
 
 
 /**
@@ -33,15 +33,3 @@ Feature.mergeOptions({
     }],
 });
 
-
-L.MarkerCluster && L.MarkerCluster.mergeOptions({
-    contextmenu: true,
-    contextmenuItems: [{
-        text: 'Group',
-        disabled: true,
-        index: 0
-    }, {
-        separator: true,
-        index: 1
-    }],
-});
