@@ -13,13 +13,13 @@ Tasks
     - ~~stożki kamer~~
 - [PR#2](https://github.com/CombatCode/mapv3/pull/2) ~~Grupowanie~~
 - Przenoszenie
-- Menu kontekstowe
+- ~~Menu kontekstowe~~
 - Tooltip’y
-- obracanie kamer
+- ~~obracanie kamer~~
 - [PR#1](https://github.com/CombatCode/mapv3/pull/1) ~~Podpisy pod markerami~~ 
-- Zaznaczanie feature’ów
-    - pojedyncze (klik na obszarze mapy)
-    - grupowe “box”
+- ~~Zaznaczanie feature’ów~~
+    - ~~pojedyncze (klik na obszarze mapy)~~
+    - ~~grupowe “box”~~
 - D&D
     - z mapy np na inne widgety aplikacji
     - na mapę lokalizacja istniejących lub dodawanie nowego obiektu
