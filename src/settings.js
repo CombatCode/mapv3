@@ -1,3 +1,4 @@
 export const API = {
-    ADDRESS: 'http://app.teleste.com/api'
+    ADDRESS: 'http://app.teleste.com/api',
+    WS_ADDRESS: 'ws://localhost:8888/ws'
 };

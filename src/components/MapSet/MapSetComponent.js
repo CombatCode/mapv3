@@ -1,9 +1,10 @@
 import Rest from './../../core/Rest';
+import WS from './../../core/WS';
 import Component from './../../core/Component';
 import MapSet from './MapSet';
 import Map from './../Map';
 import Overlay from './../Overlay';
-import CameraFeature from './../Feature/FeatureCamera';
+import FeatureCamera from './../Feature/FeatureCamera';
 
 
 /**
@@ -29,10 +30,24 @@ export default class MapSetComponent extends Component {
                 mapSetsEntitiesList: response.body()
             });
         });
+        this.applyStatusMonitoring();
+    }
+
+    applyStatusMonitoring() {
+        let ws = new WS();
+
+        ws.client.onopen = () => {
+            // TODO: Send getBounds() to api
+        };
+
+        ws.client.onmessage = (msg) => {
+            let {status, id} = JSON.parse(msg.data);
+            let cameraEl = document.querySelector(`.FeatureCamera[data-id="${id}"]`);
+            cameraEl.setAttribute('data-status', status);
+        };
     }
 
     applyMapSet(mapSetID) {
-
         for (let mapSetEntity of this.state.mapSetsEntitiesList) {
             if (mapSetEntity.id() === mapSetID) {
                 let mapSetData = mapSetEntity.data();
@@ -95,13 +110,15 @@ export default class MapSetComponent extends Component {
                 let feature = featureEntity.data();
                 if (feature.go_type === 'camera_ptz') {
                     featuresList.push(
-                        new CameraFeature(
+                        new FeatureCamera(
                             [
                                 feature.go_position.lat,
                                 feature.go_position.lon
                             ], {
                                 angle: feature.go_angle,
-                                title: feature.go_name
+                                title: feature.go_name,
+                                id: feature.id,
+                                status: feature.go_status || 'unknown'
                             }
                         ),
                     );
@@ -109,6 +126,7 @@ export default class MapSetComponent extends Component {
             }
             let markers = (L.markerClusterGroup()).addLayers(featuresList);
             this.mapSet.instance.addLayer(markers);
+            window.map = this.mapSet.instance;
         });
     }
 

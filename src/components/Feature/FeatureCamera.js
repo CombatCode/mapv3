@@ -1,5 +1,5 @@
-import Feature from './Feature';
-import FigureIcon from './../FigureIcon';
+import Feature from "./Feature";
+import FigureIcon from "./../FigureIcon";
 
 
 /**
@@ -18,8 +18,9 @@ export default class FeatureCamera extends Feature {
             /** we must instantiate icons (because e.g. titles differs between Features) */
             options.icon = new FigureIcon({
                 className: 'FeatureCamera',
-                iconUrl: 'assets/feature-camera-inuse.png',
                 iconSize: [56, 50],
+                id: options.id,
+                status: options.status || 'unknown',
                 title: options.title || ''
             });
         }
@@ -32,13 +33,13 @@ FeatureCamera.prototype.options = Object.create(Feature.prototype.options);
 
 FeatureCamera.mergeOptions({
     contextmenuItems: [{
-        text:     'Camera',
-        icon:     'assets/feature-camera-inuse.png',
+        text: 'Camera',
+        icon: 'assets/feature-camera-inuse.png',
         disabled: true,
-        index:    0
+        index: 0
 
     }, {
         separator: true,
-        index:     1
+        index: 1
     }],
 });
