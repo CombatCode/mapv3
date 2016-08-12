@@ -29,12 +29,12 @@ Tasks
 - [PR#3](https://github.com/CombatCode/mapv3/pull/3) ![](http://progressed.io/bar/50) Leaflet.draw is not supporting yet leaflet 1.x ~~narzędzie do mierzenia odległości i obszaru~~
 - ~~wybór docelowej mapy z listy~~
 
-##### 4. ![](http://progressed.io/bar/10) Warstwy dodatkowe (overlays)
+##### 4. ![](http://progressed.io/bar/50) Warstwy dodatkowe (overlays)
 ##### 5. ![](http://progressed.io/bar/100) Moduł komunikacji via REST
-##### 6. ![](http://progressed.io/bar/0) Moduł komunikacji via Websockets
+##### 6. ![](http://progressed.io/bar/100) Moduł komunikacji via Websockets
 ##### 7. ![](http://progressed.io/bar/100) Architektura aplikacji, transpilacji
 ##### 8. ![](http://progressed.io/bar/100) Moduł komponentów (one-way binding)
-##### 9. ![](http://progressed.io/bar/0) Design dla prezentacji
+##### 9. ![](http://progressed.io/bar/100) Design dla prezentacji
 
 Tasks v2
 -------
