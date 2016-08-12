@@ -1,5 +1,5 @@
-import L from 'leaflet';
-import 'leaflet.markercluster';
+import L from "leaflet";
+import "leaflet.markercluster";
 
 
 /**
@@ -26,22 +26,22 @@ Feature.mergeOptions({
     contextmenuItems: [{
         text: 'Unknown feature',
         disabled: true,
-        index:    0
+        index: 0
     }, {
         separator: true,
-        index:     1
+        index: 1
     }],
 });
 
 
 L.MarkerCluster && L.MarkerCluster.mergeOptions({
-    contextmenu:      true,
+    contextmenu: true,
     contextmenuItems: [{
-        text:     'Group',
+        text: 'Group',
         disabled: true,
-        index:    0
+        index: 0
     }, {
         separator: true,
-        index:     1
+        index: 1
     }],
 });

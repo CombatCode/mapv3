@@ -13,7 +13,7 @@ figure.leaflet-marker-selectable:hover > img {
 }
 
 .leaflet-marker-selectable.leaflet-marker-selected:not(figure),
-figure.leaflet-marker-selectable.leaflet-marker-selected > img {
+figure.leaflet-marker-selectable.leaflet-marker-selected > .wrapper {
     background: rgba(255, 80, 80, 0.1);
     outline: 4px dashed rgba(255, 80, 80, 0.6) !important;
 }

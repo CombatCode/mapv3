@@ -16,16 +16,28 @@ export default class FigureIcon extends L.Icon {
      * @returns {Element}
      */
     createIcon(oldIcon) {
-        let figure = document.createElement('figure'), {title, iconUrl} = this.options;
+        let figure = document.createElement('figure');
+        let {title, id, status} = this.options;
+        let imgWrapper = document.createElement('div');
+        let imgFaker = document.createElement('i');
 
-        if (iconUrl) {
-            let img = this._createImg(iconUrl, oldIcon && oldIcon.tagName === 'IMG'? oldIcon : null);
-            img.className = 'leaflet-rotatable';
-            figure.appendChild(img);
+        imgFaker.className = 'icon';
+        imgWrapper.className = 'wrapper leaflet-rotatable';
+
+        imgWrapper.appendChild(imgFaker);
+        figure.appendChild(imgWrapper);
+
+        if (id) {
+            figure.setAttribute("data-id", id);
+        }
+
+        if (status) {
+            figure.setAttribute("data-status", status);
         }
 
         if (title) {
-            let figCaption = document.createElement('figcaption'), titleNode  = document.createTextNode(title);
+            let figCaption = document.createElement('figcaption');
+            let titleNode  = document.createTextNode(title);
             figCaption.appendChild(titleNode);
             figure.appendChild(figCaption);
         }

@@ -108,7 +108,7 @@ function initIcon() {
             L.DomUtil.addClass(this._icon, 'leaflet-marker-selected');
         }
     }
-};
+}
 
 initIcon.base = L.Marker.prototype._initIcon;
 L.Marker.prototype._initIcon = initIcon;
