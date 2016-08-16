@@ -32,12 +32,20 @@ Feature.mergeOptions({
         index: 1
     }],
 
-    // no alt, ctrl, or shift pressed; not over another marker
+    // no alt, ctrl, or shift pressed; not over another selectable marker
     rotateCondition: function(event) {
-        const targetEl = event.originalEvent.target, oEvent = event.originalEvent;
-        return !oEvent.altKey && !oEvent.shiftKey && !oEvent.shiftKey && !(
-            L.DomUtil.hasClass(targetEl, 'leaflet-marker-selectable') ||
-            L.DomUtil.hasClass(targetEl.parentNode, 'leaflet-marker-selectable'));
+        const oEvent = event.originalEvent;
+        if (!oEvent.altKey && !oEvent.shiftKey && !oEvent.shiftKey) {
+            let targetEl = oEvent.target, mapContainerEl = event.target.getContainer();
+            while (targetEl !== mapContainerEl) {
+                if (L.DomUtil.hasClass(targetEl, 'leaflet-marker-selectable')) {
+                    return false;
+                }
+                targetEl = targetEl.parentNode;
+            }
+            return true
+        }
+        return false;
     }
 });
 
