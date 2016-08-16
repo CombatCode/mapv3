@@ -1,5 +1,4 @@
 import L from 'leaflet';
-import './Cluster';
 
 
 /**

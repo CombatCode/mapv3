@@ -4,6 +4,7 @@ import Component from './../../core/Component';
 import MapSet from './MapSet';
 import Map from './../Map';
 import Overlay from './../Overlay';
+import FeatureCluster from '../Feature/FeatureCluster';
 import FeatureCamera from './../Feature/FeatureCamera';
 
 
@@ -124,8 +125,12 @@ export default class MapSetComponent extends Component {
                     );
                 }
             }
-            let markers = (L.markerClusterGroup()).addLayers(featuresList);
-            this.mapSet.instance.addLayer(markers);
+            let mapSet = this.mapSet.instance;
+            let markers = (L.markerClusterGroup({zoomToBoundsOnClick: false})).addLayers(featuresList);
+            // this forces L.markercluster plugin to use our own class for clusters
+            markers._markerCluster = FeatureCluster;
+            mapSet.addLayer(markers);
+            mapSet.markers = markers;
         });
     }
 
