@@ -126,7 +126,6 @@ export default class MapSetComponent extends Component {
             }
             let markers = (L.markerClusterGroup()).addLayers(featuresList);
             this.mapSet.instance.addLayer(markers);
-            window.map = this.mapSet.instance;
         });
     }
 
