@@ -15,6 +15,19 @@ export default class Feature extends L.Marker {
     constructor(latlng, options = {}) {
         super(latlng, options);
     }
+
+    /** @param {L.Tooltip} tooltip */
+    _fixTooltipOffset(tooltip) {
+        let offset = tooltip.options.offset, direction = tooltip.options.direction;
+
+        if (direction === 'auto') {
+            direction = L.DomUtil.hasClass(tooltip._container, 'leaflet-tooltip-left')? 'left' : 'right';
+            if ((direction === 'left' && offset.x > 0) || (direction === 'right' && offset.x < 0)) {
+                offset.x = -offset.x;
+                tooltip.update();
+            }
+        }
+    }
 }
 
 /** Inherit options (don't mutate L.Marker defaults) */
