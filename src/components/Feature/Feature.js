@@ -28,6 +28,22 @@ export default class Feature extends L.Marker {
             }
         }
     }
+
+    // no alt, ctrl, or shift pressed; not over another selectable marker
+    static rotateCondition(event) {
+        const oEvent = event.originalEvent;
+        if (!oEvent.altKey && !oEvent.ctrlKey && !oEvent.shiftKey) {
+            let targetEl = oEvent.target, mapContainerEl = event.target.getContainer();
+            while (targetEl !== mapContainerEl) {
+                if (L.DomUtil.hasClass(targetEl, 'leaflet-marker-selectable')) {
+                    return false;
+                }
+                targetEl = targetEl.parentNode;
+            }
+            return true
+        }
+        return false;
+    }
 }
 
 /** Inherit options (don't mutate L.Marker defaults) */
@@ -44,19 +60,5 @@ Feature.mergeOptions({
         index: 1
     }],
 
-    // no alt, ctrl, or shift pressed; not over another selectable marker
-    rotateCondition: function(event) {
-        const oEvent = event.originalEvent;
-        if (!oEvent.altKey && !oEvent.shiftKey && !oEvent.shiftKey) {
-            let targetEl = oEvent.target, mapContainerEl = event.target.getContainer();
-            while (targetEl !== mapContainerEl) {
-                if (L.DomUtil.hasClass(targetEl, 'leaflet-marker-selectable')) {
-                    return false;
-                }
-                targetEl = targetEl.parentNode;
-            }
-            return true
-        }
-        return false;
-    }
+    rotateCondition: Feature.rotateCondition
 });
