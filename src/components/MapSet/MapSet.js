@@ -1,4 +1,5 @@
 import L from 'leaflet';
+import ControlRotate from './../Control/Control.Rotate'
 
 
 /**
@@ -13,14 +14,11 @@ export default class MapSet {
      * @param {string} [name]
      * @param {object} [options]
      */
-    constructor(id = NaN, name = '', options = {}){
+    constructor(id = NaN, name = '', options = {}) {
         // Parameters in class body
         this.id = id;
         this.name = name;
-        this.options = options;
-
-        // Non optional settings
-        this.options.drawControl = true;
+        Object.assign(this.options, options);
 
         // Static settings
         this._containerId = 'mapv3';
@@ -32,8 +30,13 @@ export default class MapSet {
      * @returns {L.Map|*}
      */
     initialize() {
-        this._instance = new L.Map(this._containerId, this.options);
-        return this._instance;
+        let lmap = this._instance = new L.Map(this._containerId, this.options);
+        lmap._mapSet = this;
+        lmap.addControl(new ControlRotate({
+            content: '<i class="icon repeat"></i>'
+        }));
+
+        return lmap;
     }
 
     /**
@@ -57,3 +60,30 @@ export default class MapSet {
         Object.assign(this.options, options);
     }
 }
+
+
+MapSet.prototype.options = {
+    drawControl:      true,
+
+    contextmenu:      true,
+    contextmenuWidth: 140,
+    contextmenuItems: [{
+        text:     'Center map here',
+        iconCls:  'fa fa-dot-circle-o',
+        callback: function centerMap(event) {
+            this.panTo(event.latlng);
+        }
+    }, '-', {
+        text:     'Zoom in',
+        iconCls:  'fa fa-search-plus',
+        callback: function zoomIn(event) {
+            this.zoomIn();
+        }
+    }, {
+        text:     'Zoom out',
+        iconCls:  'fa fa-search-minus',
+        callback: function zoomOut(event) {
+            this.zoomOut();
+        }
+    }]
+};
