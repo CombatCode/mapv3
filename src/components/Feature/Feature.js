@@ -16,6 +16,28 @@ export default class Feature extends L.Marker {
         super(latlng, options);
     }
 
+    // Show custom contextmenu when dropping Feature on map.
+    _showContextMenu(event, menuType) {
+        //if (event.originalEvent.type === 'drop' && this.options.onDropContextmenuItems) {
+        if (menuType) {
+            this._map.once('contextmenu.hide', (function(ownItems, items, ownInherit, inherit) {
+                ownItems? (this.options.contextmenuItems = items) : (delete this.options.contextmenuItems);
+                ownInherit? (this.options.contextmenuInheritItems = inherit) :
+                    (delete this.options.contextmenuInheritItems);
+            }).bind(
+                this,
+                Object.hasOwnProperty(this.options, 'contextmenuItems'),
+                this.options.contextmenuItems,
+                Object.hasOwnProperty(this.options, 'contextmenuInheritItems'),
+                this.options.contextmenuInheritItems
+            ));
+            this.options.contextmenuItems = this.options[`${menuType}ContextmenuItems`];
+            this.options.contextmenuInheritItems = this.options[`${menuType}ContextmenuInheritItems`];
+        }
+
+        super._showContextMenu(event);
+    }
+
     /** @param {L.Tooltip} tooltip */
     _fixTooltipOffset(tooltip) {
         let offset = tooltip.options.offset, direction = tooltip.options.direction;

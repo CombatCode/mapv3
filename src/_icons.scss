@@ -1,11 +1,20 @@
-i.icon.svmx.status.unknown {
-    background-image: url("../assets/svmx-status-unknown.png");
+$path-icon: "../assets/";
+$selector-icon: ".icon"; // i.icon in Semantic UI
+$selector-icon-feature: $selector-icon + ".svmx.feature";
+
+#{$selector-icon-feature}.camera {
+    background: url($path-icon + "feature-camera-inuse.svg") center no-repeat;
+    transform: rotate(90deg);
+}
+
+#{$selector-icon}.svmx.status.unknown {
+    background-image: url($path-icon + "svmx-status-unknown.png");
     width: 18px;
     height: 18px;
 }
 
-i.icon.svmx.status.nocommunication {
-    background-image: url("../assets/svmx-status-nocommunication.png");
+#{$selector-icon}.svmx.status.nocommunication {
+    background-image: url($path-icon + "svmx-status-nocommunication.png");
     width: 18px;
     height: 18px;
 }
