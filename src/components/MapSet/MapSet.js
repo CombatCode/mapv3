@@ -1,5 +1,7 @@
 import L from 'leaflet';
-import ControlRotate from './../Control/Control.Rotate'
+import '../../handlers/drop/Map.Drop';
+
+import ControlRotate from './../Control/Control.Rotate';
 
 
 /**
