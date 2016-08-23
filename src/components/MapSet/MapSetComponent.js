@@ -6,6 +6,7 @@ import Map from './../Map';
 import Overlay from './../Overlay';
 import FeatureCluster from '../Feature/FeatureCluster';
 import FeatureCamera from './../Feature/FeatureCamera';
+import Feature from '../Feature/Feature'
 
 
 /**
@@ -111,17 +112,17 @@ export default class MapSetComponent extends Component {
                 let feature = featureEntity.data();
                 if (feature.go_type === 'camera_ptz') {
                     featuresList.push(
-                        new FeatureCamera(
-                            [
+                        Feature.createFeature(
+                            'camera', [
                                 feature.go_position.lat,
                                 feature.go_position.lon
                             ], {
                                 angle: feature.go_angle,
-                                title: feature.go_name,
+                                name: feature.go_name,
                                 id: feature.id,
                                 status: feature.go_status || 'unknown'
                             }
-                        ),
+                        )
                     );
                 }
             }

@@ -68,6 +68,8 @@ export default class FeatureCamera extends Feature {
     }
 }
 
+Feature.constructors.camera = FeatureCamera;
+
 
 FeatureCamera.include({
     /** Inherit options */

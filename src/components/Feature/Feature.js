@@ -16,6 +16,17 @@ export default class Feature extends L.Marker {
         super(latlng, options);
     }
 
+    /**
+     * Factory
+     * @param {string} type
+     * @param {*} params
+     * @returns [Feature]
+     */
+    static createFeature(type, ...params) {
+        const FeatureCtr = Feature.constructors[type];
+        return FeatureCtr? new FeatureCtr(...params) : undefined;
+    }
+
     // Show custom contextmenu when dropping Feature on map.
     _showContextMenu(event, menuType) {
         //if (event.originalEvent.type === 'drop' && this.options.onDropContextmenuItems) {
@@ -67,6 +78,9 @@ export default class Feature extends L.Marker {
         return false;
     }
 }
+
+// @namespace
+Feature.constructors = {};
 
 /** Inherit options (don't mutate L.Marker defaults) */
 Feature.prototype.options = Object.create(L.Marker.prototype.options);
