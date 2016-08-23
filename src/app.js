@@ -8,11 +8,16 @@ import './handlers/selection/Map.ClickDeselect';
 import './handlers/selection/Map.BoxSelect';
 import './handlers/rotation/Marker.Rotate';
 
-import { applyComponent } from './core/Component';
-import MapSetComponent from './components/MapSet/MapSetComponent';
 import './components/Control/Control.Rotate';
+import Storage from './core/Storage';
+import MapSetComponent from './components/MapSet/MapSetComponent';
+import { applyComponent } from './core/Component';
 
 
 (function() {
+    // Mock up request user
+    (new Storage(localStorage, 'auth')).setItem('username', 'guest');
+
+    // Initialize mapset component
     applyComponent('#mapsetsList', new MapSetComponent());
 })();
