@@ -4,8 +4,7 @@ import Component from './../../core/Component';
 import MapSet from './MapSet';
 import Map from './../Map';
 import Overlay from './../Overlay';
-import FeatureCluster from '../Feature/FeatureCluster';
-import FeatureCamera from './../Feature/FeatureCamera';
+import Feature from '../Feature/Feature'
 
 
 /**
@@ -56,8 +55,7 @@ export default class MapSetComponent extends Component {
                     this.mapSet.instance.remove();
                 }
 
-                this.mapSet = new MapSet(mapSetData.id, mapSetData.ms_name,
-                    Object.assign({}, this._initContextMenu()));
+                this.mapSet = new MapSet(mapSetData.id, mapSetData.ms_name, {});
             }
         }
     }
@@ -111,26 +109,21 @@ export default class MapSetComponent extends Component {
                 let feature = featureEntity.data();
                 if (feature.go_type === 'camera_ptz') {
                     featuresList.push(
-                        new FeatureCamera(
-                            [
+                        Feature.createFeature(
+                            'camera', [
                                 feature.go_position.lat,
                                 feature.go_position.lon
                             ], {
                                 angle: feature.go_angle,
-                                title: feature.go_name,
+                                name: feature.go_name,
                                 id: feature.id,
                                 status: feature.go_status || 'unknown'
                             }
-                        ),
+                        )
                     );
                 }
             }
-            let mapSet = this.mapSet.instance;
-            let markers = (L.markerClusterGroup({zoomToBoundsOnClick: false})).addLayers(featuresList);
-            // this forces L.markercluster plugin to use our own class for clusters
-            markers._markerCluster = FeatureCluster;
-            mapSet.addLayer(markers);
-            mapSet.markers = markers;
+            this.mapSet.features.addLayers(featuresList);
         });
     }
 
@@ -203,31 +196,5 @@ export default class MapSetComponent extends Component {
             }
         }
         return $mapSetsElements;
-    }
-
-    _initContextMenu() {
-        return {
-            contextmenu:      true,
-            contextmenuWidth: 140,
-            contextmenuItems: [{
-                text:     'Center map here',
-                iconCls:  'fa fa-dot-circle-o',
-                callback: function centerMap(event) {
-                    this.panTo(event.latlng);
-                }
-            }, '-', {
-                text:     'Zoom in',
-                iconCls:  'fa fa-search-plus',
-                callback: function zoomIn(event) {
-                    this.zoomIn();
-                }
-            }, {
-                text:     'Zoom out',
-                iconCls:  'fa fa-search-minus',
-                callback: function zoomOut(event) {
-                    this.zoomOut();
-                }
-            }]
-        }
     }
 }

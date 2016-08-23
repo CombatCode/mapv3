@@ -22,7 +22,7 @@ export default class FeatureCamera extends Feature {
                 iconSize: [56, 50],
                 id: options.id,
                 status: options.status || 'unknown',
-                title: options.title || ''
+                title: options.name || ('id' in options? `Camera ${options.id}` : '')
             });
         }
         super(latlng, options);
@@ -68,6 +68,8 @@ export default class FeatureCamera extends Feature {
     }
 }
 
+Feature.constructors.camera = FeatureCamera;
+
 
 FeatureCamera.include({
     /** Inherit options */
@@ -79,7 +81,7 @@ FeatureCamera.mergeOptions({
     // Leaflet.contextmenu options
     contextmenuItems: [{
         text: 'Camera',
-        icon: 'assets/feature-camera-inuse.png',
+        iconCls: 'icon svmx feature camera',
         disabled: true,
         index: 0
 
@@ -87,4 +89,14 @@ FeatureCamera.mergeOptions({
         separator: true,
         index: 1
     }],
+
+    onDropContextmenuItems: [{
+        text: 'locate',
+        iconCls: 'fa fa-compass',
+        callback: function(e) { alert('NOT IMPLEMENTED'); }
+    }, '-', {
+        text: 'add as Camera',
+        iconCls: 'icon svmx feature camera',
+        callback: function(e) { e.relatedTarget.addTo(this.features); }
+    }]
 });

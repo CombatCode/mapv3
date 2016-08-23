@@ -3,12 +3,12 @@ import 'leaflet.markercluster';
 
 
 /**
- * Class representing clustered features
+ * Class representing a cluster of Features on map
  * @extends L.MarkerCluster
  */
 export default class FeatureCluster extends L.MarkerCluster {
-    initialize() {
-        super.initialize.apply(this, arguments);
+    initialize(...params) {
+        super.initialize(...params);
         this.on('click', this._onClick, this);
         this.on('dblclick', this._onDblClick, this);
     }
@@ -32,6 +32,7 @@ export default class FeatureCluster extends L.MarkerCluster {
 FeatureCluster.include({
     options: Object.create(L.MarkerCluster.prototype.options)
 });
+
 
 FeatureCluster.mergeOptions({
     selectable: false,

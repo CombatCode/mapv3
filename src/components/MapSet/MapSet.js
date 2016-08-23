@@ -1,5 +1,9 @@
 import L from 'leaflet';
-import ControlRotate from './../Control/Control.Rotate'
+
+import '../../handlers/drop/Map.Drop';
+import Feature from '../Feature/Feature';
+import FeatureGroup from '../Feature/FeatureGroup';
+import ControlRotate from './../Control/Control.Rotate';
 
 
 /**
@@ -32,10 +36,15 @@ export default class MapSet {
     initialize() {
         let lmap = this._instance = new L.Map(this._containerId, this.options);
         lmap._mapSet = this;
+        let features = this.features = lmap.features = new FeatureGroup({zoomToBoundsOnClick: false});
         lmap.addControl(new ControlRotate({
             content: '<i class="icon repeat"></i>'
         }));
 
+        lmap.on('drop', this._onDrop, this);
+        lmap.once('zoomlevelschange', (e) => features.addTo(lmap));
+
+        window.mapSet = this;
         return lmap;
     }
 
@@ -58,6 +67,30 @@ export default class MapSet {
      */
     set setOptions(options) {
         Object.assign(this.options, options);
+    }
+
+    _onDrop(event) {
+        event.originalEvent.preventDefault();
+        let dt = event.originalEvent.dataTransfer, data;
+
+        if (dt.types.includes('application/json')) {
+            data = dt.getData('application/json');
+        } else {
+            data = dt.getData('text');
+        }
+        try {
+            data = JSON.parse(data);
+        } catch(ex) {}
+
+        if (typeof data === 'object' && data !== null) {
+            let newFeature = Feature.createFeature(data.type, event.latlng, {id: data.id});
+            let map = this._instance;
+            if (newFeature instanceof L.Layer) {
+                newFeature._map = map;
+                newFeature._showContextMenu(event, 'onDrop');
+                map.once('contextmenu.hide', e => newFeature._map = undefined);
+            }
+        }
     }
 }
 

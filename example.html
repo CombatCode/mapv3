@@ -70,7 +70,8 @@
                         <i class="search icon"></i>
                     </div>
                     <p>
-                        <img src="assets/wire-list.png">
+                        <img src="assets/wire-list.png" ondragstart="event.dataTransfer.setData('application/json',
+                        JSON.stringify({type: 'camera', id: Math.round(Math.random() * 1000)}))">
                     </p>
                 </div>
                 <div class="ui top attached tabular menu">
