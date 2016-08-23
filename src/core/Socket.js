@@ -1,10 +1,11 @@
 import { API } from './../settings';
 
+
 /**
  * Base class of our WebSocket client
- * @module core/WebSocket
+ * @module core/Socket
  */
-export default class WS {
+export default class Socket {
     constructor() {
         this.ws = new WebSocket(API.WS_ADDRESS);
     }
