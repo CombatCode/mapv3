@@ -1,0 +1,1092 @@
+{
+  "type": "Program",
+  "body": [
+    {
+      "type": "ImportDeclaration",
+      "specifiers": [
+        {
+          "type": "ImportDefaultSpecifier",
+          "local": {
+            "type": "Identifier",
+            "name": "L",
+            "range": [
+              7,
+              8
+            ],
+            "loc": {
+              "start": {
+                "line": 1,
+                "column": 7
+              },
+              "end": {
+                "line": 1,
+                "column": 8
+              }
+            }
+          },
+          "range": [
+            7,
+            8
+          ],
+          "loc": {
+            "start": {
+              "line": 1,
+              "column": 7
+            },
+            "end": {
+              "line": 1,
+              "column": 8
+            }
+          }
+        }
+      ],
+      "source": {
+        "type": "Literal",
+        "value": "leaflet",
+        "raw": "'leaflet'",
+        "range": [
+          14,
+          23
+        ],
+        "loc": {
+          "start": {
+            "line": 1,
+            "column": 14
+          },
+          "end": {
+            "line": 1,
+            "column": 23
+          }
+        }
+      },
+      "range": [
+        0,
+        24
+      ],
+      "loc": {
+        "start": {
+          "line": 1,
+          "column": 0
+        },
+        "end": {
+          "line": 1,
+          "column": 24
+        }
+      }
+    },
+    {
+      "type": "ImportDeclaration",
+      "specifiers": [],
+      "source": {
+        "type": "Literal",
+        "value": "leaflet-draw",
+        "raw": "'leaflet-draw'",
+        "range": [
+          32,
+          46
+        ],
+        "loc": {
+          "start": {
+            "line": 2,
+            "column": 7
+          },
+          "end": {
+            "line": 2,
+            "column": 21
+          }
+        }
+      },
+      "range": [
+        25,
+        47
+      ],
+      "loc": {
+        "start": {
+          "line": 2,
+          "column": 0
+        },
+        "end": {
+          "line": 2,
+          "column": 22
+        }
+      }
+    },
+    {
+      "type": "ImportDeclaration",
+      "specifiers": [],
+      "source": {
+        "type": "Literal",
+        "value": "leaflet.markercluster",
+        "raw": "'leaflet.markercluster'",
+        "range": [
+          55,
+          78
+        ],
+        "loc": {
+          "start": {
+            "line": 3,
+            "column": 7
+          },
+          "end": {
+            "line": 3,
+            "column": 30
+          }
+        }
+      },
+      "range": [
+        48,
+        79
+      ],
+      "loc": {
+        "start": {
+          "line": 3,
+          "column": 0
+        },
+        "end": {
+          "line": 3,
+          "column": 31
+        }
+      }
+    },
+    {
+      "type": "ImportDeclaration",
+      "specifiers": [],
+      "source": {
+        "type": "Literal",
+        "value": "leaflet-contextmenu",
+        "raw": "'leaflet-contextmenu'",
+        "range": [
+          87,
+          108
+        ],
+        "loc": {
+          "start": {
+            "line": 4,
+            "column": 7
+          },
+          "end": {
+            "line": 4,
+            "column": 28
+          }
+        }
+      },
+      "range": [
+        80,
+        109
+      ],
+      "loc": {
+        "start": {
+          "line": 4,
+          "column": 0
+        },
+        "end": {
+          "line": 4,
+          "column": 29
+        }
+      }
+    },
+    {
+      "type": "ImportDeclaration",
+      "specifiers": [],
+      "source": {
+        "type": "Literal",
+        "value": "./handlers/selection/Marker.Select",
+        "raw": "'./handlers/selection/Marker.Select'",
+        "range": [
+          118,
+          154
+        ],
+        "loc": {
+          "start": {
+            "line": 6,
+            "column": 7
+          },
+          "end": {
+            "line": 6,
+            "column": 43
+          }
+        }
+      },
+      "range": [
+        111,
+        155
+      ],
+      "loc": {
+        "start": {
+          "line": 6,
+          "column": 0
+        },
+        "end": {
+          "line": 6,
+          "column": 44
+        }
+      }
+    },
+    {
+      "type": "ImportDeclaration",
+      "specifiers": [],
+      "source": {
+        "type": "Literal",
+        "value": "./handlers/selection/Map.ClickDeselect",
+        "raw": "'./handlers/selection/Map.ClickDeselect'",
+        "range": [
+          163,
+          203
+        ],
+        "loc": {
+          "start": {
+            "line": 7,
+            "column": 7
+          },
+          "end": {
+            "line": 7,
+            "column": 47
+          }
+        }
+      },
+      "range": [
+        156,
+        204
+      ],
+      "loc": {
+        "start": {
+          "line": 7,
+          "column": 0
+        },
+        "end": {
+          "line": 7,
+          "column": 48
+        }
+      }
+    },
+    {
+      "type": "ImportDeclaration",
+      "specifiers": [],
+      "source": {
+        "type": "Literal",
+        "value": "./handlers/selection/Map.BoxSelect",
+        "raw": "'./handlers/selection/Map.BoxSelect'",
+        "range": [
+          212,
+          248
+        ],
+        "loc": {
+          "start": {
+            "line": 8,
+            "column": 7
+          },
+          "end": {
+            "line": 8,
+            "column": 43
+          }
+        }
+      },
+      "range": [
+        205,
+        249
+      ],
+      "loc": {
+        "start": {
+          "line": 8,
+          "column": 0
+        },
+        "end": {
+          "line": 8,
+          "column": 44
+        }
+      }
+    },
+    {
+      "type": "ImportDeclaration",
+      "specifiers": [],
+      "source": {
+        "type": "Literal",
+        "value": "./handlers/rotation/Marker.Rotate",
+        "raw": "'./handlers/rotation/Marker.Rotate'",
+        "range": [
+          257,
+          292
+        ],
+        "loc": {
+          "start": {
+            "line": 9,
+            "column": 7
+          },
+          "end": {
+            "line": 9,
+            "column": 42
+          }
+        }
+      },
+      "range": [
+        250,
+        293
+      ],
+      "loc": {
+        "start": {
+          "line": 9,
+          "column": 0
+        },
+        "end": {
+          "line": 9,
+          "column": 43
+        }
+      }
+    },
+    {
+      "type": "ImportDeclaration",
+      "specifiers": [],
+      "source": {
+        "type": "Literal",
+        "value": "./components/Control/Control.Rotate",
+        "raw": "'./components/Control/Control.Rotate'",
+        "range": [
+          302,
+          339
+        ],
+        "loc": {
+          "start": {
+            "line": 11,
+            "column": 7
+          },
+          "end": {
+            "line": 11,
+            "column": 44
+          }
+        }
+      },
+      "range": [
+        295,
+        340
+      ],
+      "loc": {
+        "start": {
+          "line": 11,
+          "column": 0
+        },
+        "end": {
+          "line": 11,
+          "column": 45
+        }
+      }
+    },
+    {
+      "type": "ImportDeclaration",
+      "specifiers": [
+        {
+          "type": "ImportDefaultSpecifier",
+          "local": {
+            "type": "Identifier",
+            "name": "Storage",
+            "range": [
+              348,
+              355
+            ],
+            "loc": {
+              "start": {
+                "line": 12,
+                "column": 7
+              },
+              "end": {
+                "line": 12,
+                "column": 14
+              }
+            }
+          },
+          "range": [
+            348,
+            355
+          ],
+          "loc": {
+            "start": {
+              "line": 12,
+              "column": 7
+            },
+            "end": {
+              "line": 12,
+              "column": 14
+            }
+          }
+        }
+      ],
+      "source": {
+        "type": "Literal",
+        "value": "./core/Storage",
+        "raw": "'./core/Storage'",
+        "range": [
+          361,
+          377
+        ],
+        "loc": {
+          "start": {
+            "line": 12,
+            "column": 20
+          },
+          "end": {
+            "line": 12,
+            "column": 36
+          }
+        }
+      },
+      "range": [
+        341,
+        378
+      ],
+      "loc": {
+        "start": {
+          "line": 12,
+          "column": 0
+        },
+        "end": {
+          "line": 12,
+          "column": 37
+        }
+      }
+    },
+    {
+      "type": "ImportDeclaration",
+      "specifiers": [
+        {
+          "type": "ImportDefaultSpecifier",
+          "local": {
+            "type": "Identifier",
+            "name": "MapSetComponent",
+            "range": [
+              386,
+              401
+            ],
+            "loc": {
+              "start": {
+                "line": 13,
+                "column": 7
+              },
+              "end": {
+                "line": 13,
+                "column": 22
+              }
+            }
+          },
+          "range": [
+            386,
+            401
+          ],
+          "loc": {
+            "start": {
+              "line": 13,
+              "column": 7
+            },
+            "end": {
+              "line": 13,
+              "column": 22
+            }
+          }
+        }
+      ],
+      "source": {
+        "type": "Literal",
+        "value": "./components/MapSet/MapSetComponent",
+        "raw": "'./components/MapSet/MapSetComponent'",
+        "range": [
+          407,
+          444
+        ],
+        "loc": {
+          "start": {
+            "line": 13,
+            "column": 28
+          },
+          "end": {
+            "line": 13,
+            "column": 65
+          }
+        }
+      },
+      "range": [
+        379,
+        445
+      ],
+      "loc": {
+        "start": {
+          "line": 13,
+          "column": 0
+        },
+        "end": {
+          "line": 13,
+          "column": 66
+        }
+      }
+    },
+    {
+      "type": "ImportDeclaration",
+      "specifiers": [
+        {
+          "type": "ImportSpecifier",
+          "local": {
+            "type": "Identifier",
+            "name": "applyComponent",
+            "range": [
+              455,
+              469
+            ],
+            "loc": {
+              "start": {
+                "line": 14,
+                "column": 9
+              },
+              "end": {
+                "line": 14,
+                "column": 23
+              }
+            }
+          },
+          "imported": {
+            "type": "Identifier",
+            "name": "applyComponent",
+            "range": [
+              455,
+              469
+            ],
+            "loc": {
+              "start": {
+                "line": 14,
+                "column": 9
+              },
+              "end": {
+                "line": 14,
+                "column": 23
+              }
+            }
+          },
+          "range": [
+            455,
+            469
+          ],
+          "loc": {
+            "start": {
+              "line": 14,
+              "column": 9
+            },
+            "end": {
+              "line": 14,
+              "column": 23
+            }
+          }
+        }
+      ],
+      "source": {
+        "type": "Literal",
+        "value": "./core/Component",
+        "raw": "'./core/Component'",
+        "range": [
+          477,
+          495
+        ],
+        "loc": {
+          "start": {
+            "line": 14,
+            "column": 31
+          },
+          "end": {
+            "line": 14,
+            "column": 49
+          }
+        }
+      },
+      "range": [
+        446,
+        496
+      ],
+      "loc": {
+        "start": {
+          "line": 14,
+          "column": 0
+        },
+        "end": {
+          "line": 14,
+          "column": 50
+        }
+      }
+    },
+    {
+      "type": "ExpressionStatement",
+      "expression": {
+        "type": "CallExpression",
+        "callee": {
+          "type": "FunctionExpression",
+          "id": null,
+          "params": [],
+          "body": {
+            "type": "BlockStatement",
+            "body": [
+              {
+                "type": "ExpressionStatement",
+                "expression": {
+                  "type": "CallExpression",
+                  "callee": {
+                    "type": "MemberExpression",
+                    "computed": false,
+                    "object": {
+                      "type": "NewExpression",
+                      "callee": {
+                        "type": "Identifier",
+                        "name": "Storage",
+                        "range": [
+                          550,
+                          557
+                        ],
+                        "loc": {
+                          "start": {
+                            "line": 19,
+                            "column": 9
+                          },
+                          "end": {
+                            "line": 19,
+                            "column": 16
+                          }
+                        }
+                      },
+                      "arguments": [
+                        {
+                          "type": "Identifier",
+                          "name": "localStorage",
+                          "range": [
+                            558,
+                            570
+                          ],
+                          "loc": {
+                            "start": {
+                              "line": 19,
+                              "column": 17
+                            },
+                            "end": {
+                              "line": 19,
+                              "column": 29
+                            }
+                          }
+                        },
+                        {
+                          "type": "Literal",
+                          "value": "auth",
+                          "raw": "'auth'",
+                          "range": [
+                            572,
+                            578
+                          ],
+                          "loc": {
+                            "start": {
+                              "line": 19,
+                              "column": 31
+                            },
+                            "end": {
+                              "line": 19,
+                              "column": 37
+                            }
+                          }
+                        }
+                      ],
+                      "range": [
+                        546,
+                        579
+                      ],
+                      "loc": {
+                        "start": {
+                          "line": 19,
+                          "column": 5
+                        },
+                        "end": {
+                          "line": 19,
+                          "column": 38
+                        }
+                      }
+                    },
+                    "property": {
+                      "type": "Identifier",
+                      "name": "setItem",
+                      "range": [
+                        581,
+                        588
+                      ],
+                      "loc": {
+                        "start": {
+                          "line": 19,
+                          "column": 40
+                        },
+                        "end": {
+                          "line": 19,
+                          "column": 47
+                        }
+                      }
+                    },
+                    "range": [
+                      545,
+                      588
+                    ],
+                    "loc": {
+                      "start": {
+                        "line": 19,
+                        "column": 4
+                      },
+                      "end": {
+                        "line": 19,
+                        "column": 47
+                      }
+                    }
+                  },
+                  "arguments": [
+                    {
+                      "type": "Literal",
+                      "value": "username",
+                      "raw": "'username'",
+                      "range": [
+                        589,
+                        599
+                      ],
+                      "loc": {
+                        "start": {
+                          "line": 19,
+                          "column": 48
+                        },
+                        "end": {
+                          "line": 19,
+                          "column": 58
+                        }
+                      }
+                    },
+                    {
+                      "type": "Literal",
+                      "value": "guest",
+                      "raw": "'guest'",
+                      "range": [
+                        601,
+                        608
+                      ],
+                      "loc": {
+                        "start": {
+                          "line": 19,
+                          "column": 60
+                        },
+                        "end": {
+                          "line": 19,
+                          "column": 67
+                        }
+                      }
+                    }
+                  ],
+                  "range": [
+                    545,
+                    609
+                  ],
+                  "loc": {
+                    "start": {
+                      "line": 19,
+                      "column": 4
+                    },
+                    "end": {
+                      "line": 19,
+                      "column": 68
+                    }
+                  }
+                },
+                "range": [
+                  545,
+                  610
+                ],
+                "loc": {
+                  "start": {
+                    "line": 19,
+                    "column": 4
+                  },
+                  "end": {
+                    "line": 19,
+                    "column": 69
+                  }
+                },
+                "leadingComments": [
+                  {
+                    "type": "Line",
+                    "value": " Mock up request user",
+                    "range": [
+                      517,
+                      540
+                    ],
+                    "loc": {
+                      "start": {
+                        "line": 18,
+                        "column": 4
+                      },
+                      "end": {
+                        "line": 18,
+                        "column": 27
+                      }
+                    }
+                  }
+                ],
+                "trailingComments": [
+                  {
+                    "type": "Line",
+                    "value": " Initialize mapset component",
+                    "range": [
+                      616,
+                      646
+                    ],
+                    "loc": {
+                      "start": {
+                        "line": 21,
+                        "column": 4
+                      },
+                      "end": {
+                        "line": 21,
+                        "column": 34
+                      }
+                    }
+                  }
+                ]
+              },
+              {
+                "type": "ExpressionStatement",
+                "expression": {
+                  "type": "CallExpression",
+                  "callee": {
+                    "type": "Identifier",
+                    "name": "applyComponent",
+                    "range": [
+                      651,
+                      665
+                    ],
+                    "loc": {
+                      "start": {
+                        "line": 22,
+                        "column": 4
+                      },
+                      "end": {
+                        "line": 22,
+                        "column": 18
+                      }
+                    }
+                  },
+                  "arguments": [
+                    {
+                      "type": "Literal",
+                      "value": "#mapsetsList",
+                      "raw": "'#mapsetsList'",
+                      "range": [
+                        666,
+                        680
+                      ],
+                      "loc": {
+                        "start": {
+                          "line": 22,
+                          "column": 19
+                        },
+                        "end": {
+                          "line": 22,
+                          "column": 33
+                        }
+                      }
+                    },
+                    {
+                      "type": "NewExpression",
+                      "callee": {
+                        "type": "Identifier",
+                        "name": "MapSetComponent",
+                        "range": [
+                          686,
+                          701
+                        ],
+                        "loc": {
+                          "start": {
+                            "line": 22,
+                            "column": 39
+                          },
+                          "end": {
+                            "line": 22,
+                            "column": 54
+                          }
+                        }
+                      },
+                      "arguments": [],
+                      "range": [
+                        682,
+                        703
+                      ],
+                      "loc": {
+                        "start": {
+                          "line": 22,
+                          "column": 35
+                        },
+                        "end": {
+                          "line": 22,
+                          "column": 56
+                        }
+                      }
+                    }
+                  ],
+                  "range": [
+                    651,
+                    704
+                  ],
+                  "loc": {
+                    "start": {
+                      "line": 22,
+                      "column": 4
+                    },
+                    "end": {
+                      "line": 22,
+                      "column": 57
+                    }
+                  }
+                },
+                "range": [
+                  651,
+                  705
+                ],
+                "loc": {
+                  "start": {
+                    "line": 22,
+                    "column": 4
+                  },
+                  "end": {
+                    "line": 22,
+                    "column": 58
+                  }
+                },
+                "leadingComments": [
+                  {
+                    "type": "Line",
+                    "value": " Initialize mapset component",
+                    "range": [
+                      616,
+                      646
+                    ],
+                    "loc": {
+                      "start": {
+                        "line": 21,
+                        "column": 4
+                      },
+                      "end": {
+                        "line": 21,
+                        "column": 34
+                      }
+                    }
+                  }
+                ]
+              }
+            ],
+            "range": [
+              511,
+              707
+            ],
+            "loc": {
+              "start": {
+                "line": 17,
+                "column": 12
+              },
+              "end": {
+                "line": 23,
+                "column": 1
+              }
+            }
+          },
+          "generator": false,
+          "expression": false,
+          "range": [
+            500,
+            707
+          ],
+          "loc": {
+            "start": {
+              "line": 17,
+              "column": 1
+            },
+            "end": {
+              "line": 23,
+              "column": 1
+            }
+          }
+        },
+        "arguments": [],
+        "range": [
+          499,
+          710
+        ],
+        "loc": {
+          "start": {
+            "line": 17,
+            "column": 0
+          },
+          "end": {
+            "line": 23,
+            "column": 4
+          }
+        }
+      },
+      "range": [
+        499,
+        711
+      ],
+      "loc": {
+        "start": {
+          "line": 17,
+          "column": 0
+        },
+        "end": {
+          "line": 23,
+          "column": 5
+        }
+      }
+    }
+  ],
+  "sourceType": "module",
+  "range": [
+    0,
+    711
+  ],
+  "loc": {
+    "start": {
+      "line": 1,
+      "column": 0
+    },
+    "end": {
+      "line": 23,
+      "column": 5
+    }
+  },
+  "comments": [
+    {
+      "type": "Line",
+      "value": " Mock up request user",
+      "range": [
+        517,
+        540
+      ],
+      "loc": {
+        "start": {
+          "line": 18,
+          "column": 4
+        },
+        "end": {
+          "line": 18,
+          "column": 27
+        }
+      }
+    },
+    {
+      "type": "Line",
+      "value": " Initialize mapset component",
+      "range": [
+        616,
+        646
+      ],
+      "loc": {
+        "start": {
+          "line": 21,
+          "column": 4
+        },
+        "end": {
+          "line": 21,
+          "column": 34
+        }
+      }
+    }
+  ]
+}

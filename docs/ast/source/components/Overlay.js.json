@@ -1,0 +1,541 @@
+{
+  "type": "Program",
+  "body": [
+    {
+      "type": "ImportDeclaration",
+      "specifiers": [
+        {
+          "type": "ImportDefaultSpecifier",
+          "local": {
+            "type": "Identifier",
+            "name": "L",
+            "range": [
+              7,
+              8
+            ],
+            "loc": {
+              "start": {
+                "line": 1,
+                "column": 7
+              },
+              "end": {
+                "line": 1,
+                "column": 8
+              }
+            }
+          },
+          "range": [
+            7,
+            8
+          ],
+          "loc": {
+            "start": {
+              "line": 1,
+              "column": 7
+            },
+            "end": {
+              "line": 1,
+              "column": 8
+            }
+          }
+        }
+      ],
+      "source": {
+        "type": "Literal",
+        "value": "leaflet",
+        "raw": "'leaflet'",
+        "range": [
+          14,
+          23
+        ],
+        "loc": {
+          "start": {
+            "line": 1,
+            "column": 14
+          },
+          "end": {
+            "line": 1,
+            "column": 23
+          }
+        }
+      },
+      "range": [
+        0,
+        24
+      ],
+      "loc": {
+        "start": {
+          "line": 1,
+          "column": 0
+        },
+        "end": {
+          "line": 1,
+          "column": 24
+        }
+      },
+      "trailingComments": [
+        {
+          "type": "Block",
+          "value": "*\n * Class representing OverLayers\n * @module components/OverLayer\n * @augments L.ImageOverlay\n ",
+          "range": [
+            27,
+            127
+          ],
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 0
+            },
+            "end": {
+              "line": 8,
+              "column": 3
+            }
+          }
+        }
+      ]
+    },
+    {
+      "type": "ExportDefaultDeclaration",
+      "declaration": {
+        "type": "ClassDeclaration",
+        "id": {
+          "type": "Identifier",
+          "name": "Overlay",
+          "range": [
+            149,
+            156
+          ],
+          "loc": {
+            "start": {
+              "line": 9,
+              "column": 21
+            },
+            "end": {
+              "line": 9,
+              "column": 28
+            }
+          }
+        },
+        "superClass": {
+          "type": "MemberExpression",
+          "computed": false,
+          "object": {
+            "type": "Identifier",
+            "name": "L",
+            "range": [
+              165,
+              166
+            ],
+            "loc": {
+              "start": {
+                "line": 9,
+                "column": 37
+              },
+              "end": {
+                "line": 9,
+                "column": 38
+              }
+            }
+          },
+          "property": {
+            "type": "Identifier",
+            "name": "ImageOverlay",
+            "range": [
+              167,
+              179
+            ],
+            "loc": {
+              "start": {
+                "line": 9,
+                "column": 39
+              },
+              "end": {
+                "line": 9,
+                "column": 51
+              }
+            }
+          },
+          "range": [
+            165,
+            179
+          ],
+          "loc": {
+            "start": {
+              "line": 9,
+              "column": 37
+            },
+            "end": {
+              "line": 9,
+              "column": 51
+            }
+          }
+        },
+        "body": {
+          "type": "ClassBody",
+          "body": [
+            {
+              "type": "MethodDefinition",
+              "key": {
+                "type": "Identifier",
+                "name": "constructor",
+                "range": [
+                  361,
+                  372
+                ],
+                "loc": {
+                  "start": {
+                    "line": 15,
+                    "column": 4
+                  },
+                  "end": {
+                    "line": 15,
+                    "column": 15
+                  }
+                }
+              },
+              "value": {
+                "type": "FunctionExpression",
+                "id": null,
+                "params": [
+                  {
+                    "type": "Identifier",
+                    "name": "imageUrl",
+                    "range": [
+                      373,
+                      381
+                    ],
+                    "loc": {
+                      "start": {
+                        "line": 15,
+                        "column": 16
+                      },
+                      "end": {
+                        "line": 15,
+                        "column": 24
+                      }
+                    }
+                  },
+                  {
+                    "type": "Identifier",
+                    "name": "imageBounds",
+                    "range": [
+                      383,
+                      394
+                    ],
+                    "loc": {
+                      "start": {
+                        "line": 15,
+                        "column": 26
+                      },
+                      "end": {
+                        "line": 15,
+                        "column": 37
+                      }
+                    }
+                  }
+                ],
+                "body": {
+                  "type": "BlockStatement",
+                  "body": [
+                    {
+                      "type": "ExpressionStatement",
+                      "expression": {
+                        "type": "CallExpression",
+                        "callee": {
+                          "type": "Super",
+                          "range": [
+                            405,
+                            410
+                          ],
+                          "loc": {
+                            "start": {
+                              "line": 16,
+                              "column": 8
+                            },
+                            "end": {
+                              "line": 16,
+                              "column": 13
+                            }
+                          }
+                        },
+                        "arguments": [
+                          {
+                            "type": "Identifier",
+                            "name": "imageUrl",
+                            "range": [
+                              411,
+                              419
+                            ],
+                            "loc": {
+                              "start": {
+                                "line": 16,
+                                "column": 14
+                              },
+                              "end": {
+                                "line": 16,
+                                "column": 22
+                              }
+                            }
+                          },
+                          {
+                            "type": "Identifier",
+                            "name": "imageBounds",
+                            "range": [
+                              421,
+                              432
+                            ],
+                            "loc": {
+                              "start": {
+                                "line": 16,
+                                "column": 24
+                              },
+                              "end": {
+                                "line": 16,
+                                "column": 35
+                              }
+                            }
+                          }
+                        ],
+                        "range": [
+                          405,
+                          433
+                        ],
+                        "loc": {
+                          "start": {
+                            "line": 16,
+                            "column": 8
+                          },
+                          "end": {
+                            "line": 16,
+                            "column": 36
+                          }
+                        }
+                      },
+                      "range": [
+                        405,
+                        438
+                      ],
+                      "loc": {
+                        "start": {
+                          "line": 16,
+                          "column": 8
+                        },
+                        "end": {
+                          "line": 17,
+                          "column": 4
+                        }
+                      }
+                    }
+                  ],
+                  "range": [
+                    395,
+                    439
+                  ],
+                  "loc": {
+                    "start": {
+                      "line": 15,
+                      "column": 38
+                    },
+                    "end": {
+                      "line": 17,
+                      "column": 5
+                    }
+                  }
+                },
+                "generator": false,
+                "expression": false,
+                "range": [
+                  372,
+                  439
+                ],
+                "loc": {
+                  "start": {
+                    "line": 15,
+                    "column": 15
+                  },
+                  "end": {
+                    "line": 17,
+                    "column": 5
+                  }
+                }
+              },
+              "kind": "constructor",
+              "computed": false,
+              "range": [
+                361,
+                439
+              ],
+              "loc": {
+                "start": {
+                  "line": 15,
+                  "column": 4
+                },
+                "end": {
+                  "line": 17,
+                  "column": 5
+                }
+              },
+              "leadingComments": [
+                {
+                  "type": "Block",
+                  "value": "*\n     * See {@link http://leafletjs.com/reference-1.0.0.html#imageoverlay} for more details.\n     * @param {string} imageUrl\n     * @param {object} imageBounds\n     ",
+                  "range": [
+                    186,
+                    356
+                  ],
+                  "loc": {
+                    "start": {
+                      "line": 10,
+                      "column": 4
+                    },
+                    "end": {
+                      "line": 14,
+                      "column": 7
+                    }
+                  }
+                }
+              ],
+              "static": false
+            }
+          ],
+          "range": [
+            180,
+            441
+          ],
+          "loc": {
+            "start": {
+              "line": 9,
+              "column": 52
+            },
+            "end": {
+              "line": 18,
+              "column": 1
+            }
+          }
+        },
+        "range": [
+          143,
+          441
+        ],
+        "loc": {
+          "start": {
+            "line": 9,
+            "column": 15
+          },
+          "end": {
+            "line": 18,
+            "column": 1
+          }
+        },
+        "leadingComments": [
+          {
+            "type": "Block",
+            "value": "*\n * Class representing OverLayers\n * @module components/OverLayer\n * @augments L.ImageOverlay\n ",
+            "range": [
+              27,
+              127
+            ],
+            "loc": {
+              "start": {
+                "line": 4,
+                "column": 0
+              },
+              "end": {
+                "line": 8,
+                "column": 3
+              }
+            }
+          }
+        ],
+        "trailingComments": []
+      },
+      "range": [
+        128,
+        441
+      ],
+      "loc": {
+        "start": {
+          "line": 9,
+          "column": 0
+        },
+        "end": {
+          "line": 18,
+          "column": 1
+        }
+      },
+      "leadingComments": [
+        {
+          "type": "Block",
+          "value": "*\n * Class representing OverLayers\n * @module components/OverLayer\n * @augments L.ImageOverlay\n ",
+          "range": [
+            27,
+            127
+          ],
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 0
+            },
+            "end": {
+              "line": 8,
+              "column": 3
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "sourceType": "module",
+  "range": [
+    0,
+    441
+  ],
+  "loc": {
+    "start": {
+      "line": 1,
+      "column": 0
+    },
+    "end": {
+      "line": 18,
+      "column": 1
+    }
+  },
+  "comments": [
+    {
+      "type": "Block",
+      "value": "*\n * Class representing OverLayers\n * @module components/OverLayer\n * @augments L.ImageOverlay\n ",
+      "range": [
+        27,
+        127
+      ],
+      "loc": {
+        "start": {
+          "line": 4,
+          "column": 0
+        },
+        "end": {
+          "line": 8,
+          "column": 3
+        }
+      }
+    },
+    {
+      "type": "Block",
+      "value": "*\n     * See {@link http://leafletjs.com/reference-1.0.0.html#imageoverlay} for more details.\n     * @param {string} imageUrl\n     * @param {object} imageBounds\n     ",
+      "range": [
+        186,
+        356
+      ],
+      "loc": {
+        "start": {
+          "line": 10,
+          "column": 4
+        },
+        "end": {
+          "line": 14,
+          "column": 7
+        }
+      }
+    }
+  ]
+}

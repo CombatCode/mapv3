@@ -1,0 +1,3604 @@
+[
+  {
+    "__docId__": 0,
+    "kind": "file",
+    "static": true,
+    "variation": null,
+    "name": "src/app.js",
+    "memberof": null,
+    "longname": "src/app.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 1,
+    "content": "import L from 'leaflet';\nimport 'leaflet-draw';\nimport 'leaflet.markercluster';\nimport 'leaflet-contextmenu';\n\nimport './handlers/selection/Marker.Select';\nimport './handlers/selection/Map.ClickDeselect';\nimport './handlers/selection/Map.BoxSelect';\nimport './handlers/rotation/Marker.Rotate';\n\nimport './components/Control/Control.Rotate';\nimport Storage from './core/Storage';\nimport MapSetComponent from './components/MapSet/MapSetComponent';\nimport { applyComponent } from './core/Component';\n\n\n(function() {\n    // Mock up request user\n    (new Storage(localStorage, 'auth')).setItem('username', 'guest');\n\n    // Initialize mapset component\n    applyComponent('#mapsetsList', new MapSetComponent());\n})();\n"
+  },
+  {
+    "__docId__": 1,
+    "kind": "file",
+    "static": true,
+    "variation": null,
+    "name": "src/components/Control/Control.Rotate.js",
+    "memberof": null,
+    "longname": "src/components/Control/Control.Rotate.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 1,
+    "content": "import L from 'leaflet';\n\n\n/**\n * A one button control to activate rotate handler on selected Markers\n * @class L.Control.Rotate\n * @extends L.Control\n */\nL.Control.Rotate = class Rotate extends L.Control {\n    /**\n     * Auto. called when L.Control is added to L.Map\n     * @param {L.Map} map\n     * @returns {Element} Control's DOM element\n     */\n    onAdd(map) {\n        let container = L.DomUtil.create('div', `${Rotate.className} leaflet-bar`);\n\n        this._button = this._createButton(`${Rotate.className}-btn`, {title: this.options.title}, this._onPress,\n            this.options.content, container);\n\n        L.DomEvent.on(container, 'mouseup mousedown click dblclick', L.DomEvent.stopPropagation);\n\n        if (this._active) {\n            this._active = false;\n            this.activate();\n        }\n        return container;\n    }\n\n    /**\n     * Auto. called when L.Control is removed from Map\n     * @param {L.Map} map\n     */\n    onRemove(map) {\n        this.deactivate();\n    }\n\n    activate() {\n        if (!this._active) {\n            this._active = true;\n            L.DomUtil.addClass(this._button, 'active');\n\n            if (this._map) {\n                this._map.on({\n                    layeradd:      this._onLayerAddOrSelect,\n                    layerremove:   this._onLayerRemoveOrDeselect,\n                    layerselect:   this._onLayerAddOrSelect,\n                    layerdeselect: this._onLayerRemoveOrDeselect\n                }, this);\n                this._map.eachLayer((layer) => {\n                    if (layer.options.selected && this.options.filter(layer)) {\n                        this.addLayer(layer);\n                    }\n                }, this);\n            }\n        }\n    }\n\n    deactivate() {\n        if (this._active) {\n            this._active = false;\n            L.DomUtil.removeClass(this._button, 'active');\n\n            if (this._map) {\n                this._map.off({\n                    layeradd:      this._onLayerAddOrSelect,\n                    layerremove:   this._onLayerRemoveOrDeselect,\n                    layerselect:   this._onLayerAddOrSelect,\n                    layerdeselect: this._onLayerRemoveOrDeselect\n                }, this);\n                this._map.eachLayer(layer => {\n                    if (layer.options.selected && this.options.filter(layer)) {\n                        this.removeLayer(layer);\n                    }\n                }, this);\n            }\n        }\n    }\n\n    /** @param {L.Layer} layer */\n    addLayer(layer) {\n        if (this._active && layer.rotating && !layer.rotating.enabled()) {\n            layer.rotating.enable();\n        }\n    }\n\n    /** @param {L.Layer} layer */\n    removeLayer(layer) {\n        if (layer.rotating && layer.rotating.enabled()) {\n            layer.rotating.disable();\n        }\n    }\n\n    /** @param {Event} event */\n    _onPress(event) {\n        this._active? this.deactivate() : this.activate();\n    }\n\n    /** @param {Event} event */\n    _onLayerAddOrSelect(event) {\n        if (event.layer.options.selected && this.options.filter(event.layer)) {\n            this.addLayer(event.layer)\n        }\n    }\n\n    /** @param {Event} event */\n    _onLayerRemoveOrDeselect(event) {\n        if (this.options.filter(event.layer)) {\n            this.removeLayer(event.layer)\n        }\n    }\n\n    /**\n     * @param {string} className\n     * @param {Object} [attributes]\n     * @param {Function} handler\n     * @param {string|Node} [content]\n     * @param {Element} [container]\n     * @returns {Element}\n     * @private\n     */\n    _createButton(className, attributes, handler, content, container) {\n        let link = L.DomUtil.create('a', className, container);\n        link.href = '#';\n        if (typeof attributes === 'object') {\n            for (let name in attributes) {\n                link.setAttribute(name, attributes[name]);\n            }\n        }\n\n        if (content instanceof Node) {\n            link.appendChild(content);\n        } else if (typeof content === 'string') {\n            content.trimLeft().charAt(0) === '<'? (link.innerHTML = content) : (link.textContent = content);\n        }\n\n        L.DomEvent\n            .on(link, 'click', L.DomEvent.preventDefault)\n            .on(link, 'click', handler, this)\n            .on(link, 'click', this._refocusOnMap, this);\n        return link;\n    }\n};\n\nL.Control.Rotate.className = 'leaflet-control-rotate';\n\n\n// @namespace L.Control.Rotate\n// @section Options\nL.Control.Rotate.mergeOptions({\n    position: 'topleft',\n    // The text/content of the button.\n    // @type {string|Node}\n    content: 'R',\n    // The default title attribute of the button.\n    // @type {string}\n    title: 'Rotate',\n    // Layers filter function.\n    // @type {function(L.layer):boolean}\n    filter: function(layer) {\n        return layer instanceof L.Marker && !(layer instanceof L.MarkerCluster)\n    }\n});\n\n// @namespace L.Map\n// @section Control options\nL.Map.mergeOptions({\n    // Whether a rotate control is added to the map by default.\n    // @type {boolean}\n    rotateControl: true\n});\n\nL.Map.addInitHook(function() {\n    if (this.options.rotateControl) {\n        this.rotateControl = new L.Control.Rotate();\n        this.addControl(this.rotateControl);\n    }\n});\n\n\n/**\n * Do we actually need this factory? Is it some Leaflet legacy thingy?\n * @namespace Control.Rotate\n * @factory L.control.rotate(options: Control.Rotate options)\n */\nL.control.rotate = function(options) {\n    return new L.Control.Rotate(options);\n};\n"
+  },
+  {
+    "__docId__": 2,
+    "kind": "class",
+    "static": true,
+    "variation": null,
+    "name": "Rotate",
+    "memberof": "src/components/Control/Control.Rotate.js",
+    "longname": "src/components/Control/Control.Rotate.js~Rotate",
+    "access": null,
+    "export": false,
+    "importPath": "vmx-widget-map.v3/src/components/Control/Control.Rotate.js",
+    "importStyle": null,
+    "description": "A one button control to activate rotate handler on selected Markers",
+    "lineNumber": 9,
+    "unknown": [
+      {
+        "tagName": "@class",
+        "tagValue": "L.Control.Rotate"
+      }
+    ],
+    "interface": false,
+    "extends": [
+      "*"
+    ]
+  },
+  {
+    "__docId__": 3,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "onAdd",
+    "memberof": "src/components/Control/Control.Rotate.js~Rotate",
+    "longname": "src/components/Control/Control.Rotate.js~Rotate#onAdd",
+    "access": null,
+    "description": "Auto. called when L.Control is added to L.Map",
+    "lineNumber": 15,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{Element} Control's DOM element"
+      }
+    ],
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "L.Map"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "map",
+        "description": ""
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Element"
+      ],
+      "spread": false,
+      "description": "Control's DOM element"
+    },
+    "generator": false
+  },
+  {
+    "__docId__": 4,
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_button",
+    "memberof": "src/components/Control/Control.Rotate.js~Rotate",
+    "longname": "src/components/Control/Control.Rotate.js~Rotate#_button",
+    "access": null,
+    "description": null,
+    "lineNumber": 18,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 5,
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_active",
+    "memberof": "src/components/Control/Control.Rotate.js~Rotate",
+    "longname": "src/components/Control/Control.Rotate.js~Rotate#_active",
+    "access": null,
+    "description": null,
+    "lineNumber": 24,
+    "undocument": true,
+    "type": {
+      "types": [
+        "boolean"
+      ]
+    }
+  },
+  {
+    "__docId__": 6,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "onRemove",
+    "memberof": "src/components/Control/Control.Rotate.js~Rotate",
+    "longname": "src/components/Control/Control.Rotate.js~Rotate#onRemove",
+    "access": null,
+    "description": "Auto. called when L.Control is removed from Map",
+    "lineNumber": 34,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "L.Map"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "map",
+        "description": ""
+      }
+    ],
+    "generator": false
+  },
+  {
+    "__docId__": 7,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "activate",
+    "memberof": "src/components/Control/Control.Rotate.js~Rotate",
+    "longname": "src/components/Control/Control.Rotate.js~Rotate#activate",
+    "access": null,
+    "description": null,
+    "lineNumber": 38,
+    "undocument": true,
+    "params": [],
+    "generator": false
+  },
+  {
+    "__docId__": 8,
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_active",
+    "memberof": "src/components/Control/Control.Rotate.js~Rotate",
+    "longname": "src/components/Control/Control.Rotate.js~Rotate#_active",
+    "access": null,
+    "description": null,
+    "lineNumber": 40,
+    "undocument": true,
+    "type": {
+      "types": [
+        "boolean"
+      ]
+    }
+  },
+  {
+    "__docId__": 9,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "deactivate",
+    "memberof": "src/components/Control/Control.Rotate.js~Rotate",
+    "longname": "src/components/Control/Control.Rotate.js~Rotate#deactivate",
+    "access": null,
+    "description": null,
+    "lineNumber": 59,
+    "undocument": true,
+    "params": [],
+    "generator": false
+  },
+  {
+    "__docId__": 10,
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_active",
+    "memberof": "src/components/Control/Control.Rotate.js~Rotate",
+    "longname": "src/components/Control/Control.Rotate.js~Rotate#_active",
+    "access": null,
+    "description": null,
+    "lineNumber": 61,
+    "undocument": true,
+    "type": {
+      "types": [
+        "boolean"
+      ]
+    }
+  },
+  {
+    "__docId__": 11,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "addLayer",
+    "memberof": "src/components/Control/Control.Rotate.js~Rotate",
+    "longname": "src/components/Control/Control.Rotate.js~Rotate#addLayer",
+    "access": null,
+    "description": null,
+    "lineNumber": 81,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "L.Layer"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "layer",
+        "description": ""
+      }
+    ],
+    "generator": false
+  },
+  {
+    "__docId__": 12,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "removeLayer",
+    "memberof": "src/components/Control/Control.Rotate.js~Rotate",
+    "longname": "src/components/Control/Control.Rotate.js~Rotate#removeLayer",
+    "access": null,
+    "description": null,
+    "lineNumber": 88,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "L.Layer"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "layer",
+        "description": ""
+      }
+    ],
+    "generator": false
+  },
+  {
+    "__docId__": 13,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "_onPress",
+    "memberof": "src/components/Control/Control.Rotate.js~Rotate",
+    "longname": "src/components/Control/Control.Rotate.js~Rotate#_onPress",
+    "access": null,
+    "description": null,
+    "lineNumber": 95,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "Event"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "event",
+        "description": ""
+      }
+    ],
+    "generator": false
+  },
+  {
+    "__docId__": 14,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "_onLayerAddOrSelect",
+    "memberof": "src/components/Control/Control.Rotate.js~Rotate",
+    "longname": "src/components/Control/Control.Rotate.js~Rotate#_onLayerAddOrSelect",
+    "access": null,
+    "description": null,
+    "lineNumber": 100,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "Event"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "event",
+        "description": ""
+      }
+    ],
+    "generator": false
+  },
+  {
+    "__docId__": 15,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "_onLayerRemoveOrDeselect",
+    "memberof": "src/components/Control/Control.Rotate.js~Rotate",
+    "longname": "src/components/Control/Control.Rotate.js~Rotate#_onLayerRemoveOrDeselect",
+    "access": null,
+    "description": null,
+    "lineNumber": 107,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "Event"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "event",
+        "description": ""
+      }
+    ],
+    "generator": false
+  },
+  {
+    "__docId__": 16,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "_createButton",
+    "memberof": "src/components/Control/Control.Rotate.js~Rotate",
+    "longname": "src/components/Control/Control.Rotate.js~Rotate#_createButton",
+    "access": "private",
+    "description": "",
+    "lineNumber": 122,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{Element}"
+      }
+    ],
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "string"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "className",
+        "description": ""
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Object"
+        ],
+        "spread": false,
+        "optional": true,
+        "name": "attributes",
+        "description": ""
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Function"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "handler",
+        "description": ""
+      },
+      {
+        "nullable": null,
+        "types": [
+          "string",
+          "Node"
+        ],
+        "spread": false,
+        "optional": true,
+        "name": "content",
+        "description": ""
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Element"
+        ],
+        "spread": false,
+        "optional": true,
+        "name": "container",
+        "description": ""
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Element"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "generator": false
+  },
+  {
+    "__docId__": 17,
+    "kind": "function",
+    "static": true,
+    "variation": null,
+    "name": "rotate",
+    "memberof": "src/components/Control/Control.Rotate.js",
+    "longname": "src/components/Control/Control.Rotate.js~rotate",
+    "access": null,
+    "export": false,
+    "importPath": "vmx-widget-map.v3/src/components/Control/Control.Rotate.js",
+    "importStyle": null,
+    "description": "Do we actually need this factory? Is it some Leaflet legacy thingy?",
+    "lineNumber": 186,
+    "unknown": [
+      {
+        "tagName": "@namespace",
+        "tagValue": "Control.Rotate"
+      },
+      {
+        "tagName": "@factory",
+        "tagValue": "L.control.rotate(options: Control.Rotate options)"
+      }
+    ],
+    "params": [
+      {
+        "name": "options",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "return": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "__docId__": 18,
+    "kind": "file",
+    "static": true,
+    "variation": null,
+    "name": "src/components/Feature/Feature.js",
+    "memberof": null,
+    "longname": "src/components/Feature/Feature.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 1,
+    "content": "import L from \"leaflet\";\nimport \"leaflet.markercluster\";\n\n\n/**\n * Class representing Features a.k.a. Markers\n * @module components/Feature/Feature\n * @augments L.Marker\n */\nexport default class Feature extends L.Marker {\n    /**\n     * See {@link http://leafletjs.com/reference-1.0.0.html#marker} for more details.\n     * @param {object} latlng - geographical point [latitude, longitude]\n     * @param {object} [options]\n     */\n    constructor(latlng, options = {}) {\n        super(latlng, options);\n    }\n}\n\n/** Inherit options (don't mutate L.Marker defaults) */\nFeature.prototype.options = Object.create(L.Marker.prototype.options);\n\nFeature.mergeOptions({\n    contextmenu: true,\n    contextmenuItems: [{\n        text: 'Unknown feature',\n        disabled: true,\n        index: 0\n    }, {\n        separator: true,\n        index: 1\n    }],\n});\n\n\nL.MarkerCluster && L.MarkerCluster.mergeOptions({\n    contextmenu: true,\n    contextmenuItems: [{\n        text: 'Group',\n        disabled: true,\n        index: 0\n    }, {\n        separator: true,\n        index: 1\n    }],\n});\n"
+  },
+  {
+    "__docId__": 19,
+    "kind": "class",
+    "static": true,
+    "variation": null,
+    "name": "Feature",
+    "memberof": "src/components/Feature/Feature.js",
+    "longname": "src/components/Feature/Feature.js~Feature",
+    "access": null,
+    "export": true,
+    "importPath": "vmx-widget-map.v3/src/components/Feature/Feature.js",
+    "importStyle": "Feature",
+    "description": "Class representing Features a.k.a. Markers",
+    "lineNumber": 10,
+    "unknown": [
+      {
+        "tagName": "@module",
+        "tagValue": "components/Feature/Feature"
+      },
+      {
+        "tagName": "@augments",
+        "tagValue": "L.Marker"
+      }
+    ],
+    "interface": false,
+    "extends": [
+      "leaflet~L.Marker"
+    ]
+  },
+  {
+    "__docId__": 20,
+    "kind": "constructor",
+    "static": false,
+    "variation": null,
+    "name": "constructor",
+    "memberof": "src/components/Feature/Feature.js~Feature",
+    "longname": "src/components/Feature/Feature.js~Feature#constructor",
+    "access": null,
+    "description": "See {@link http://leafletjs.com/reference-1.0.0.html#marker} for more details.",
+    "lineNumber": 16,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "object"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "latlng",
+        "description": "geographical point [latitude, longitude]"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "object"
+        ],
+        "spread": false,
+        "optional": true,
+        "name": "options",
+        "description": ""
+      }
+    ],
+    "generator": false
+  },
+  {
+    "__docId__": 21,
+    "kind": "file",
+    "static": true,
+    "variation": null,
+    "name": "src/components/Feature/FeatureCamera.js",
+    "memberof": null,
+    "longname": "src/components/Feature/FeatureCamera.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 1,
+    "content": "import Feature from \"./Feature\";\nimport FigureIcon from \"./../FigureIcon\";\n\n\n/**\n * Class representing Camera Feature\n * @module components/Feature/FeatureCamera\n * @extends Feature\n */\nexport default class FeatureCamera extends Feature {\n    /**\n     * Feature of the camera marker.\n     * @param {L.LatLng} latlng - geographical point [latitude, longitude]\n     * @param {object} [options]\n     */\n    constructor(latlng, options = {}) {\n        if (!options.icon) {\n            /** we must instantiate icons (because e.g. titles differs between Features) */\n            options.icon = new FigureIcon({\n                className: 'FeatureCamera',\n                iconSize: [56, 50],\n                id: options.id,\n                status: options.status || 'unknown',\n                title: options.title || ''\n            });\n        }\n        super(latlng, options);\n    }\n}\n\n/** Inherit options */\nFeatureCamera.prototype.options = Object.create(Feature.prototype.options);\n\nFeatureCamera.mergeOptions({\n    contextmenuItems: [{\n        text: 'Camera',\n        icon: 'assets/feature-camera-inuse.png',\n        disabled: true,\n        index: 0\n\n    }, {\n        separator: true,\n        index: 1\n    }],\n});\n"
+  },
+  {
+    "__docId__": 22,
+    "kind": "class",
+    "static": true,
+    "variation": null,
+    "name": "FeatureCamera",
+    "memberof": "src/components/Feature/FeatureCamera.js",
+    "longname": "src/components/Feature/FeatureCamera.js~FeatureCamera",
+    "access": null,
+    "export": true,
+    "importPath": "vmx-widget-map.v3/src/components/Feature/FeatureCamera.js",
+    "importStyle": "FeatureCamera",
+    "description": "Class representing Camera Feature",
+    "lineNumber": 10,
+    "unknown": [
+      {
+        "tagName": "@module",
+        "tagValue": "components/Feature/FeatureCamera"
+      }
+    ],
+    "interface": false,
+    "extends": [
+      "*"
+    ]
+  },
+  {
+    "__docId__": 23,
+    "kind": "constructor",
+    "static": false,
+    "variation": null,
+    "name": "constructor",
+    "memberof": "src/components/Feature/FeatureCamera.js~FeatureCamera",
+    "longname": "src/components/Feature/FeatureCamera.js~FeatureCamera#constructor",
+    "access": null,
+    "description": "Feature of the camera marker.",
+    "lineNumber": 16,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "L.LatLng"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "latlng",
+        "description": "geographical point [latitude, longitude]"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "object"
+        ],
+        "spread": false,
+        "optional": true,
+        "name": "options",
+        "description": ""
+      }
+    ],
+    "generator": false
+  },
+  {
+    "__docId__": 24,
+    "kind": "file",
+    "static": true,
+    "variation": null,
+    "name": "src/components/FigureIcon.js",
+    "memberof": null,
+    "longname": "src/components/FigureIcon.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 1,
+    "content": "import L from 'leaflet';\n\n\nexport default class FigureIcon extends L.Icon {\n    /**\n     * See {@link http://leafletjs.com/reference-1.0.0.html#icon} for more details.\n     * @param {object} [options]\n     */\n    constructor(options = {}) {\n        super(options);\n    }\n\n    /**\n     * Overwrite inherited createIcon method to return figure type node\n     * @param oldIcon\n     * @returns {Element}\n     */\n    createIcon(oldIcon) {\n        let figure = document.createElement('figure');\n        let {title, id, status} = this.options;\n        let imgWrapper = document.createElement('div');\n        let imgFaker = document.createElement('i');\n\n        imgFaker.className = 'icon';\n        imgWrapper.className = 'wrapper leaflet-rotatable';\n\n        imgWrapper.appendChild(imgFaker);\n        figure.appendChild(imgWrapper);\n\n        if (id) {\n            figure.setAttribute(\"data-id\", id);\n        }\n\n        if (status) {\n            figure.setAttribute(\"data-status\", status);\n        }\n\n        if (title) {\n            let figCaption = document.createElement('figcaption');\n            let titleNode  = document.createTextNode(title);\n            figCaption.appendChild(titleNode);\n            figure.appendChild(figCaption);\n        }\n\n        this._setIconStyles(figure, 'icon');\n        return figure;\n    }\n\n    /**\n     * Disable inherited createShadow method for FigureIcon's\n     * @returns {null}\n     */\n    static createShadow() {\n        return null;\n    }\n\n    /**\n     * @inheritDoc\n     * @private\n     */\n    _setIconStyles(img, name) {\n        super._setIconStyles(img, name);\n        img.firstChild.style[`${ L.DomUtil.TRANSFORM }Origin`] = this.options.origin;\n    }\n}\n\n\n/** Inherit options from L.Icon (don't mutate L.Icon defaults) */\nFigureIcon.prototype.options = Object.create(L.Marker.prototype.options);\n\nFigureIcon.mergeOptions({\n    origin: '50% 50%'\n});\n\n"
+  },
+  {
+    "__docId__": 25,
+    "kind": "class",
+    "static": true,
+    "variation": null,
+    "name": "FigureIcon",
+    "memberof": "src/components/FigureIcon.js",
+    "longname": "src/components/FigureIcon.js~FigureIcon",
+    "access": null,
+    "export": true,
+    "importPath": "vmx-widget-map.v3/src/components/FigureIcon.js",
+    "importStyle": "FigureIcon",
+    "description": null,
+    "lineNumber": 4,
+    "undocument": true,
+    "interface": false,
+    "extends": [
+      "leaflet~L.Icon"
+    ]
+  },
+  {
+    "__docId__": 26,
+    "kind": "constructor",
+    "static": false,
+    "variation": null,
+    "name": "constructor",
+    "memberof": "src/components/FigureIcon.js~FigureIcon",
+    "longname": "src/components/FigureIcon.js~FigureIcon#constructor",
+    "access": null,
+    "description": "See {@link http://leafletjs.com/reference-1.0.0.html#icon} for more details.",
+    "lineNumber": 9,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "object"
+        ],
+        "spread": false,
+        "optional": true,
+        "name": "options",
+        "description": ""
+      }
+    ],
+    "generator": false
+  },
+  {
+    "__docId__": 27,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "createIcon",
+    "memberof": "src/components/FigureIcon.js~FigureIcon",
+    "longname": "src/components/FigureIcon.js~FigureIcon#createIcon",
+    "access": null,
+    "description": "Overwrite inherited createIcon method to return figure type node",
+    "lineNumber": 18,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{Element}"
+      }
+    ],
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "*"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "oldIcon",
+        "description": ""
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Element"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "generator": false
+  },
+  {
+    "__docId__": 28,
+    "kind": "method",
+    "static": true,
+    "variation": null,
+    "name": "createShadow",
+    "memberof": "src/components/FigureIcon.js~FigureIcon",
+    "longname": "src/components/FigureIcon.js~FigureIcon.createShadow",
+    "access": null,
+    "description": "Disable inherited createShadow method for FigureIcon's",
+    "lineNumber": 53,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{null}"
+      }
+    ],
+    "params": [],
+    "return": {
+      "nullable": null,
+      "types": [
+        "null"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "generator": false
+  },
+  {
+    "__docId__": 29,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "_setIconStyles",
+    "memberof": "src/components/FigureIcon.js~FigureIcon",
+    "longname": "src/components/FigureIcon.js~FigureIcon#_setIconStyles",
+    "access": "private",
+    "description": "",
+    "lineNumber": 61,
+    "unknown": [
+      {
+        "tagName": "@inheritDoc",
+        "tagValue": ""
+      }
+    ],
+    "params": [
+      {
+        "name": "img",
+        "types": [
+          "*"
+        ]
+      },
+      {
+        "name": "name",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "generator": false
+  },
+  {
+    "__docId__": 30,
+    "kind": "file",
+    "static": true,
+    "variation": null,
+    "name": "src/components/Map.js",
+    "memberof": null,
+    "longname": "src/components/Map.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 1,
+    "content": "import L from 'leaflet';\n\n\n/**\n * Class representing Maps\n * @module components/Map\n * @augments L.TileLayer\n */\nexport default class Map extends L.TileLayer {\n    /**\n     * See {@link http://leafletjs.com/reference-1.0.0.html#tilelayer} for more details.\n     * @param {string} url\n     * @param {object} [options]\n     */\n    constructor(url, options){\n        super(url, options);\n    }\n}\n"
+  },
+  {
+    "__docId__": 31,
+    "kind": "class",
+    "static": true,
+    "variation": null,
+    "name": "Map",
+    "memberof": "src/components/Map.js",
+    "longname": "src/components/Map.js~Map",
+    "access": null,
+    "export": true,
+    "importPath": "vmx-widget-map.v3/src/components/Map.js",
+    "importStyle": "Map",
+    "description": "Class representing Maps",
+    "lineNumber": 9,
+    "unknown": [
+      {
+        "tagName": "@module",
+        "tagValue": "components/Map"
+      },
+      {
+        "tagName": "@augments",
+        "tagValue": "L.TileLayer"
+      }
+    ],
+    "interface": false,
+    "extends": [
+      "leaflet~L.TileLayer"
+    ]
+  },
+  {
+    "__docId__": 32,
+    "kind": "constructor",
+    "static": false,
+    "variation": null,
+    "name": "constructor",
+    "memberof": "src/components/Map.js~Map",
+    "longname": "src/components/Map.js~Map#constructor",
+    "access": null,
+    "description": "See {@link http://leafletjs.com/reference-1.0.0.html#tilelayer} for more details.",
+    "lineNumber": 15,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "string"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "url",
+        "description": ""
+      },
+      {
+        "nullable": null,
+        "types": [
+          "object"
+        ],
+        "spread": false,
+        "optional": true,
+        "name": "options",
+        "description": ""
+      }
+    ],
+    "generator": false
+  },
+  {
+    "__docId__": 33,
+    "kind": "file",
+    "static": true,
+    "variation": null,
+    "name": "src/components/MapSet/MapSet.js",
+    "memberof": null,
+    "longname": "src/components/MapSet/MapSet.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 1,
+    "content": "import L from 'leaflet';\n\n\n/**\n * Class representing MapSets\n * @module components/MapSet\n * @augments L.Map\n */\nexport default class MapSet {\n    /**\n     * See {@link http://leafletjs.com/reference-1.0.0.html#map-example} for more details.\n     * @param {number} [id]\n     * @param {string} [name]\n     * @param {object} [options]\n     */\n    constructor(id = NaN, name = '', options = {}){\n        // Parameters in class body\n        this.id = id;\n        this.name = name;\n        this.options = options;\n\n        // Non optional settings\n        this.options.drawControl = true;\n\n        // Static settings\n        this._containerId = 'mapv3';\n        this._instance = L.Map;\n    }\n\n    /**\n     * Lazy initialize of L.Map instance\n     * @returns {L.Map|*}\n     */\n    initialize() {\n        this._instance = new L.Map(this._containerId, this.options);\n        return this._instance;\n    }\n\n    /**\n     * Get instance of L.Map class\n     * @returns {L.Map|*}\n     */\n    get instance() {\n        return this._instance;\n    }\n\n    get isInitialized() {\n        console.log(this._instance);\n        debugger;\n    }\n\n    /**\n     * Assign options for the Map Set\n     * @param {object} options\n     */\n    set setOptions(options) {\n        Object.assign(this.options, options);\n    }\n}\n"
+  },
+  {
+    "__docId__": 34,
+    "kind": "class",
+    "static": true,
+    "variation": null,
+    "name": "MapSet",
+    "memberof": "src/components/MapSet/MapSet.js",
+    "longname": "src/components/MapSet/MapSet.js~MapSet",
+    "access": null,
+    "export": true,
+    "importPath": "vmx-widget-map.v3/src/components/MapSet/MapSet.js",
+    "importStyle": "MapSet",
+    "description": "Class representing MapSets",
+    "lineNumber": 9,
+    "unknown": [
+      {
+        "tagName": "@module",
+        "tagValue": "components/MapSet"
+      },
+      {
+        "tagName": "@augments",
+        "tagValue": "L.Map"
+      }
+    ],
+    "interface": false
+  },
+  {
+    "__docId__": 35,
+    "kind": "constructor",
+    "static": false,
+    "variation": null,
+    "name": "constructor",
+    "memberof": "src/components/MapSet/MapSet.js~MapSet",
+    "longname": "src/components/MapSet/MapSet.js~MapSet#constructor",
+    "access": null,
+    "description": "See {@link http://leafletjs.com/reference-1.0.0.html#map-example} for more details.",
+    "lineNumber": 16,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "number"
+        ],
+        "spread": false,
+        "optional": true,
+        "name": "id",
+        "description": ""
+      },
+      {
+        "nullable": null,
+        "types": [
+          "string"
+        ],
+        "spread": false,
+        "optional": true,
+        "name": "name",
+        "description": ""
+      },
+      {
+        "nullable": null,
+        "types": [
+          "object"
+        ],
+        "spread": false,
+        "optional": true,
+        "name": "options",
+        "description": ""
+      }
+    ],
+    "generator": false
+  },
+  {
+    "__docId__": 36,
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "id",
+    "memberof": "src/components/MapSet/MapSet.js~MapSet",
+    "longname": "src/components/MapSet/MapSet.js~MapSet#id",
+    "access": null,
+    "description": null,
+    "lineNumber": 18,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 37,
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "name",
+    "memberof": "src/components/MapSet/MapSet.js~MapSet",
+    "longname": "src/components/MapSet/MapSet.js~MapSet#name",
+    "access": null,
+    "description": null,
+    "lineNumber": 19,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 38,
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "options",
+    "memberof": "src/components/MapSet/MapSet.js~MapSet",
+    "longname": "src/components/MapSet/MapSet.js~MapSet#options",
+    "access": null,
+    "description": null,
+    "lineNumber": 20,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 39,
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_containerId",
+    "memberof": "src/components/MapSet/MapSet.js~MapSet",
+    "longname": "src/components/MapSet/MapSet.js~MapSet#_containerId",
+    "access": null,
+    "description": null,
+    "lineNumber": 26,
+    "undocument": true,
+    "type": {
+      "types": [
+        "string"
+      ]
+    }
+  },
+  {
+    "__docId__": 40,
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_instance",
+    "memberof": "src/components/MapSet/MapSet.js~MapSet",
+    "longname": "src/components/MapSet/MapSet.js~MapSet#_instance",
+    "access": null,
+    "description": null,
+    "lineNumber": 27,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 41,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "initialize",
+    "memberof": "src/components/MapSet/MapSet.js~MapSet",
+    "longname": "src/components/MapSet/MapSet.js~MapSet#initialize",
+    "access": null,
+    "description": "Lazy initialize of L.Map instance",
+    "lineNumber": 34,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{L.Map|*}"
+      }
+    ],
+    "params": [],
+    "return": {
+      "nullable": null,
+      "types": [
+        "L.Map",
+        "*"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "generator": false
+  },
+  {
+    "__docId__": 42,
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_instance",
+    "memberof": "src/components/MapSet/MapSet.js~MapSet",
+    "longname": "src/components/MapSet/MapSet.js~MapSet#_instance",
+    "access": null,
+    "description": null,
+    "lineNumber": 35,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 43,
+    "kind": "get",
+    "static": false,
+    "variation": null,
+    "name": "instance",
+    "memberof": "src/components/MapSet/MapSet.js~MapSet",
+    "longname": "src/components/MapSet/MapSet.js~MapSet#instance",
+    "access": null,
+    "description": "Get instance of L.Map class",
+    "lineNumber": 43,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{L.Map|*}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "L.Map",
+        "*"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "__docId__": 44,
+    "kind": "get",
+    "static": false,
+    "variation": null,
+    "name": "isInitialized",
+    "memberof": "src/components/MapSet/MapSet.js~MapSet",
+    "longname": "src/components/MapSet/MapSet.js~MapSet#isInitialized",
+    "access": null,
+    "description": null,
+    "lineNumber": 47,
+    "undocument": true,
+    "generator": false
+  },
+  {
+    "__docId__": 45,
+    "kind": "set",
+    "static": false,
+    "variation": null,
+    "name": "setOptions",
+    "memberof": "src/components/MapSet/MapSet.js~MapSet",
+    "longname": "src/components/MapSet/MapSet.js~MapSet#setOptions",
+    "access": null,
+    "description": "Assign options for the Map Set",
+    "lineNumber": 56,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "object"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "options",
+        "description": ""
+      }
+    ],
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "__docId__": 46,
+    "kind": "file",
+    "static": true,
+    "variation": null,
+    "name": "src/components/Overlay.js",
+    "memberof": null,
+    "longname": "src/components/Overlay.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 1,
+    "content": "import L from 'leaflet';\n\n\n/**\n * Class representing OverLayers\n * @module components/OverLayer\n * @augments L.ImageOverlay\n */\nexport default class Overlay extends L.ImageOverlay {\n    /**\n     * See {@link http://leafletjs.com/reference-1.0.0.html#imageoverlay} for more details.\n     * @param {string} imageUrl\n     * @param {object} imageBounds\n     */\n    constructor(imageUrl, imageBounds){\n        super(imageUrl, imageBounds)\n    }\n}\n"
+  },
+  {
+    "__docId__": 47,
+    "kind": "class",
+    "static": true,
+    "variation": null,
+    "name": "Overlay",
+    "memberof": "src/components/Overlay.js",
+    "longname": "src/components/Overlay.js~Overlay",
+    "access": null,
+    "export": true,
+    "importPath": "vmx-widget-map.v3/src/components/Overlay.js",
+    "importStyle": "Overlay",
+    "description": "Class representing OverLayers",
+    "lineNumber": 9,
+    "unknown": [
+      {
+        "tagName": "@module",
+        "tagValue": "components/OverLayer"
+      },
+      {
+        "tagName": "@augments",
+        "tagValue": "L.ImageOverlay"
+      }
+    ],
+    "interface": false,
+    "extends": [
+      "leaflet~L.ImageOverlay"
+    ]
+  },
+  {
+    "__docId__": 48,
+    "kind": "constructor",
+    "static": false,
+    "variation": null,
+    "name": "constructor",
+    "memberof": "src/components/Overlay.js~Overlay",
+    "longname": "src/components/Overlay.js~Overlay#constructor",
+    "access": null,
+    "description": "See {@link http://leafletjs.com/reference-1.0.0.html#imageoverlay} for more details.",
+    "lineNumber": 15,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "string"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "imageUrl",
+        "description": ""
+      },
+      {
+        "nullable": null,
+        "types": [
+          "object"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "imageBounds",
+        "description": ""
+      }
+    ],
+    "generator": false
+  },
+  {
+    "__docId__": 49,
+    "kind": "file",
+    "static": true,
+    "variation": null,
+    "name": "src/core/Component.js",
+    "memberof": null,
+    "longname": "src/core/Component.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 1,
+    "content": "import uuid from 'uuid4';\n\n\n/**\n * Base component class for one-way data binding\n * it's very similar to ReactJS component architecture,\n * but not supporting props and propTypes.\n * Use this documentation as reference {@link https://facebook.github.io/react/docs/component-specs.html}\n * @module core/Component\n */\nexport default class Component {\n    constructor() {\n        this.state = {};\n        this._element = document.createElement('loader');\n        this.uuid = uuid();\n        this.postInitialize();\n    }\n\n    /**\n     * Use this method to update state of component\n     * @param {object} updatedState\n     */\n    setState(updatedState) {\n        Object.assign(this.state, updatedState);\n        this.postRender();\n    }\n\n    /**\n     * Overwrite this method to initialize any logic operation\n     * on your component\n     */\n    initialize() {\n        // Overwrite your component initialize\n        this.state.text = 'Example component content';\n    }\n\n    /**\n     * Build in function to make operations after initialization is over\n     */\n    postInitialize() {\n        // Take component initialize asynchronously to take care\n        // about constructor of extending component class\n        setTimeout(() => {this.initialize()}, 1);\n    }\n\n    /**\n     * Overwrite this method to make any DOM operations.\n     * @returns {Element}\n     */\n    render() {\n        // Overwrite your dom initialize\n        let content = document.createTextNode(this.state.text);\n        let wrapper = document.createElement('component');\n\n        wrapper.appendChild(content);\n\n        return wrapper;\n    }\n\n    /**\n     * Build in function to apply operations after render is over\n     */\n    postRender() {\n        // Take component render method and apply UUID\n        const componentElement = this.render();\n\n        componentElement.setAttribute('data-component', this.uuid);\n\n        this._element = componentElement;\n        this.postUpdate();\n    }\n\n    /**\n     * Last element of the component life cycle, mostly used by applyComponent method\n     */\n    static postUpdate() {\n        return false;\n    }\n\n    /**\n     * Setter of postUpdate method\n     * @param func\n     */\n    set onUpdate(func) {\n        this.postUpdate = func;\n    }\n\n    /**\n     * Element getter\n     * @returns {Element|*}\n     */\n    get element() {\n        return this._element;\n    }\n}\n\n\n/**\n * Applying component into DOM body\n * @param {string} qs - Query String, where we should inject component\n * @param {Component|*} component\n */\nexport function applyComponent(qs, component) {\n    const element = document.querySelector(qs);\n    // XXX: Slow method of childs cleaning, it can be improved if needed\n    element.innerHTML = '';\n    element.appendChild(component.element);\n    component.onUpdate = () => {\n        applyComponent(qs, component)\n    };\n}\n"
+  },
+  {
+    "__docId__": 50,
+    "kind": "class",
+    "static": true,
+    "variation": null,
+    "name": "Component",
+    "memberof": "src/core/Component.js",
+    "longname": "src/core/Component.js~Component",
+    "access": null,
+    "export": true,
+    "importPath": "vmx-widget-map.v3/src/core/Component.js",
+    "importStyle": "Component",
+    "description": "Base component class for one-way data binding\nit's very similar to ReactJS component architecture,\nbut not supporting props and propTypes.\nUse this documentation as reference {@link https://facebook.github.io/react/docs/component-specs.html}",
+    "lineNumber": 11,
+    "unknown": [
+      {
+        "tagName": "@module",
+        "tagValue": "core/Component"
+      }
+    ],
+    "interface": false
+  },
+  {
+    "__docId__": 51,
+    "kind": "constructor",
+    "static": false,
+    "variation": null,
+    "name": "constructor",
+    "memberof": "src/core/Component.js~Component",
+    "longname": "src/core/Component.js~Component#constructor",
+    "access": null,
+    "description": null,
+    "lineNumber": 12,
+    "undocument": true,
+    "params": [],
+    "generator": false
+  },
+  {
+    "__docId__": 52,
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "state",
+    "memberof": "src/core/Component.js~Component",
+    "longname": "src/core/Component.js~Component#state",
+    "access": null,
+    "description": null,
+    "lineNumber": 13,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 53,
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_element",
+    "memberof": "src/core/Component.js~Component",
+    "longname": "src/core/Component.js~Component#_element",
+    "access": null,
+    "description": null,
+    "lineNumber": 14,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 54,
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "uuid",
+    "memberof": "src/core/Component.js~Component",
+    "longname": "src/core/Component.js~Component#uuid",
+    "access": null,
+    "description": null,
+    "lineNumber": 15,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 55,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "setState",
+    "memberof": "src/core/Component.js~Component",
+    "longname": "src/core/Component.js~Component#setState",
+    "access": null,
+    "description": "Use this method to update state of component",
+    "lineNumber": 23,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "object"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "updatedState",
+        "description": ""
+      }
+    ],
+    "generator": false
+  },
+  {
+    "__docId__": 56,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "initialize",
+    "memberof": "src/core/Component.js~Component",
+    "longname": "src/core/Component.js~Component#initialize",
+    "access": null,
+    "description": "Overwrite this method to initialize any logic operation\non your component",
+    "lineNumber": 32,
+    "params": [],
+    "generator": false
+  },
+  {
+    "__docId__": 57,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "postInitialize",
+    "memberof": "src/core/Component.js~Component",
+    "longname": "src/core/Component.js~Component#postInitialize",
+    "access": null,
+    "description": "Build in function to make operations after initialization is over",
+    "lineNumber": 40,
+    "params": [],
+    "generator": false
+  },
+  {
+    "__docId__": 58,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "render",
+    "memberof": "src/core/Component.js~Component",
+    "longname": "src/core/Component.js~Component#render",
+    "access": null,
+    "description": "Overwrite this method to make any DOM operations.",
+    "lineNumber": 50,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{Element}"
+      }
+    ],
+    "params": [],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Element"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "generator": false
+  },
+  {
+    "__docId__": 59,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "postRender",
+    "memberof": "src/core/Component.js~Component",
+    "longname": "src/core/Component.js~Component#postRender",
+    "access": null,
+    "description": "Build in function to apply operations after render is over",
+    "lineNumber": 63,
+    "params": [],
+    "generator": false
+  },
+  {
+    "__docId__": 60,
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_element",
+    "memberof": "src/core/Component.js~Component",
+    "longname": "src/core/Component.js~Component#_element",
+    "access": null,
+    "description": null,
+    "lineNumber": 69,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 61,
+    "kind": "method",
+    "static": true,
+    "variation": null,
+    "name": "postUpdate",
+    "memberof": "src/core/Component.js~Component",
+    "longname": "src/core/Component.js~Component.postUpdate",
+    "access": null,
+    "description": "Last element of the component life cycle, mostly used by applyComponent method",
+    "lineNumber": 76,
+    "params": [],
+    "return": {
+      "types": [
+        "boolean"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "__docId__": 62,
+    "kind": "set",
+    "static": false,
+    "variation": null,
+    "name": "onUpdate",
+    "memberof": "src/core/Component.js~Component",
+    "longname": "src/core/Component.js~Component#onUpdate",
+    "access": null,
+    "description": "Setter of postUpdate method",
+    "lineNumber": 84,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "*"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "func",
+        "description": ""
+      }
+    ],
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "__docId__": 63,
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "postUpdate",
+    "memberof": "src/core/Component.js~Component",
+    "longname": "src/core/Component.js~Component#postUpdate",
+    "access": null,
+    "description": null,
+    "lineNumber": 85,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 64,
+    "kind": "get",
+    "static": false,
+    "variation": null,
+    "name": "element",
+    "memberof": "src/core/Component.js~Component",
+    "longname": "src/core/Component.js~Component#element",
+    "access": null,
+    "description": "Element getter",
+    "lineNumber": 92,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{Element|*}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Element",
+        "*"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "__docId__": 65,
+    "kind": "function",
+    "static": true,
+    "variation": null,
+    "name": "applyComponent",
+    "memberof": "src/core/Component.js",
+    "longname": "src/core/Component.js~applyComponent",
+    "access": null,
+    "export": true,
+    "importPath": "vmx-widget-map.v3/src/core/Component.js",
+    "importStyle": "{applyComponent}",
+    "description": "Applying component into DOM body",
+    "lineNumber": 103,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "string"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "qs",
+        "description": "Query String, where we should inject component"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Component",
+          "*"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "component",
+        "description": ""
+      }
+    ],
+    "generator": false
+  },
+  {
+    "__docId__": 66,
+    "kind": "file",
+    "static": true,
+    "variation": null,
+    "name": "src/core/Rest.js",
+    "memberof": null,
+    "longname": "src/core/Rest.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 1,
+    "content": "import 'whatwg-fetch';\nimport restful, { fetchBackend } from 'restful.js';\n\nimport { API } from './../settings';\nimport Storage from './Storage';\n\n\n/**\n * Base class of our API client\n * @module core/Rest\n */\nexport default class Rest {\n    constructor() {\n        this.api = restful(API.ADDRESS, fetchBackend(fetch));\n\n        let authStorage = new Storage(localStorage, 'auth');\n\n        this.api.header('username', authStorage.getItem('username'));\n    }\n\n    get client() {\n        return this.api;\n    }\n}\n"
+  },
+  {
+    "__docId__": 67,
+    "kind": "class",
+    "static": true,
+    "variation": null,
+    "name": "Rest",
+    "memberof": "src/core/Rest.js",
+    "longname": "src/core/Rest.js~Rest",
+    "access": null,
+    "export": true,
+    "importPath": "vmx-widget-map.v3/src/core/Rest.js",
+    "importStyle": "Rest",
+    "description": "Base class of our API client",
+    "lineNumber": 12,
+    "unknown": [
+      {
+        "tagName": "@module",
+        "tagValue": "core/Rest"
+      }
+    ],
+    "interface": false
+  },
+  {
+    "__docId__": 68,
+    "kind": "constructor",
+    "static": false,
+    "variation": null,
+    "name": "constructor",
+    "memberof": "src/core/Rest.js~Rest",
+    "longname": "src/core/Rest.js~Rest#constructor",
+    "access": null,
+    "description": null,
+    "lineNumber": 13,
+    "undocument": true,
+    "params": [],
+    "generator": false
+  },
+  {
+    "__docId__": 69,
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "api",
+    "memberof": "src/core/Rest.js~Rest",
+    "longname": "src/core/Rest.js~Rest#api",
+    "access": null,
+    "description": null,
+    "lineNumber": 14,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 70,
+    "kind": "get",
+    "static": false,
+    "variation": null,
+    "name": "client",
+    "memberof": "src/core/Rest.js~Rest",
+    "longname": "src/core/Rest.js~Rest#client",
+    "access": null,
+    "description": null,
+    "lineNumber": 21,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "__docId__": 71,
+    "kind": "file",
+    "static": true,
+    "variation": null,
+    "name": "src/core/Socket.js",
+    "memberof": null,
+    "longname": "src/core/Socket.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 1,
+    "content": "import { API } from './../settings';\n\n\n/**\n * Base class of our WebSocket client\n * @module core/Socket\n */\nexport default class Socket {\n    constructor() {\n        this.ws = new WebSocket(API.WS_ADDRESS);\n    }\n\n    get client() {\n        return this.ws;\n    }\n}\n"
+  },
+  {
+    "__docId__": 72,
+    "kind": "class",
+    "static": true,
+    "variation": null,
+    "name": "Socket",
+    "memberof": "src/core/Socket.js",
+    "longname": "src/core/Socket.js~Socket",
+    "access": null,
+    "export": true,
+    "importPath": "vmx-widget-map.v3/src/core/Socket.js",
+    "importStyle": "Socket",
+    "description": "Base class of our WebSocket client",
+    "lineNumber": 8,
+    "unknown": [
+      {
+        "tagName": "@module",
+        "tagValue": "core/Socket"
+      }
+    ],
+    "interface": false
+  },
+  {
+    "__docId__": 73,
+    "kind": "constructor",
+    "static": false,
+    "variation": null,
+    "name": "constructor",
+    "memberof": "src/core/Socket.js~Socket",
+    "longname": "src/core/Socket.js~Socket#constructor",
+    "access": null,
+    "description": null,
+    "lineNumber": 9,
+    "undocument": true,
+    "params": [],
+    "generator": false
+  },
+  {
+    "__docId__": 74,
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "ws",
+    "memberof": "src/core/Socket.js~Socket",
+    "longname": "src/core/Socket.js~Socket#ws",
+    "access": null,
+    "description": null,
+    "lineNumber": 10,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 75,
+    "kind": "get",
+    "static": false,
+    "variation": null,
+    "name": "client",
+    "memberof": "src/core/Socket.js~Socket",
+    "longname": "src/core/Socket.js~Socket#client",
+    "access": null,
+    "description": null,
+    "lineNumber": 13,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "__docId__": 76,
+    "kind": "file",
+    "static": true,
+    "variation": null,
+    "name": "src/core/Storage.js",
+    "memberof": null,
+    "longname": "src/core/Storage.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 7,
+    "content": "/**\n * @module core/Storage\n * @description\n * Service to hold key/value pairs using localStorage or sessionStorage.\n * Supports all major browsers http://caniuse.com/#feat=namevalue-storage\n */\nexport default class Storage {\n    constructor(engine, prefix) {\n        this.prefix = prefix;\n        this.engine = engine;\n        /**\n         * Verify if engine is provided.\n         */\n        if (!engine) {\n            throw Error('WebStorage engine was not provided.');\n        } else if (!this.isEngineSupported()) {\n            throw Error('WebStorage engine is not supported.');\n        }\n    }\n\n    /**\n     * @function isEngineSupported\n     * @description\n     * Function to verify if requested engine is supported by\n     * client browser.\n     * @return {Boolean} True if engine is supported, else false.\n     */\n    isEngineSupported() {\n        try {\n            const param = '__support__';\n            this.engine.setItem(param, param);\n            this.engine.removeItem(param);\n            return true;\n        } catch (e) {\n            return false;\n        }\n    }\n\n    /**\n     * @method setItem\n     * @description\n     * Setter for the key/value web store.\n     * @param {String} key - Name of the key to retrieve.\n     * @param {String} value - Name of the value to retrieve.\n     * @return {Boolean} True on success, else false.\n     */\n    setItem(key, value) {\n        const formattedKey = `${this.prefix}:${key}`;\n\n        return this.engine.setItem(formattedKey, value) || false;\n    };\n\n    /**\n     * @method getItem\n     * @description\n     * Getter for the key/value web store.\n     * @param {String} key - Name of the value to retrieve.\n     * @return {Boolean} True on success, else false.\n     */\n    getItem(key) {\n        const formattedKey = `${this.prefix}:${key}`;\n\n        return this.engine.getItem(formattedKey) || false;\n    };\n\n    /**\n     * @method removeItem\n     * @description\n     * Remove a specified value from the key/value web store.\n     * @param {String} key - Name of the value to remove.\n     * @return {Boolean} True on success, else false.\n     */\n    removeItem(key) {\n        const formattedKey = `${this.prefix}:${key}`;\n\n        return this.engine.removeItem(formattedKey) || false;\n    };\n}\n"
+  },
+  {
+    "__docId__": 77,
+    "kind": "class",
+    "static": true,
+    "variation": null,
+    "name": "Storage",
+    "memberof": "src/core/Storage.js",
+    "longname": "src/core/Storage.js~Storage",
+    "access": null,
+    "export": true,
+    "importPath": "vmx-widget-map.v3/src/core/Storage.js",
+    "importStyle": "Storage",
+    "description": "",
+    "lineNumber": 7,
+    "unknown": [
+      {
+        "tagName": "@module",
+        "tagValue": "core/Storage"
+      },
+      {
+        "tagName": "@description",
+        "tagValue": "Service to hold key/value pairs using localStorage or sessionStorage.\nSupports all major browsers http://caniuse.com/#feat=namevalue-storage"
+      }
+    ],
+    "interface": false
+  },
+  {
+    "__docId__": 78,
+    "kind": "constructor",
+    "static": false,
+    "variation": null,
+    "name": "constructor",
+    "memberof": "src/core/Storage.js~Storage",
+    "longname": "src/core/Storage.js~Storage#constructor",
+    "access": null,
+    "description": null,
+    "lineNumber": 8,
+    "undocument": true,
+    "params": [
+      {
+        "name": "engine",
+        "types": [
+          "*"
+        ]
+      },
+      {
+        "name": "prefix",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "generator": false
+  },
+  {
+    "__docId__": 79,
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "prefix",
+    "memberof": "src/core/Storage.js~Storage",
+    "longname": "src/core/Storage.js~Storage#prefix",
+    "access": null,
+    "description": null,
+    "lineNumber": 9,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 80,
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "engine",
+    "memberof": "src/core/Storage.js~Storage",
+    "longname": "src/core/Storage.js~Storage#engine",
+    "access": null,
+    "description": null,
+    "lineNumber": 10,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 81,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "isEngineSupported",
+    "memberof": "src/core/Storage.js~Storage",
+    "longname": "src/core/Storage.js~Storage#isEngineSupported",
+    "access": null,
+    "description": "",
+    "lineNumber": 28,
+    "unknown": [
+      {
+        "tagName": "@function",
+        "tagValue": "isEngineSupported"
+      },
+      {
+        "tagName": "@description",
+        "tagValue": "Function to verify if requested engine is supported by\nclient browser."
+      }
+    ],
+    "params": [],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Boolean"
+      ],
+      "spread": false,
+      "description": "True if engine is supported, else false."
+    },
+    "generator": false
+  },
+  {
+    "__docId__": 82,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "setItem",
+    "memberof": "src/core/Storage.js~Storage",
+    "longname": "src/core/Storage.js~Storage#setItem",
+    "access": null,
+    "description": "",
+    "lineNumber": 47,
+    "unknown": [
+      {
+        "tagName": "@method",
+        "tagValue": "setItem"
+      },
+      {
+        "tagName": "@description",
+        "tagValue": "Setter for the key/value web store."
+      }
+    ],
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "key",
+        "description": "Name of the key to retrieve."
+      },
+      {
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "value",
+        "description": "Name of the value to retrieve."
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Boolean"
+      ],
+      "spread": false,
+      "description": "True on success, else false."
+    },
+    "generator": false
+  },
+  {
+    "__docId__": 83,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "getItem",
+    "memberof": "src/core/Storage.js~Storage",
+    "longname": "src/core/Storage.js~Storage#getItem",
+    "access": null,
+    "description": "",
+    "lineNumber": 60,
+    "unknown": [
+      {
+        "tagName": "@method",
+        "tagValue": "getItem"
+      },
+      {
+        "tagName": "@description",
+        "tagValue": "Getter for the key/value web store."
+      }
+    ],
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "key",
+        "description": "Name of the value to retrieve."
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Boolean"
+      ],
+      "spread": false,
+      "description": "True on success, else false."
+    },
+    "generator": false
+  },
+  {
+    "__docId__": 84,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "removeItem",
+    "memberof": "src/core/Storage.js~Storage",
+    "longname": "src/core/Storage.js~Storage#removeItem",
+    "access": null,
+    "description": "",
+    "lineNumber": 73,
+    "unknown": [
+      {
+        "tagName": "@method",
+        "tagValue": "removeItem"
+      },
+      {
+        "tagName": "@description",
+        "tagValue": "Remove a specified value from the key/value web store."
+      }
+    ],
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "key",
+        "description": "Name of the value to remove."
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Boolean"
+      ],
+      "spread": false,
+      "description": "True on success, else false."
+    },
+    "generator": false
+  },
+  {
+    "__docId__": 85,
+    "kind": "file",
+    "static": true,
+    "variation": null,
+    "name": "src/handlers/rotation/Marker.Rotate.js",
+    "memberof": null,
+    "longname": "src/handlers/rotation/Marker.Rotate.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 1,
+    "content": "import L from 'leaflet';\n\n\n// @section Marker options\nL.Marker.mergeOptions({\n    // @option selectable: Boolean = true\n    // Whether the marker can be rotated using mouse/touch events or not.\n    rotatable: false,\n});\n\n/**\n * Handler providing rotation for L.Marker instance. Disabled by default.\n * @class L.Handler.MarkerRotate\n * @extends L.Handler\n */\nL.Handler.MarkerRotate = class MarkerRotate extends L.Handler {\n    initialize(marker) {\n        this._marker = marker;\n    }\n\n    addHooks() {\n        this._marker.on({\n            'add': this._onAdd,\n            'remove': this._onRemove\n        }, this);\n        if (this._marker._map) {\n            this._onAdd();\n        }\n    }\n\n    removeHooks() {\n        this._marker.off({\n            'add': this._onAdd,\n            'remove': this._onRemove\n        }, this);\n        if (this._marker._map) {\n            this._onRemove();\n        }\n    }\n\n    _onAdd() {\n        if (this._marker._map) {\n            this._marker._map.on({\n                'mousedown': this._onMapMouseDown,\n                'mouseup': this._onMapMouseUp,\n            }, this);\n        }\n    }\n\n    _onRemove() {\n        if (this._marker._map) {\n            this._marker._map.off({\n                'mousedown': this._onMapMouseDown,\n                'mouseup': this._onMapMouseUp,\n                'mousemove': this._onMapMouseMove,\n            }, this);\n        }\n    }\n\n    _onMapMouseDown(event) {\n        const map = event.target, marker = this._marker;\n\n        this._startAngle = marker.options.angle;\n        if (map.dragging.enabled()) {\n            this._reenableMapDragging = true;\n            map.dragging.disable();\n        }\n        map.on('mousemove', this._onMapMouseMove, this);\n        L.DomUtil.addClass(map.getContainer(), 'leaflet-crosshair');\n\n        this._onMapMouseMove(event, true);\n        marker.fireEvent('rotatestart', {angle: marker.options.angle, startAngle: this._startAngle});\n    }\n\n    _onMapMouseUp(event) {\n        const map = event.target, marker = this._marker;\n\n        delete this._startAngle;\n        if (this._reenableMapDragging) {\n            delete this._reenableMapDragging;\n            map.dragging.enable();\n        }\n        map.off('mousemove', this._onMapMouseMove, this);\n        L.DomUtil.removeClass(map.getContainer(), 'leaflet-crosshair');\n\n        this._onMapMouseMove(event, true);\n        marker.fireEvent('rotateend', {angle: marker.options.angle, startAngle: this._startAngle});\n    }\n\n    _onMapMouseMove(event, skipFire) {\n        const map = event.target, marker = this._marker;\n        const mPoint = map.latLngToContainerPoint(marker.getLatLng()), cPoint = event.containerPoint;\n        let angle = Math.atan2(cPoint.x - mPoint.x, mPoint.y - cPoint.y);\n        angle = angle / Math.PI * 180; // Rad --> Degrees\n\n        marker.options.angle = angle;\n        marker.update();\n        skipFire || marker.fireEvent('rotate', {angle: angle, startAngle: this._startAngle});\n    }\n};\n\n// Add init hook for MarkerSelect handler\nL.Marker.addInitHook(function() {\n    if (L.Handler.MarkerRotate) {\n        this.rotating = new L.Handler.MarkerRotate(this);\n\n        if (this.options.rotatable) {\n            this.rotating.enable();\n        }\n    }\n});\n\n// Overwrites L.Marker setPos method.\nfunction setPos(pos) {\n    setPos.base.call(this, pos);\n\n    if (this.options.angle) {\n        const oldIE = (L.DomUtil.TRANSFORM === 'msTransform');\n        let isNestedIcon = this._icon.hasChildNodes(), rotatableElement = this._icon;\n\n        if (isNestedIcon) {\n            rotatableElement = this._icon.getElementsByClassName('leaflet-rotatable')[0] || rotatableElement;\n        }\n        if (oldIE || isNestedIcon) {\n            rotatableElement.style[L.DomUtil.TRANSFORM] = `rotate(${ this.options.angle }deg)`;\n        } else {\n            // Use 3D accelerated version for the modern browsers\n            rotatableElement.style[L.DomUtil.TRANSFORM] += ` rotate(${ this.options.angle }deg)`;\n        }\n    }\n}\n\nsetPos.base = L.Marker.prototype._setPos;\nL.Marker.prototype._setPos = setPos;\n"
+  },
+  {
+    "__docId__": 86,
+    "kind": "class",
+    "static": true,
+    "variation": null,
+    "name": "MarkerRotate",
+    "memberof": "src/handlers/rotation/Marker.Rotate.js",
+    "longname": "src/handlers/rotation/Marker.Rotate.js~MarkerRotate",
+    "access": null,
+    "export": false,
+    "importPath": "vmx-widget-map.v3/src/handlers/rotation/Marker.Rotate.js",
+    "importStyle": null,
+    "description": "Handler providing rotation for L.Marker instance. Disabled by default.",
+    "lineNumber": 16,
+    "unknown": [
+      {
+        "tagName": "@class",
+        "tagValue": "L.Handler.MarkerRotate"
+      }
+    ],
+    "interface": false,
+    "extends": [
+      "*"
+    ]
+  },
+  {
+    "__docId__": 87,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "initialize",
+    "memberof": "src/handlers/rotation/Marker.Rotate.js~MarkerRotate",
+    "longname": "src/handlers/rotation/Marker.Rotate.js~MarkerRotate#initialize",
+    "access": null,
+    "description": null,
+    "lineNumber": 17,
+    "undocument": true,
+    "params": [
+      {
+        "name": "marker",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "generator": false
+  },
+  {
+    "__docId__": 88,
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_marker",
+    "memberof": "src/handlers/rotation/Marker.Rotate.js~MarkerRotate",
+    "longname": "src/handlers/rotation/Marker.Rotate.js~MarkerRotate#_marker",
+    "access": null,
+    "description": null,
+    "lineNumber": 18,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 89,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "addHooks",
+    "memberof": "src/handlers/rotation/Marker.Rotate.js~MarkerRotate",
+    "longname": "src/handlers/rotation/Marker.Rotate.js~MarkerRotate#addHooks",
+    "access": null,
+    "description": null,
+    "lineNumber": 21,
+    "undocument": true,
+    "params": [],
+    "generator": false
+  },
+  {
+    "__docId__": 90,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "removeHooks",
+    "memberof": "src/handlers/rotation/Marker.Rotate.js~MarkerRotate",
+    "longname": "src/handlers/rotation/Marker.Rotate.js~MarkerRotate#removeHooks",
+    "access": null,
+    "description": null,
+    "lineNumber": 31,
+    "undocument": true,
+    "params": [],
+    "generator": false
+  },
+  {
+    "__docId__": 91,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "_onAdd",
+    "memberof": "src/handlers/rotation/Marker.Rotate.js~MarkerRotate",
+    "longname": "src/handlers/rotation/Marker.Rotate.js~MarkerRotate#_onAdd",
+    "access": null,
+    "description": null,
+    "lineNumber": 41,
+    "undocument": true,
+    "params": [],
+    "generator": false
+  },
+  {
+    "__docId__": 92,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "_onRemove",
+    "memberof": "src/handlers/rotation/Marker.Rotate.js~MarkerRotate",
+    "longname": "src/handlers/rotation/Marker.Rotate.js~MarkerRotate#_onRemove",
+    "access": null,
+    "description": null,
+    "lineNumber": 50,
+    "undocument": true,
+    "params": [],
+    "generator": false
+  },
+  {
+    "__docId__": 93,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "_onMapMouseDown",
+    "memberof": "src/handlers/rotation/Marker.Rotate.js~MarkerRotate",
+    "longname": "src/handlers/rotation/Marker.Rotate.js~MarkerRotate#_onMapMouseDown",
+    "access": null,
+    "description": null,
+    "lineNumber": 60,
+    "undocument": true,
+    "params": [
+      {
+        "name": "event",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "generator": false
+  },
+  {
+    "__docId__": 94,
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_startAngle",
+    "memberof": "src/handlers/rotation/Marker.Rotate.js~MarkerRotate",
+    "longname": "src/handlers/rotation/Marker.Rotate.js~MarkerRotate#_startAngle",
+    "access": null,
+    "description": null,
+    "lineNumber": 63,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 95,
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_reenableMapDragging",
+    "memberof": "src/handlers/rotation/Marker.Rotate.js~MarkerRotate",
+    "longname": "src/handlers/rotation/Marker.Rotate.js~MarkerRotate#_reenableMapDragging",
+    "access": null,
+    "description": null,
+    "lineNumber": 65,
+    "undocument": true,
+    "type": {
+      "types": [
+        "boolean"
+      ]
+    }
+  },
+  {
+    "__docId__": 96,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "_onMapMouseUp",
+    "memberof": "src/handlers/rotation/Marker.Rotate.js~MarkerRotate",
+    "longname": "src/handlers/rotation/Marker.Rotate.js~MarkerRotate#_onMapMouseUp",
+    "access": null,
+    "description": null,
+    "lineNumber": 75,
+    "undocument": true,
+    "params": [
+      {
+        "name": "event",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "generator": false
+  },
+  {
+    "__docId__": 97,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "_onMapMouseMove",
+    "memberof": "src/handlers/rotation/Marker.Rotate.js~MarkerRotate",
+    "longname": "src/handlers/rotation/Marker.Rotate.js~MarkerRotate#_onMapMouseMove",
+    "access": null,
+    "description": null,
+    "lineNumber": 90,
+    "undocument": true,
+    "params": [
+      {
+        "name": "event",
+        "types": [
+          "*"
+        ]
+      },
+      {
+        "name": "skipFire",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "generator": false
+  },
+  {
+    "__docId__": 98,
+    "kind": "function",
+    "static": true,
+    "variation": null,
+    "name": "setPos",
+    "memberof": "src/handlers/rotation/Marker.Rotate.js",
+    "longname": "src/handlers/rotation/Marker.Rotate.js~setPos",
+    "access": null,
+    "export": false,
+    "importPath": "vmx-widget-map.v3/src/handlers/rotation/Marker.Rotate.js",
+    "importStyle": null,
+    "description": null,
+    "lineNumber": 114,
+    "undocument": true,
+    "params": [
+      {
+        "name": "pos",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "generator": false
+  },
+  {
+    "__docId__": 99,
+    "kind": "file",
+    "static": true,
+    "variation": null,
+    "name": "src/handlers/selection/Map.BoxSelect.js",
+    "memberof": null,
+    "longname": "src/handlers/selection/Map.BoxSelect.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 1,
+    "content": "import L from 'leaflet';\n\n\n/**\n * L.Handler.BoxSelect is used to add ctrl-drag select interaction to the map\n * (select markers/paths to a selected bounding box), enabled by default.\n * @class L.Map.BoxSelect\n * @extends L.Map.BoxZoom\n */\nL.Map.BoxSelect = class BoxSelect extends L.Map.BoxZoom {\n    _doSelection(bounds) {\n        this._map.eachLayer(function(layer) {\n            if (layer.selecting && layer.selecting.enabled()) {\n                if (layer instanceof L.Marker) {\n                    if (bounds.contains(layer.getLatLng())) {\n                        layer.selecting.select();\n                    }\n                } else if (layer instanceof L.Polyline) {\n                    if (layer.getLatLngs().some(bounds.contains, bounds)) {\n                        layer.selecting.select();\n                    }\n                } else if (layer instanceof L.Circle) {\n                    // todo\n                }\n            }\n        }, this);\n    }\n\n    _preventMapDrag(e) {\n        if (this._map.dragging.enabled()) {\n            this._map.dragging._draggable.disable();\n            this._map.dragging._draggable.enable();\n            //this._map.dragging.disable();\n            //this._map.dragging.enable();\n        }\n    }\n\n    _onMouseDown(e) {\n        /** BoxSelect: key changed to CTRL **/\n        if (!e.ctrlKey || ((e.which !== 1) && (e.button !== 1))) { return false; }\n\n        this._preventMapDrag(e);\n        this._resetState(); /** BoxSelect: line added **/\n\n        L.DomUtil.disableTextSelection();\n        L.DomUtil.disableImageDrag();\n\n        this._startPoint = this._map.mouseEventToContainerPoint(e);\n\n        L.DomEvent.on(document, {\n            contextmenu: L.DomEvent.stop,\n            mousemove: this._onMouseMove,\n            mouseup: this._onMouseUp,\n            keydown: this._onKeyDown\n        }, this);\n    }\n\n    _onMouseMove(e) {\n        if (!this._moved) {\n            this._moved = true;\n\n            this._box = L.DomUtil.create('div', 'leaflet-zoom-box', this._container);\n            L.DomUtil.addClass(this._container, 'leaflet-crosshair');\n\n            this._map.fire('boxselectstart'); /** BoxSelect: event name changed **/\n        }\n\n        this._point = this._map.mouseEventToContainerPoint(e);\n\n        let bounds = new L.Bounds(this._point, this._startPoint),\n            size = bounds.getSize();\n\n        L.DomUtil.setPosition(this._box, bounds.min);\n\n        this._box.style.width  = size.x + 'px';\n        this._box.style.height = size.y + 'px';\n    }\n\n    _onMouseUp(e) {\n        if ((e.which !== 1) && (e.button !== 1)) { return; }\n\n        this._finish();\n\n        if (!this._moved) { return; }\n        // Postpone to next JS tick so internal click event handling\n        // still see it as \"moved\".\n        setTimeout(L.bind(this._resetState, this), 0);\n\n        let bounds = new L.LatLngBounds(\n            this._map.containerPointToLatLng(this._startPoint),\n            this._map.containerPointToLatLng(this._point));\n\n        /** BoxSelect: changed **/\n        this._map.fire('boxselectend', {bounds: bounds});\n        this._doSelection(bounds);\n    }\n};\n\nL.Map.addInitHook('addHandler', 'boxSelect', L.Map.BoxSelect);\n\n// @namespace Map\n// @section Interaction Options\nL.Map.mergeOptions({\n    // @option boxSelect: Boolean = true\n    // Whether markers/paths on map can be selected using a rectangular area specified by\n    // dragging the mouse while pressing the ctrl key.\n    boxSelect: true\n});\n"
+  },
+  {
+    "__docId__": 100,
+    "kind": "class",
+    "static": true,
+    "variation": null,
+    "name": "BoxSelect",
+    "memberof": "src/handlers/selection/Map.BoxSelect.js",
+    "longname": "src/handlers/selection/Map.BoxSelect.js~BoxSelect",
+    "access": null,
+    "export": false,
+    "importPath": "vmx-widget-map.v3/src/handlers/selection/Map.BoxSelect.js",
+    "importStyle": null,
+    "description": "L.Handler.BoxSelect is used to add ctrl-drag select interaction to the map\n(select markers/paths to a selected bounding box), enabled by default.",
+    "lineNumber": 10,
+    "unknown": [
+      {
+        "tagName": "@class",
+        "tagValue": "L.Map.BoxSelect"
+      }
+    ],
+    "interface": false,
+    "extends": [
+      "*"
+    ]
+  },
+  {
+    "__docId__": 101,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "_doSelection",
+    "memberof": "src/handlers/selection/Map.BoxSelect.js~BoxSelect",
+    "longname": "src/handlers/selection/Map.BoxSelect.js~BoxSelect#_doSelection",
+    "access": null,
+    "description": null,
+    "lineNumber": 11,
+    "undocument": true,
+    "params": [
+      {
+        "name": "bounds",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "generator": false
+  },
+  {
+    "__docId__": 102,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "_preventMapDrag",
+    "memberof": "src/handlers/selection/Map.BoxSelect.js~BoxSelect",
+    "longname": "src/handlers/selection/Map.BoxSelect.js~BoxSelect#_preventMapDrag",
+    "access": null,
+    "description": null,
+    "lineNumber": 29,
+    "undocument": true,
+    "params": [
+      {
+        "name": "e",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "generator": false
+  },
+  {
+    "__docId__": 103,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "_onMouseDown",
+    "memberof": "src/handlers/selection/Map.BoxSelect.js~BoxSelect",
+    "longname": "src/handlers/selection/Map.BoxSelect.js~BoxSelect#_onMouseDown",
+    "access": null,
+    "description": null,
+    "lineNumber": 38,
+    "undocument": true,
+    "params": [
+      {
+        "name": "e",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "return": {
+      "types": [
+        "boolean"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "__docId__": 104,
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_startPoint",
+    "memberof": "src/handlers/selection/Map.BoxSelect.js~BoxSelect",
+    "longname": "src/handlers/selection/Map.BoxSelect.js~BoxSelect#_startPoint",
+    "access": null,
+    "description": null,
+    "lineNumber": 48,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 105,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "_onMouseMove",
+    "memberof": "src/handlers/selection/Map.BoxSelect.js~BoxSelect",
+    "longname": "src/handlers/selection/Map.BoxSelect.js~BoxSelect#_onMouseMove",
+    "access": null,
+    "description": null,
+    "lineNumber": 58,
+    "undocument": true,
+    "params": [
+      {
+        "name": "e",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "generator": false
+  },
+  {
+    "__docId__": 106,
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_moved",
+    "memberof": "src/handlers/selection/Map.BoxSelect.js~BoxSelect",
+    "longname": "src/handlers/selection/Map.BoxSelect.js~BoxSelect#_moved",
+    "access": null,
+    "description": null,
+    "lineNumber": 60,
+    "undocument": true,
+    "type": {
+      "types": [
+        "boolean"
+      ]
+    }
+  },
+  {
+    "__docId__": 107,
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_box",
+    "memberof": "src/handlers/selection/Map.BoxSelect.js~BoxSelect",
+    "longname": "src/handlers/selection/Map.BoxSelect.js~BoxSelect#_box",
+    "access": null,
+    "description": null,
+    "lineNumber": 62,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 108,
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_point",
+    "memberof": "src/handlers/selection/Map.BoxSelect.js~BoxSelect",
+    "longname": "src/handlers/selection/Map.BoxSelect.js~BoxSelect#_point",
+    "access": null,
+    "description": "BoxSelect: event name changed *",
+    "lineNumber": 68,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 109,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "_onMouseUp",
+    "memberof": "src/handlers/selection/Map.BoxSelect.js~BoxSelect",
+    "longname": "src/handlers/selection/Map.BoxSelect.js~BoxSelect#_onMouseUp",
+    "access": null,
+    "description": null,
+    "lineNumber": 79,
+    "undocument": true,
+    "params": [
+      {
+        "name": "e",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "generator": false
+  },
+  {
+    "__docId__": 110,
+    "kind": "file",
+    "static": true,
+    "variation": null,
+    "name": "src/handlers/selection/Map.ClickDeselect.js",
+    "memberof": null,
+    "longname": "src/handlers/selection/Map.ClickDeselect.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 1,
+    "content": "import L from 'leaflet';\n\nL.Map.ClickDeselect = class ClickDeselect extends L.Handler {\n    addHooks() {\n        this._map.on({\n            'click':     this._onClick,\n            'mousedown': this._onMouseDown\n        }, this);\n    }\n\n    removeHooks() {\n        this._map.off({\n            'click':     this._onClick,\n            'mousedown': this._onMouseDown\n        }, this);\n    }\n\n    _onClick(event) {\n        const map = event.target,\n              clickDist = this._mdContainerPoint? this._mdContainerPoint.distanceTo(event.containerPoint) : 0;\n\n        if (clickDist <= L.Map.ClickDeselect.maxDistance) {\n            map.eachLayer(layer => {\n                if (layer.selecting && layer.selecting.enabled()) {\n                    layer.selecting.deselect();\n                }\n            }, this)\n        }\n    }\n\n    _onMouseDown(event) {\n        this._mdContainerPoint = event.containerPoint;\n    }\n}\n\nL.Map.ClickDeselect.maxDistance = 10; // px\n\nL.Map.mergeOptions({\n    clickDeselect: true\n});\n\nL.Map.addInitHook('addHandler', 'clickDeselect', L.Map.ClickDeselect);\n"
+  },
+  {
+    "__docId__": 111,
+    "kind": "class",
+    "static": true,
+    "variation": null,
+    "name": "ClickDeselect",
+    "memberof": "src/handlers/selection/Map.ClickDeselect.js",
+    "longname": "src/handlers/selection/Map.ClickDeselect.js~ClickDeselect",
+    "access": null,
+    "export": false,
+    "importPath": "vmx-widget-map.v3/src/handlers/selection/Map.ClickDeselect.js",
+    "importStyle": null,
+    "description": null,
+    "lineNumber": 3,
+    "undocument": true,
+    "interface": false,
+    "extends": [
+      "leaflet~L.Handler"
+    ]
+  },
+  {
+    "__docId__": 112,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "addHooks",
+    "memberof": "src/handlers/selection/Map.ClickDeselect.js~ClickDeselect",
+    "longname": "src/handlers/selection/Map.ClickDeselect.js~ClickDeselect#addHooks",
+    "access": null,
+    "description": null,
+    "lineNumber": 4,
+    "undocument": true,
+    "params": [],
+    "generator": false
+  },
+  {
+    "__docId__": 113,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "removeHooks",
+    "memberof": "src/handlers/selection/Map.ClickDeselect.js~ClickDeselect",
+    "longname": "src/handlers/selection/Map.ClickDeselect.js~ClickDeselect#removeHooks",
+    "access": null,
+    "description": null,
+    "lineNumber": 11,
+    "undocument": true,
+    "params": [],
+    "generator": false
+  },
+  {
+    "__docId__": 114,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "_onClick",
+    "memberof": "src/handlers/selection/Map.ClickDeselect.js~ClickDeselect",
+    "longname": "src/handlers/selection/Map.ClickDeselect.js~ClickDeselect#_onClick",
+    "access": null,
+    "description": null,
+    "lineNumber": 18,
+    "undocument": true,
+    "params": [
+      {
+        "name": "event",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "generator": false
+  },
+  {
+    "__docId__": 115,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "_onMouseDown",
+    "memberof": "src/handlers/selection/Map.ClickDeselect.js~ClickDeselect",
+    "longname": "src/handlers/selection/Map.ClickDeselect.js~ClickDeselect#_onMouseDown",
+    "access": null,
+    "description": null,
+    "lineNumber": 31,
+    "undocument": true,
+    "params": [
+      {
+        "name": "event",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "generator": false
+  },
+  {
+    "__docId__": 116,
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_mdContainerPoint",
+    "memberof": "src/handlers/selection/Map.ClickDeselect.js~ClickDeselect",
+    "longname": "src/handlers/selection/Map.ClickDeselect.js~ClickDeselect#_mdContainerPoint",
+    "access": null,
+    "description": null,
+    "lineNumber": 32,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 117,
+    "kind": "file",
+    "static": true,
+    "variation": null,
+    "name": "src/handlers/selection/Marker.Select.js",
+    "memberof": null,
+    "longname": "src/handlers/selection/Marker.Select.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 1,
+    "content": "import L from 'leaflet';\n\n\nL.Handler.MarkerSelect = class MarkerSelect extends L.Handler {\n    initialize(marker) {\n        this._marker = marker;\n    }\n\n    addHooks() {\n        this._marker.on('click', this._onClick, this);\n        if (this._marker._icon) {\n            L.DomUtil.addClass(this._icon, MarkerSelect.selectableClassName);\n        }\n    }\n\n    removeHooks() {\n        this._marker.off('click', this._onClick, this);\n        if (this._marker._icon) {\n            L.DomUtil.removeClass(this._icon, MarkerSelect.selectableClassName);\n        }\n    }\n\n    selected() {\n        return !!this._marker.options.selected;\n    }\n\n    select() {\n        const marker = this._marker;\n        if (!marker.options.selected) {\n            marker.options.selected = true;\n            this._setIconStyles(true);\n            marker.fire('select');\n            marker._map.fire('layerselect', {layer: marker});\n            console.log('Marker ' + marker._leaflet_id + ' selected');\n        }\n    }\n\n    deselect() {\n        const marker = this._marker;\n        if (marker.options.selected) {\n            marker.options.selected = false;\n            this._setIconStyles(false);\n            marker.fire('deselect');\n            marker._map.fire('layerdeselect', {layer: marker});\n            console.log('Marker ' + marker._leaflet_id + ' deselected');\n        }\n    }\n\n    _onClick() {\n        console.log('click!');\n        if (this._marker.options.selected) {\n            this.deselect()\n        } else {\n            this.select()\n        }\n    }\n\n    _setIconStyles(highlight) {\n        let icon = this._marker._icon, offset;\n        if (icon) {\n            if (highlight) {\n                L.DomUtil.addClass(icon, MarkerSelect.selectedClassName);\n                offset = -parseInt(window.getComputedStyle(icon)['border-top-width'], 10);\n            } else {\n                offset = parseInt(window.getComputedStyle(icon)['border-top-width'], 10);\n                L.DomUtil.removeClass(icon, MarkerSelect.selectedClassName);\n            }\n            icon.style.marginTop = parseInt(icon.style.marginTop, 10) + offset + 'px';\n            icon.style.marginLeft = parseInt(icon.style.marginLeft, 10) + offset + 'px';\n        }\n    }\n};\n\nL.Handler.MarkerSelect.selectableClassName = 'leaflet-marker-selectable';\n\nL.Handler.MarkerSelect.selectedClassName = 'leaflet-marker-selected';\n\n\n// @namespace Marker\n// @section Marker options\nL.Marker.mergeOptions({\n    // @option selectable: Boolean = true\n    // Whether the marker is selectable using mouse/touch events or not.\n    selectable: true,\n    // @option selected: Boolean = false\n    // Whether the marker is selected or not.\n    selected: false\n});\n\n\n// Add init hook for MarkerSelect handler\nL.Marker.addInitHook(function() {\n    if (L.Handler.MarkerSelect) {\n        this.selecting = new L.Handler.MarkerSelect(this);\n\n        if (this.options.selectable) {\n            this.selecting.enable();\n        }\n    }\n});\n\n\nfunction initIcon() {\n    initIcon.base.call(this);\n    if (this.options.selectable) {\n        L.DomUtil.addClass(this._icon, 'leaflet-marker-selectable');\n        if (this.options.selected) {\n            L.DomUtil.addClass(this._icon, 'leaflet-marker-selected');\n        }\n    }\n}\n\ninitIcon.base = L.Marker.prototype._initIcon;\nL.Marker.prototype._initIcon = initIcon;\n"
+  },
+  {
+    "__docId__": 118,
+    "kind": "class",
+    "static": true,
+    "variation": null,
+    "name": "MarkerSelect",
+    "memberof": "src/handlers/selection/Marker.Select.js",
+    "longname": "src/handlers/selection/Marker.Select.js~MarkerSelect",
+    "access": null,
+    "export": false,
+    "importPath": "vmx-widget-map.v3/src/handlers/selection/Marker.Select.js",
+    "importStyle": null,
+    "description": null,
+    "lineNumber": 4,
+    "undocument": true,
+    "interface": false,
+    "extends": [
+      "leaflet~L.Handler"
+    ]
+  },
+  {
+    "__docId__": 119,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "initialize",
+    "memberof": "src/handlers/selection/Marker.Select.js~MarkerSelect",
+    "longname": "src/handlers/selection/Marker.Select.js~MarkerSelect#initialize",
+    "access": null,
+    "description": null,
+    "lineNumber": 5,
+    "undocument": true,
+    "params": [
+      {
+        "name": "marker",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "generator": false
+  },
+  {
+    "__docId__": 120,
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_marker",
+    "memberof": "src/handlers/selection/Marker.Select.js~MarkerSelect",
+    "longname": "src/handlers/selection/Marker.Select.js~MarkerSelect#_marker",
+    "access": null,
+    "description": null,
+    "lineNumber": 6,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 121,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "addHooks",
+    "memberof": "src/handlers/selection/Marker.Select.js~MarkerSelect",
+    "longname": "src/handlers/selection/Marker.Select.js~MarkerSelect#addHooks",
+    "access": null,
+    "description": null,
+    "lineNumber": 9,
+    "undocument": true,
+    "params": [],
+    "generator": false
+  },
+  {
+    "__docId__": 122,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "removeHooks",
+    "memberof": "src/handlers/selection/Marker.Select.js~MarkerSelect",
+    "longname": "src/handlers/selection/Marker.Select.js~MarkerSelect#removeHooks",
+    "access": null,
+    "description": null,
+    "lineNumber": 16,
+    "undocument": true,
+    "params": [],
+    "generator": false
+  },
+  {
+    "__docId__": 123,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "selected",
+    "memberof": "src/handlers/selection/Marker.Select.js~MarkerSelect",
+    "longname": "src/handlers/selection/Marker.Select.js~MarkerSelect#selected",
+    "access": null,
+    "description": null,
+    "lineNumber": 23,
+    "undocument": true,
+    "params": [],
+    "return": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "__docId__": 124,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "select",
+    "memberof": "src/handlers/selection/Marker.Select.js~MarkerSelect",
+    "longname": "src/handlers/selection/Marker.Select.js~MarkerSelect#select",
+    "access": null,
+    "description": null,
+    "lineNumber": 27,
+    "undocument": true,
+    "params": [],
+    "generator": false
+  },
+  {
+    "__docId__": 125,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "deselect",
+    "memberof": "src/handlers/selection/Marker.Select.js~MarkerSelect",
+    "longname": "src/handlers/selection/Marker.Select.js~MarkerSelect#deselect",
+    "access": null,
+    "description": null,
+    "lineNumber": 38,
+    "undocument": true,
+    "params": [],
+    "generator": false
+  },
+  {
+    "__docId__": 126,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "_onClick",
+    "memberof": "src/handlers/selection/Marker.Select.js~MarkerSelect",
+    "longname": "src/handlers/selection/Marker.Select.js~MarkerSelect#_onClick",
+    "access": null,
+    "description": null,
+    "lineNumber": 49,
+    "undocument": true,
+    "params": [],
+    "generator": false
+  },
+  {
+    "__docId__": 127,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "_setIconStyles",
+    "memberof": "src/handlers/selection/Marker.Select.js~MarkerSelect",
+    "longname": "src/handlers/selection/Marker.Select.js~MarkerSelect#_setIconStyles",
+    "access": null,
+    "description": null,
+    "lineNumber": 58,
+    "undocument": true,
+    "params": [
+      {
+        "name": "highlight",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "generator": false
+  },
+  {
+    "__docId__": 128,
+    "kind": "function",
+    "static": true,
+    "variation": null,
+    "name": "initIcon",
+    "memberof": "src/handlers/selection/Marker.Select.js",
+    "longname": "src/handlers/selection/Marker.Select.js~initIcon",
+    "access": null,
+    "export": false,
+    "importPath": "vmx-widget-map.v3/src/handlers/selection/Marker.Select.js",
+    "importStyle": null,
+    "description": null,
+    "lineNumber": 103,
+    "undocument": true,
+    "params": [],
+    "generator": false
+  },
+  {
+    "__docId__": 129,
+    "kind": "file",
+    "static": true,
+    "variation": null,
+    "name": "src/settings.js",
+    "memberof": null,
+    "longname": "src/settings.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 1,
+    "content": "export const API = {\n    ADDRESS: 'http://app.teleste.com/api',\n    WS_ADDRESS: 'ws://localhost:8888/ws'\n};\n"
+  },
+  {
+    "__docId__": 130,
+    "kind": "variable",
+    "static": true,
+    "variation": null,
+    "name": "API",
+    "memberof": "src/settings.js",
+    "longname": "src/settings.js~API",
+    "access": null,
+    "export": true,
+    "importPath": "vmx-widget-map.v3/src/settings.js",
+    "importStyle": "{API}",
+    "description": null,
+    "lineNumber": 1,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 132,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Infinity",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Infinity",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Infinity",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 133,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "NaN",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/NaN",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~NaN",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 134,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "undefined",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/undefined",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~undefined",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 135,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "null",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/null",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~null",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 136,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Object",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Object",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 137,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "object",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~object",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 138,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Function",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Function",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 139,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "function",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~function",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 140,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Boolean",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Boolean",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 141,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "boolean",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~boolean",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 142,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Symbol",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Symbol",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 143,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Error",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Error",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 144,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "EvalError",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/EvalError",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~EvalError",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 145,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "InternalError",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/InternalError",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~InternalError",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 146,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "RangeError",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RangeError",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~RangeError",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 147,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "ReferenceError",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/ReferenceError",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~ReferenceError",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 148,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "SyntaxError",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/SyntaxError",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~SyntaxError",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 149,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "TypeError",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypeError",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~TypeError",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 150,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "URIError",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/URIError",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~URIError",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 151,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Number",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Number",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 152,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "number",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~number",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 153,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Date",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Date",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 154,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "String",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~String",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 155,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "string",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~string",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 156,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "RegExp",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~RegExp",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 157,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Array",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Array",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 158,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Int8Array",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Int8Array",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Int8Array",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 159,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Uint8Array",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint8Array",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Uint8Array",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 160,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Uint8ClampedArray",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint8ClampedArray",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Uint8ClampedArray",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 161,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Int16Array",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Int16Array",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Int16Array",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 162,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Uint16Array",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint16Array",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Uint16Array",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 163,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Int32Array",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Int32Array",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Int32Array",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 164,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Uint32Array",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint32Array",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Uint32Array",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 165,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Float32Array",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Float32Array",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Float32Array",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 166,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Float64Array",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Float64Array",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Float64Array",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 167,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Map",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Map",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 168,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Set",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Set",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 169,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "WeakMap",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WeakMap",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~WeakMap",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 170,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "WeakSet",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WeakSet",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~WeakSet",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 171,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "ArrayBuffer",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/ArrayBuffer",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~ArrayBuffer",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 172,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "DataView",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DataView",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~DataView",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 173,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "JSON",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~JSON",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 174,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Promise",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Promise",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 175,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Generator",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Generator",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Generator",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 176,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "GeneratorFunction",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/GeneratorFunction",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~GeneratorFunction",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 177,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Reflect",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Reflect",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Reflect",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 178,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Proxy",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Proxy",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 180,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "CanvasRenderingContext2D",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D",
+    "memberof": "BuiltinExternal/WebAPIExternal.js",
+    "longname": "BuiltinExternal/WebAPIExternal.js~CanvasRenderingContext2D",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 181,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "DocumentFragment",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/API/DocumentFragment",
+    "memberof": "BuiltinExternal/WebAPIExternal.js",
+    "longname": "BuiltinExternal/WebAPIExternal.js~DocumentFragment",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 182,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Element",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/API/Element",
+    "memberof": "BuiltinExternal/WebAPIExternal.js",
+    "longname": "BuiltinExternal/WebAPIExternal.js~Element",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 183,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Event",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/API/Event",
+    "memberof": "BuiltinExternal/WebAPIExternal.js",
+    "longname": "BuiltinExternal/WebAPIExternal.js~Event",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 184,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Node",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/API/Node",
+    "memberof": "BuiltinExternal/WebAPIExternal.js",
+    "longname": "BuiltinExternal/WebAPIExternal.js~Node",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 185,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "NodeList",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/API/NodeList",
+    "memberof": "BuiltinExternal/WebAPIExternal.js",
+    "longname": "BuiltinExternal/WebAPIExternal.js~NodeList",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 186,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "XMLHttpRequest",
+    "externalLink": "https://developer.mozilla.org/en/docs/Web/API/XMLHttpRequest",
+    "memberof": "BuiltinExternal/WebAPIExternal.js",
+    "longname": "BuiltinExternal/WebAPIExternal.js~XMLHttpRequest",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 187,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "AudioContext",
+    "externalLink": "https://developer.mozilla.org/en/docs/Web/API/AudioContext",
+    "memberof": "BuiltinExternal/WebAPIExternal.js",
+    "longname": "BuiltinExternal/WebAPIExternal.js~AudioContext",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  }
+]

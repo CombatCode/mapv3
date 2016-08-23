@@ -1,0 +1,541 @@
+{
+  "type": "Program",
+  "body": [
+    {
+      "type": "ImportDeclaration",
+      "specifiers": [
+        {
+          "type": "ImportDefaultSpecifier",
+          "local": {
+            "type": "Identifier",
+            "name": "L",
+            "range": [
+              7,
+              8
+            ],
+            "loc": {
+              "start": {
+                "line": 1,
+                "column": 7
+              },
+              "end": {
+                "line": 1,
+                "column": 8
+              }
+            }
+          },
+          "range": [
+            7,
+            8
+          ],
+          "loc": {
+            "start": {
+              "line": 1,
+              "column": 7
+            },
+            "end": {
+              "line": 1,
+              "column": 8
+            }
+          }
+        }
+      ],
+      "source": {
+        "type": "Literal",
+        "value": "leaflet",
+        "raw": "'leaflet'",
+        "range": [
+          14,
+          23
+        ],
+        "loc": {
+          "start": {
+            "line": 1,
+            "column": 14
+          },
+          "end": {
+            "line": 1,
+            "column": 23
+          }
+        }
+      },
+      "range": [
+        0,
+        24
+      ],
+      "loc": {
+        "start": {
+          "line": 1,
+          "column": 0
+        },
+        "end": {
+          "line": 1,
+          "column": 24
+        }
+      },
+      "trailingComments": [
+        {
+          "type": "Block",
+          "value": "*\n * Class representing Maps\n * @module components/Map\n * @augments L.TileLayer\n ",
+          "range": [
+            27,
+            112
+          ],
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 0
+            },
+            "end": {
+              "line": 8,
+              "column": 3
+            }
+          }
+        }
+      ]
+    },
+    {
+      "type": "ExportDefaultDeclaration",
+      "declaration": {
+        "type": "ClassDeclaration",
+        "id": {
+          "type": "Identifier",
+          "name": "Map",
+          "range": [
+            134,
+            137
+          ],
+          "loc": {
+            "start": {
+              "line": 9,
+              "column": 21
+            },
+            "end": {
+              "line": 9,
+              "column": 24
+            }
+          }
+        },
+        "superClass": {
+          "type": "MemberExpression",
+          "computed": false,
+          "object": {
+            "type": "Identifier",
+            "name": "L",
+            "range": [
+              146,
+              147
+            ],
+            "loc": {
+              "start": {
+                "line": 9,
+                "column": 33
+              },
+              "end": {
+                "line": 9,
+                "column": 34
+              }
+            }
+          },
+          "property": {
+            "type": "Identifier",
+            "name": "TileLayer",
+            "range": [
+              148,
+              157
+            ],
+            "loc": {
+              "start": {
+                "line": 9,
+                "column": 35
+              },
+              "end": {
+                "line": 9,
+                "column": 44
+              }
+            }
+          },
+          "range": [
+            146,
+            157
+          ],
+          "loc": {
+            "start": {
+              "line": 9,
+              "column": 33
+            },
+            "end": {
+              "line": 9,
+              "column": 44
+            }
+          }
+        },
+        "body": {
+          "type": "ClassBody",
+          "body": [
+            {
+              "type": "MethodDefinition",
+              "key": {
+                "type": "Identifier",
+                "name": "constructor",
+                "range": [
+                  329,
+                  340
+                ],
+                "loc": {
+                  "start": {
+                    "line": 15,
+                    "column": 4
+                  },
+                  "end": {
+                    "line": 15,
+                    "column": 15
+                  }
+                }
+              },
+              "value": {
+                "type": "FunctionExpression",
+                "id": null,
+                "params": [
+                  {
+                    "type": "Identifier",
+                    "name": "url",
+                    "range": [
+                      341,
+                      344
+                    ],
+                    "loc": {
+                      "start": {
+                        "line": 15,
+                        "column": 16
+                      },
+                      "end": {
+                        "line": 15,
+                        "column": 19
+                      }
+                    }
+                  },
+                  {
+                    "type": "Identifier",
+                    "name": "options",
+                    "range": [
+                      346,
+                      353
+                    ],
+                    "loc": {
+                      "start": {
+                        "line": 15,
+                        "column": 21
+                      },
+                      "end": {
+                        "line": 15,
+                        "column": 28
+                      }
+                    }
+                  }
+                ],
+                "body": {
+                  "type": "BlockStatement",
+                  "body": [
+                    {
+                      "type": "ExpressionStatement",
+                      "expression": {
+                        "type": "CallExpression",
+                        "callee": {
+                          "type": "Super",
+                          "range": [
+                            364,
+                            369
+                          ],
+                          "loc": {
+                            "start": {
+                              "line": 16,
+                              "column": 8
+                            },
+                            "end": {
+                              "line": 16,
+                              "column": 13
+                            }
+                          }
+                        },
+                        "arguments": [
+                          {
+                            "type": "Identifier",
+                            "name": "url",
+                            "range": [
+                              370,
+                              373
+                            ],
+                            "loc": {
+                              "start": {
+                                "line": 16,
+                                "column": 14
+                              },
+                              "end": {
+                                "line": 16,
+                                "column": 17
+                              }
+                            }
+                          },
+                          {
+                            "type": "Identifier",
+                            "name": "options",
+                            "range": [
+                              375,
+                              382
+                            ],
+                            "loc": {
+                              "start": {
+                                "line": 16,
+                                "column": 19
+                              },
+                              "end": {
+                                "line": 16,
+                                "column": 26
+                              }
+                            }
+                          }
+                        ],
+                        "range": [
+                          364,
+                          383
+                        ],
+                        "loc": {
+                          "start": {
+                            "line": 16,
+                            "column": 8
+                          },
+                          "end": {
+                            "line": 16,
+                            "column": 27
+                          }
+                        }
+                      },
+                      "range": [
+                        364,
+                        384
+                      ],
+                      "loc": {
+                        "start": {
+                          "line": 16,
+                          "column": 8
+                        },
+                        "end": {
+                          "line": 16,
+                          "column": 28
+                        }
+                      }
+                    }
+                  ],
+                  "range": [
+                    354,
+                    390
+                  ],
+                  "loc": {
+                    "start": {
+                      "line": 15,
+                      "column": 29
+                    },
+                    "end": {
+                      "line": 17,
+                      "column": 5
+                    }
+                  }
+                },
+                "generator": false,
+                "expression": false,
+                "range": [
+                  340,
+                  390
+                ],
+                "loc": {
+                  "start": {
+                    "line": 15,
+                    "column": 15
+                  },
+                  "end": {
+                    "line": 17,
+                    "column": 5
+                  }
+                }
+              },
+              "kind": "constructor",
+              "computed": false,
+              "range": [
+                329,
+                390
+              ],
+              "loc": {
+                "start": {
+                  "line": 15,
+                  "column": 4
+                },
+                "end": {
+                  "line": 17,
+                  "column": 5
+                }
+              },
+              "leadingComments": [
+                {
+                  "type": "Block",
+                  "value": "*\n     * See {@link http://leafletjs.com/reference-1.0.0.html#tilelayer} for more details.\n     * @param {string} url\n     * @param {object} [options]\n     ",
+                  "range": [
+                    164,
+                    324
+                  ],
+                  "loc": {
+                    "start": {
+                      "line": 10,
+                      "column": 4
+                    },
+                    "end": {
+                      "line": 14,
+                      "column": 7
+                    }
+                  }
+                }
+              ],
+              "static": false
+            }
+          ],
+          "range": [
+            158,
+            392
+          ],
+          "loc": {
+            "start": {
+              "line": 9,
+              "column": 45
+            },
+            "end": {
+              "line": 18,
+              "column": 1
+            }
+          }
+        },
+        "range": [
+          128,
+          392
+        ],
+        "loc": {
+          "start": {
+            "line": 9,
+            "column": 15
+          },
+          "end": {
+            "line": 18,
+            "column": 1
+          }
+        },
+        "leadingComments": [
+          {
+            "type": "Block",
+            "value": "*\n * Class representing Maps\n * @module components/Map\n * @augments L.TileLayer\n ",
+            "range": [
+              27,
+              112
+            ],
+            "loc": {
+              "start": {
+                "line": 4,
+                "column": 0
+              },
+              "end": {
+                "line": 8,
+                "column": 3
+              }
+            }
+          }
+        ],
+        "trailingComments": []
+      },
+      "range": [
+        113,
+        392
+      ],
+      "loc": {
+        "start": {
+          "line": 9,
+          "column": 0
+        },
+        "end": {
+          "line": 18,
+          "column": 1
+        }
+      },
+      "leadingComments": [
+        {
+          "type": "Block",
+          "value": "*\n * Class representing Maps\n * @module components/Map\n * @augments L.TileLayer\n ",
+          "range": [
+            27,
+            112
+          ],
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 0
+            },
+            "end": {
+              "line": 8,
+              "column": 3
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "sourceType": "module",
+  "range": [
+    0,
+    392
+  ],
+  "loc": {
+    "start": {
+      "line": 1,
+      "column": 0
+    },
+    "end": {
+      "line": 18,
+      "column": 1
+    }
+  },
+  "comments": [
+    {
+      "type": "Block",
+      "value": "*\n * Class representing Maps\n * @module components/Map\n * @augments L.TileLayer\n ",
+      "range": [
+        27,
+        112
+      ],
+      "loc": {
+        "start": {
+          "line": 4,
+          "column": 0
+        },
+        "end": {
+          "line": 8,
+          "column": 3
+        }
+      }
+    },
+    {
+      "type": "Block",
+      "value": "*\n     * See {@link http://leafletjs.com/reference-1.0.0.html#tilelayer} for more details.\n     * @param {string} url\n     * @param {object} [options]\n     ",
+      "range": [
+        164,
+        324
+      ],
+      "loc": {
+        "start": {
+          "line": 10,
+          "column": 4
+        },
+        "end": {
+          "line": 14,
+          "column": 7
+        }
+      }
+    }
+  ]
+}
