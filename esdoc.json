@@ -1,3 +1,4 @@
-/**
- * Created by combat on 23.08.16.
- */
+{
+  "source": "./src",
+  "destination": "./docs"
+}
