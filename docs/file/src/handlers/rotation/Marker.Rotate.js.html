@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <base data-ice="baseUrl" href="../../../../">
+  <title data-ice="title">src/handlers/rotation/Marker.Rotate.js | API Document</title>
+  <link type="text/css" rel="stylesheet" href="css/style.css">
+  <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
+  <script src="script/prettify/prettify.js"></script>
+  
+  
+  <script src="script/manual.js"></script>
+</head>
+<body class="layout-container" data-ice="rootContainer">
+
+<header>
+  <a href="./">Home</a>
+  
+  <a href="identifiers.html">Reference</a>
+  <a href="source.html">Source</a>
+  
+  
+  <div class="search-box">
+  <span>
+    <img src="./image/search.png">
+    <span class="search-input-edge"></span><input class="search-input"><span class="search-input-edge"></span>
+  </span>
+    <ul class="search-result"></ul>
+  </div>
+</header>
+
+<nav class="navigation" data-ice="nav"><div>
+  <ul>
+    
+  <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-API">API</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/FigureIcon.js~FigureIcon.html">FigureIcon</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/Map.js~Map.html">Map</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/Overlay.js~Overlay.html">Overlay</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/Feature</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/Feature/Feature.js~Feature.html">Feature</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/Feature/FeatureCamera.js~FeatureCamera.html">FeatureCamera</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/MapSet</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/MapSet/MapSet.js~MapSet.html">MapSet</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">core</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/core/Component.js~Component.html">Component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/core/Rest.js~Rest.html">Rest</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/core/Socket.js~Socket.html">Socket</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/core/Storage.js~Storage.html">Storage</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-applyComponent">applyComponent</a></span></span></li>
+</ul>
+</div>
+</nav>
+
+<div class="content" data-ice="content"><h1 data-ice="title">src/handlers/rotation/Marker.Rotate.js</h1>
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import L from &apos;leaflet&apos;;
+
+
+// @section Marker options
+L.Marker.mergeOptions({
+    // @option selectable: Boolean = true
+    // Whether the marker can be rotated using mouse/touch events or not.
+    rotatable: false,
+});
+
+/**
+ * Handler providing rotation for L.Marker instance. Disabled by default.
+ * @class L.Handler.MarkerRotate
+ * @extends L.Handler
+ */
+L.Handler.MarkerRotate = class MarkerRotate extends L.Handler {
+    initialize(marker) {
+        this._marker = marker;
+    }
+
+    addHooks() {
+        this._marker.on({
+            &apos;add&apos;: this._onAdd,
+            &apos;remove&apos;: this._onRemove
+        }, this);
+        if (this._marker._map) {
+            this._onAdd();
+        }
+    }
+
+    removeHooks() {
+        this._marker.off({
+            &apos;add&apos;: this._onAdd,
+            &apos;remove&apos;: this._onRemove
+        }, this);
+        if (this._marker._map) {
+            this._onRemove();
+        }
+    }
+
+    _onAdd() {
+        if (this._marker._map) {
+            this._marker._map.on({
+                &apos;mousedown&apos;: this._onMapMouseDown,
+                &apos;mouseup&apos;: this._onMapMouseUp,
+            }, this);
+        }
+    }
+
+    _onRemove() {
+        if (this._marker._map) {
+            this._marker._map.off({
+                &apos;mousedown&apos;: this._onMapMouseDown,
+                &apos;mouseup&apos;: this._onMapMouseUp,
+                &apos;mousemove&apos;: this._onMapMouseMove,
+            }, this);
+        }
+    }
+
+    _onMapMouseDown(event) {
+        const map = event.target, marker = this._marker;
+
+        this._startAngle = marker.options.angle;
+        if (map.dragging.enabled()) {
+            this._reenableMapDragging = true;
+            map.dragging.disable();
+        }
+        map.on(&apos;mousemove&apos;, this._onMapMouseMove, this);
+        L.DomUtil.addClass(map.getContainer(), &apos;leaflet-crosshair&apos;);
+
+        this._onMapMouseMove(event, true);
+        marker.fireEvent(&apos;rotatestart&apos;, {angle: marker.options.angle, startAngle: this._startAngle});
+    }
+
+    _onMapMouseUp(event) {
+        const map = event.target, marker = this._marker;
+
+        delete this._startAngle;
+        if (this._reenableMapDragging) {
+            delete this._reenableMapDragging;
+            map.dragging.enable();
+        }
+        map.off(&apos;mousemove&apos;, this._onMapMouseMove, this);
+        L.DomUtil.removeClass(map.getContainer(), &apos;leaflet-crosshair&apos;);
+
+        this._onMapMouseMove(event, true);
+        marker.fireEvent(&apos;rotateend&apos;, {angle: marker.options.angle, startAngle: this._startAngle});
+    }
+
+    _onMapMouseMove(event, skipFire) {
+        const map = event.target, marker = this._marker;
+        const mPoint = map.latLngToContainerPoint(marker.getLatLng()), cPoint = event.containerPoint;
+        let angle = Math.atan2(cPoint.x - mPoint.x, mPoint.y - cPoint.y);
+        angle = angle / Math.PI * 180; // Rad --&gt; Degrees
+
+        marker.options.angle = angle;
+        marker.update();
+        skipFire || marker.fireEvent(&apos;rotate&apos;, {angle: angle, startAngle: this._startAngle});
+    }
+};
+
+// Add init hook for MarkerSelect handler
+L.Marker.addInitHook(function() {
+    if (L.Handler.MarkerRotate) {
+        this.rotating = new L.Handler.MarkerRotate(this);
+
+        if (this.options.rotatable) {
+            this.rotating.enable();
+        }
+    }
+});
+
+// Overwrites L.Marker setPos method.
+function setPos(pos) {
+    setPos.base.call(this, pos);
+
+    if (this.options.angle) {
+        const oldIE = (L.DomUtil.TRANSFORM === &apos;msTransform&apos;);
+        let isNestedIcon = this._icon.hasChildNodes(), rotatableElement = this._icon;
+
+        if (isNestedIcon) {
+            rotatableElement = this._icon.getElementsByClassName(&apos;leaflet-rotatable&apos;)[0] || rotatableElement;
+        }
+        if (oldIE || isNestedIcon) {
+            rotatableElement.style[L.DomUtil.TRANSFORM] = `rotate(${ this.options.angle }deg)`;
+        } else {
+            // Use 3D accelerated version for the modern browsers
+            rotatableElement.style[L.DomUtil.TRANSFORM] += ` rotate(${ this.options.angle }deg)`;
+        }
+    }
+}
+
+setPos.base = L.Marker.prototype._setPos;
+L.Marker.prototype._setPos = setPos;
+</code></pre>
+
+</div>
+
+<footer class="footer">
+  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(0.4.8)</span></a>
+</footer>
+
+<script src="script/search_index.js"></script>
+<script src="script/search.js"></script>
+<script src="script/pretty-print.js"></script>
+<script src="script/inherited-summary.js"></script>
+<script src="script/test-summary.js"></script>
+<script src="script/inner-link.js"></script>
+<script src="script/patch-for-local.js"></script>
+</body>
+</html>

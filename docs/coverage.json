@@ -1,0 +1,88 @@
+{
+  "coverage": "63.46%",
+  "expectCount": 52,
+  "actualCount": 33,
+  "files": {
+    "src/settings.js": {
+      "expectCount": 1,
+      "actualCount": 0,
+      "undocumentLines": [
+        1
+      ]
+    },
+    "src/core/Component.js": {
+      "expectCount": 14,
+      "actualCount": 10,
+      "undocumentLines": [
+        12,
+        85,
+        13,
+        15
+      ]
+    },
+    "src/components/Feature/Feature.js": {
+      "expectCount": 2,
+      "actualCount": 2,
+      "undocumentLines": []
+    },
+    "src/components/Feature/FeatureCamera.js": {
+      "expectCount": 2,
+      "actualCount": 2,
+      "undocumentLines": []
+    },
+    "src/components/FigureIcon.js": {
+      "expectCount": 4,
+      "actualCount": 3,
+      "undocumentLines": [
+        4
+      ]
+    },
+    "src/components/Map.js": {
+      "expectCount": 2,
+      "actualCount": 2,
+      "undocumentLines": []
+    },
+    "src/components/MapSet/MapSet.js": {
+      "expectCount": 9,
+      "actualCount": 5,
+      "undocumentLines": [
+        18,
+        47,
+        19,
+        20
+      ]
+    },
+    "src/components/Overlay.js": {
+      "expectCount": 2,
+      "actualCount": 2,
+      "undocumentLines": []
+    },
+    "src/core/Rest.js": {
+      "expectCount": 4,
+      "actualCount": 1,
+      "undocumentLines": [
+        14,
+        21,
+        13
+      ]
+    },
+    "src/core/Socket.js": {
+      "expectCount": 4,
+      "actualCount": 1,
+      "undocumentLines": [
+        13,
+        9,
+        10
+      ]
+    },
+    "src/core/Storage.js": {
+      "expectCount": 8,
+      "actualCount": 5,
+      "undocumentLines": [
+        8,
+        10,
+        9
+      ]
+    }
+  }
+}

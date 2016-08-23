@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <base data-ice="baseUrl" href="../../../">
+  <title data-ice="title">src/core/Component.js | API Document</title>
+  <link type="text/css" rel="stylesheet" href="css/style.css">
+  <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
+  <script src="script/prettify/prettify.js"></script>
+  
+  
+  <script src="script/manual.js"></script>
+</head>
+<body class="layout-container" data-ice="rootContainer">
+
+<header>
+  <a href="./">Home</a>
+  
+  <a href="identifiers.html">Reference</a>
+  <a href="source.html">Source</a>
+  
+  
+  <div class="search-box">
+  <span>
+    <img src="./image/search.png">
+    <span class="search-input-edge"></span><input class="search-input"><span class="search-input-edge"></span>
+  </span>
+    <ul class="search-result"></ul>
+  </div>
+</header>
+
+<nav class="navigation" data-ice="nav"><div>
+  <ul>
+    
+  <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-API">API</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/FigureIcon.js~FigureIcon.html">FigureIcon</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/Map.js~Map.html">Map</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/Overlay.js~Overlay.html">Overlay</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/Feature</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/Feature/Feature.js~Feature.html">Feature</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/Feature/FeatureCamera.js~FeatureCamera.html">FeatureCamera</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/MapSet</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/MapSet/MapSet.js~MapSet.html">MapSet</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">core</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/core/Component.js~Component.html">Component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/core/Rest.js~Rest.html">Rest</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/core/Socket.js~Socket.html">Socket</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/core/Storage.js~Storage.html">Storage</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-applyComponent">applyComponent</a></span></span></li>
+</ul>
+</div>
+</nav>
+
+<div class="content" data-ice="content"><h1 data-ice="title">src/core/Component.js</h1>
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import uuid from &apos;uuid4&apos;;
+
+
+/**
+ * Base component class for one-way data binding
+ * it&apos;s very similar to ReactJS component architecture,
+ * but not supporting props and propTypes.
+ * Use this documentation as reference {@link https://facebook.github.io/react/docs/component-specs.html}
+ * @module core/Component
+ */
+export default class Component {
+    constructor() {
+        this.state = {};
+        this._element = document.createElement(&apos;loader&apos;);
+        this.uuid = uuid();
+        this.postInitialize();
+    }
+
+    /**
+     * Use this method to update state of component
+     * @param {object} updatedState
+     */
+    setState(updatedState) {
+        Object.assign(this.state, updatedState);
+        this.postRender();
+    }
+
+    /**
+     * Overwrite this method to initialize any logic operation
+     * on your component
+     */
+    initialize() {
+        // Overwrite your component initialize
+        this.state.text = &apos;Example component content&apos;;
+    }
+
+    /**
+     * Build in function to make operations after initialization is over
+     */
+    postInitialize() {
+        // Take component initialize asynchronously to take care
+        // about constructor of extending component class
+        setTimeout(() =&gt; {this.initialize()}, 1);
+    }
+
+    /**
+     * Overwrite this method to make any DOM operations.
+     * @returns {Element}
+     */
+    render() {
+        // Overwrite your dom initialize
+        let content = document.createTextNode(this.state.text);
+        let wrapper = document.createElement(&apos;component&apos;);
+
+        wrapper.appendChild(content);
+
+        return wrapper;
+    }
+
+    /**
+     * Build in function to apply operations after render is over
+     */
+    postRender() {
+        // Take component render method and apply UUID
+        const componentElement = this.render();
+
+        componentElement.setAttribute(&apos;data-component&apos;, this.uuid);
+
+        this._element = componentElement;
+        this.postUpdate();
+    }
+
+    /**
+     * Last element of the component life cycle, mostly used by applyComponent method
+     */
+    static postUpdate() {
+        return false;
+    }
+
+    /**
+     * Setter of postUpdate method
+     * @param func
+     */
+    set onUpdate(func) {
+        this.postUpdate = func;
+    }
+
+    /**
+     * Element getter
+     * @returns {Element|*}
+     */
+    get element() {
+        return this._element;
+    }
+}
+
+
+/**
+ * Applying component into DOM body
+ * @param {string} qs - Query String, where we should inject component
+ * @param {Component|*} component
+ */
+export function applyComponent(qs, component) {
+    const element = document.querySelector(qs);
+    // XXX: Slow method of childs cleaning, it can be improved if needed
+    element.innerHTML = &apos;&apos;;
+    element.appendChild(component.element);
+    component.onUpdate = () =&gt; {
+        applyComponent(qs, component)
+    };
+}
+</code></pre>
+
+</div>
+
+<footer class="footer">
+  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(0.4.8)</span></a>
+</footer>
+
+<script src="script/search_index.js"></script>
+<script src="script/search.js"></script>
+<script src="script/pretty-print.js"></script>
+<script src="script/inherited-summary.js"></script>
+<script src="script/test-summary.js"></script>
+<script src="script/inner-link.js"></script>
+<script src="script/patch-for-local.js"></script>
+</body>
+</html>

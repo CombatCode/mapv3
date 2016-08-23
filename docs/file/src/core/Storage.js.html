@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <base data-ice="baseUrl" href="../../../">
+  <title data-ice="title">src/core/Storage.js | API Document</title>
+  <link type="text/css" rel="stylesheet" href="css/style.css">
+  <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
+  <script src="script/prettify/prettify.js"></script>
+  
+  
+  <script src="script/manual.js"></script>
+</head>
+<body class="layout-container" data-ice="rootContainer">
+
+<header>
+  <a href="./">Home</a>
+  
+  <a href="identifiers.html">Reference</a>
+  <a href="source.html">Source</a>
+  
+  
+  <div class="search-box">
+  <span>
+    <img src="./image/search.png">
+    <span class="search-input-edge"></span><input class="search-input"><span class="search-input-edge"></span>
+  </span>
+    <ul class="search-result"></ul>
+  </div>
+</header>
+
+<nav class="navigation" data-ice="nav"><div>
+  <ul>
+    
+  <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-API">API</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/FigureIcon.js~FigureIcon.html">FigureIcon</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/Map.js~Map.html">Map</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/Overlay.js~Overlay.html">Overlay</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/Feature</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/Feature/Feature.js~Feature.html">Feature</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/Feature/FeatureCamera.js~FeatureCamera.html">FeatureCamera</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/MapSet</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/MapSet/MapSet.js~MapSet.html">MapSet</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">core</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/core/Component.js~Component.html">Component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/core/Rest.js~Rest.html">Rest</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/core/Socket.js~Socket.html">Socket</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/core/Storage.js~Storage.html">Storage</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-applyComponent">applyComponent</a></span></span></li>
+</ul>
+</div>
+</nav>
+
+<div class="content" data-ice="content"><h1 data-ice="title">src/core/Storage.js</h1>
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">/**
+ * @module core/Storage
+ * @description
+ * Service to hold key/value pairs using localStorage or sessionStorage.
+ * Supports all major browsers http://caniuse.com/#feat=namevalue-storage
+ */
+export default class Storage {
+    constructor(engine, prefix) {
+        this.prefix = prefix;
+        this.engine = engine;
+        /**
+         * Verify if engine is provided.
+         */
+        if (!engine) {
+            throw Error(&apos;WebStorage engine was not provided.&apos;);
+        } else if (!this.isEngineSupported()) {
+            throw Error(&apos;WebStorage engine is not supported.&apos;);
+        }
+    }
+
+    /**
+     * @function isEngineSupported
+     * @description
+     * Function to verify if requested engine is supported by
+     * client browser.
+     * @return {Boolean} True if engine is supported, else false.
+     */
+    isEngineSupported() {
+        try {
+            const param = &apos;__support__&apos;;
+            this.engine.setItem(param, param);
+            this.engine.removeItem(param);
+            return true;
+        } catch (e) {
+            return false;
+        }
+    }
+
+    /**
+     * @method setItem
+     * @description
+     * Setter for the key/value web store.
+     * @param {String} key - Name of the key to retrieve.
+     * @param {String} value - Name of the value to retrieve.
+     * @return {Boolean} True on success, else false.
+     */
+    setItem(key, value) {
+        const formattedKey = `${this.prefix}:${key}`;
+
+        return this.engine.setItem(formattedKey, value) || false;
+    };
+
+    /**
+     * @method getItem
+     * @description
+     * Getter for the key/value web store.
+     * @param {String} key - Name of the value to retrieve.
+     * @return {Boolean} True on success, else false.
+     */
+    getItem(key) {
+        const formattedKey = `${this.prefix}:${key}`;
+
+        return this.engine.getItem(formattedKey) || false;
+    };
+
+    /**
+     * @method removeItem
+     * @description
+     * Remove a specified value from the key/value web store.
+     * @param {String} key - Name of the value to remove.
+     * @return {Boolean} True on success, else false.
+     */
+    removeItem(key) {
+        const formattedKey = `${this.prefix}:${key}`;
+
+        return this.engine.removeItem(formattedKey) || false;
+    };
+}
+</code></pre>
+
+</div>
+
+<footer class="footer">
+  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(0.4.8)</span></a>
+</footer>
+
+<script src="script/search_index.js"></script>
+<script src="script/search.js"></script>
+<script src="script/pretty-print.js"></script>
+<script src="script/inherited-summary.js"></script>
+<script src="script/test-summary.js"></script>
+<script src="script/inner-link.js"></script>
+<script src="script/patch-for-local.js"></script>
+</body>
+</html>
