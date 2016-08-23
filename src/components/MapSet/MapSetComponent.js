@@ -1,5 +1,5 @@
 import Rest from './../../core/Rest';
-import WS from './../../core/WS';
+import WS from './../../core/Storage';
 import Component from './../../core/Component';
 import MapSet from './MapSet';
 import Map from './../Map';
