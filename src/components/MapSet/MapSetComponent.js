@@ -4,8 +4,6 @@ import Component from './../../core/Component';
 import MapSet from './MapSet';
 import Map from './../Map';
 import Overlay from './../Overlay';
-import FeatureCluster from '../Feature/FeatureCluster';
-import FeatureCamera from './../Feature/FeatureCamera';
 import Feature from '../Feature/Feature'
 
 
@@ -57,8 +55,7 @@ export default class MapSetComponent extends Component {
                     this.mapSet.instance.remove();
                 }
 
-                this.mapSet = new MapSet(mapSetData.id, mapSetData.ms_name,
-                    Object.assign({}, this._initContextMenu()));
+                this.mapSet = new MapSet(mapSetData.id, mapSetData.ms_name, {});
             }
         }
     }
@@ -126,12 +123,7 @@ export default class MapSetComponent extends Component {
                     );
                 }
             }
-            let mapSet = this.mapSet.instance;
-            let markers = (L.markerClusterGroup({zoomToBoundsOnClick: false})).addLayers(featuresList);
-            // this forces L.markercluster plugin to use our own class for clusters
-            markers._markerCluster = FeatureCluster;
-            mapSet.addLayer(markers);
-            mapSet.markers = markers;
+            this.mapSet.features.addLayers(featuresList);
         });
     }
 

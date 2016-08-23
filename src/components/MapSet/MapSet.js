@@ -1,6 +1,8 @@
 import L from 'leaflet';
-import '../../handlers/drop/Map.Drop';
 
+import '../../handlers/drop/Map.Drop';
+import Feature from '../Feature/Feature';
+import FeatureGroup from '../Feature/FeatureGroup';
 import ControlRotate from './../Control/Control.Rotate';
 
 
@@ -34,9 +36,12 @@ export default class MapSet {
     initialize() {
         let lmap = this._instance = new L.Map(this._containerId, this.options);
         lmap._mapSet = this;
+        let features = this.features = lmap.features = new FeatureGroup({zoomToBoundsOnClick: false});
         lmap.addControl(new ControlRotate({
             content: '<i class="icon repeat"></i>'
         }));
+
+        lmap.once('zoomlevelschange', (e) => features.addTo(lmap));
 
         return lmap;
     }
