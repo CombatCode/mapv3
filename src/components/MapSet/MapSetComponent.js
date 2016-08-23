@@ -205,30 +205,4 @@ export default class MapSetComponent extends Component {
         }
         return $mapSetsElements;
     }
-
-    _initContextMenu() {
-        return {
-            contextmenu:      true,
-            contextmenuWidth: 140,
-            contextmenuItems: [{
-                text:     'Center map here',
-                iconCls:  'fa fa-dot-circle-o',
-                callback: function centerMap(event) {
-                    this.panTo(event.latlng);
-                }
-            }, '-', {
-                text:     'Zoom in',
-                iconCls:  'fa fa-search-plus',
-                callback: function zoomIn(event) {
-                    this.zoomIn();
-                }
-            }, {
-                text:     'Zoom out',
-                iconCls:  'fa fa-search-minus',
-                callback: function zoomOut(event) {
-                    this.zoomOut();
-                }
-            }]
-        }
-    }
 }

@@ -22,7 +22,7 @@ export default class FeatureCamera extends Feature {
                 iconSize: [56, 50],
                 id: options.id,
                 status: options.status || 'unknown',
-                title: options.title || ''
+                title: options.name || ('id' in options? `Camera ${options.id}` : '')
             });
         }
         super(latlng, options);
