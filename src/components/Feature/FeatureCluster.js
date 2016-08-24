@@ -4,6 +4,7 @@ import 'leaflet.markercluster';
 
 /**
  * Class representing a cluster of Features on map
+ * @module components/Feature/FeatureCluster
  * @extends L.MarkerCluster
  */
 export default class FeatureCluster extends L.MarkerCluster {

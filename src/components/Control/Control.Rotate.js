@@ -4,17 +4,37 @@ import L from 'leaflet';
 /**
  * A one button control to activate rotate handler on selected Markers
  * @extends L.Control
+ * @module components/Control/Control.Rotate
  */
 export default class ControlRotate extends L.Control {
+
+    static defaults = Object.assign(Object.create(L.Control.prototype.options), {
+        position: 'topleft',
+        // The text/content of the button.
+        // @type {string|Node}
+        content: 'R',
+        // The default title attribute of the button.
+        // @type {string}
+        title: 'Rotate',
+        // Layers filter function.
+        // @type {function(L.layer):boolean}
+        filter: function(layer) {
+            return layer instanceof L.Marker && !(layer instanceof L.MarkerCluster)
+        },
+        // CSS class name for control
+        // @type {string}
+        className: 'leaflet-control-rotate'
+    })
+
     /**
      * Auto. called when L.Control is added to L.Map
      * @param {L.Map} map
      * @returns {Element} Control's DOM element
      */
     onAdd(map) {
-        let container = L.DomUtil.create('div', `${ControlRotate.className} leaflet-bar`);
+        let container = L.DomUtil.create('div', `${this.options.className} leaflet-bar`);
 
-        this._button = this._createButton(`${ControlRotate.className}-btn`, {title: this.options.title}, this._onPress,
+        this._button = this._createButton(`${this.options.className}-btn`, {title: this.options.title}, this._onPress,
             this.options.content, container);
 
         L.DomEvent.on(container, 'mouseup mousedown click dblclick', L.DomEvent.stopPropagation);
@@ -141,21 +161,4 @@ export default class ControlRotate extends L.Control {
     }
 };
 
-
-ControlRotate.className = 'leaflet-control-rotate';
-
-
-ControlRotate.mergeOptions({
-    position: 'topleft',
-    // The text/content of the button.
-    // @type {string|Node}
-    content: 'R',
-    // The default title attribute of the button.
-    // @type {string}
-    title: 'Rotate',
-    // Layers filter function.
-    // @type {function(L.layer):boolean}
-    filter: function(layer) {
-        return layer instanceof L.Marker && !(layer instanceof L.MarkerCluster)
-    }
-});
+ControlRotate.include({options: ControlRotate.defaults});

@@ -1,8 +1,7 @@
 import L from 'leaflet';
 
 import '../../handlers/drop/Map.Drop';
-import Feature from '../Feature/Feature';
-import FeatureGroup from '../Feature/FeatureGroup';
+import { createFeature, FeatureGroup } from '../Feature/Features';
 import ControlRotate from './../Control/Control.Rotate';
 
 
@@ -83,7 +82,7 @@ export default class MapSet {
         } catch(ex) {}
 
         if (typeof data === 'object' && data !== null) {
-            let newFeature = Feature.createFeature(data.type, event.latlng, {id: data.id});
+            let newFeature = createFeature(data.type, event.latlng, {id: data.id});
             let map = this._instance;
             if (newFeature instanceof L.Layer) {
                 newFeature._map = map;

@@ -4,7 +4,7 @@ import Component from './../../core/Component';
 import MapSet from './MapSet';
 import Map from './../Map';
 import Overlay from './../Overlay';
-import Feature from '../Feature/Feature'
+import { createFeature } from '../Feature/Features';
 
 
 /**
@@ -109,7 +109,7 @@ export default class MapSetComponent extends Component {
                 let feature = featureEntity.data();
                 if (feature.go_type === 'camera_ptz') {
                     featuresList.push(
-                        Feature.createFeature(
+                        createFeature(
                             'camera', [
                                 feature.go_position.lat,
                                 feature.go_position.lon

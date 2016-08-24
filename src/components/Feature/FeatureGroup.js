@@ -1,11 +1,12 @@
+import L from 'leaflet';
 import 'leaflet.markercluster';
-import FeatureCluster from '../Feature/FeatureCluster';
-import './../Feature/FeatureCamera';
+import FeatureCluster from './FeatureCluster';
 
 
 /**
- * Represents a group of Features
- * Nothing here yet
+ * Represents a group of Features. Nothing here yet.
+ * @module components/Feature/FeatureGroup
+ * @extends L.MarkerClusterGroup
  **/
 export default class FeatureGroup extends L.MarkerClusterGroup {
     initialize(options) {
