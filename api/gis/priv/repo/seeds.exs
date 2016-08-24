@@ -173,7 +173,7 @@ defmodule Seeds do
 # ovl_name, ovl_description, ovl_icon, ovl_attributes, ovl_type, inserted_at, updated_at, 
 # gisoverlayersets_id
     def import_overlayer(name, ovl_set, map_boundary) do
-        image_url = "http://elixir-lang.org/images/logo/logo.png"
+        image_url = "http://almaqam.net/images/black-opacity-80.png"
         ovl_boudary = get_boundary(map_boundary)
         bounds = [%{"latmin" => Map.get(ovl_boudary, :latmin), "lonmin" => Map.get(ovl_boudary, :lonmin)},
                   %{"latmax" => Map.get(ovl_boudary, :latmax), "lonmax" => Map.get(ovl_boudary, :lonmax)}]

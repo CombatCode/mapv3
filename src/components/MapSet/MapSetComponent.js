@@ -94,6 +94,7 @@ export default class MapSetComponent extends Component {
             this.mapSet.initialize();
             streetMap.addTo(this.mapSet.instance);
             this.fetchFeatures(mapID, mapSetID);
+            this.parseOverlayers(mapData.gisoverlayersets);
             // XXX: Only for example.html as now
             let el = document.querySelector('#mapv3 .intro');
             el && el.remove();
@@ -127,6 +128,25 @@ export default class MapSetComponent extends Component {
             let markers = (L.markerClusterGroup()).addLayers(featuresList);
             this.mapSet.instance.addLayer(markers);
         });
+    }
+
+    parseOverlayers(overlayerSet) {
+        let overlayControl = {};
+        for(let overlayer of overlayerSet.overlayers) {
+            overlayControl[overlayer.ovl_name] = new Overlay(
+                'http://almaqam.net/images/black-opacity-80.png',
+                [
+                    [
+                        overlayer.ovl_attributes.bounds[0].latmin,
+                        overlayer.ovl_attributes.bounds[0].lonmin
+                    ], [
+                        overlayer.ovl_attributes.bounds[1].latmax,
+                        overlayer.ovl_attributes.bounds[1].lonmax
+                    ]
+                ]
+            )
+        }
+        L.control.layers(null, overlayControl).addTo(this.mapSet.instance);
     }
 
     fetchMapsList(mapSetID) {
