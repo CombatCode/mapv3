@@ -157,10 +157,11 @@ defmodule Seeds do
         :random.seed(:erlang.now())
         if items_count < items_per_type do
             position = get_point_from_bounary(boundary) 
-            go_id = round(:random.uniform()*1000000)
+            go_id = :random.uniform(1000000)
+            go_angle = :rand.uniform(360)
             object = Gis.Repo.insert!(%Gis.GisObject{go_id: go_id, go_name: "#{objtype.ot_name}: #{go_id}",
                                                      go_description: "Test Description",
-                                                     go_attributes: %{}, go_enabled: true, go_angle: 0.0,
+                                                     go_attributes: %{}, go_enabled: true, go_angle: go_angle,
                                                      go_position: position, gisobjecttypes_id: objtype.id})
             import_objects(objtype, objects_per_map, boundary, items_per_type, items_count + 1, [object|objects])
         else
