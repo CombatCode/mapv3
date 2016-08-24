@@ -8,4 +8,10 @@ defmodule Gis.Api.OverlayersView do
         ovl_icon: overlayers.ovl_icon, ovl_description: overlayers.ovl_description,
         ovl_type: overlayers.ovl_type}
   end
+  
+  def render("show.json", %{overlayer: overlayer}) do
+      %{overlayers: render_many(overlayer, __MODULE__, "overlayers.json", as: :overlayers)}
+  end
+  
+
 end

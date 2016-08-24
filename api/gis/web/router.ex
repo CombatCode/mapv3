@@ -36,9 +36,13 @@ defmodule Gis.Router do
       get "/mapsets/:ms_id/maps/", Api.MapSetsController, :show
       get "/mapsets/:ms_id/maps/:map_id", Api.MapsController, :show
       get "/mapsets/:ms_id/maps/:map_id/features" , Api.ObjectsController, :index
-      get "/mapsets/:ms_id/maps/:map_id/overlayersets/", Api.OverlayerSetsController, :index
+      get "/mapsets/:ms_id/maps/:map_id/overlayersets/", Api.OverlayerSetsController, :show
       get "/mapsets/:ms_id/maps/:map_id/overlayersets/:ovs_id/overlayers", Api.OverlayersController, :show
       get "/mapsets/:ms_id/maps/:map_id/features/:latmin/:lonmin/:latmax/:lonmax", Api.ObjectsController, :on_map
       get "/objecttypes/", Api.ObjectTypesController, :index
     end
+    
+    # socket "/ws", Gis do
+    #   channel "rooms:*", RoomChannel
+    # end
 end
