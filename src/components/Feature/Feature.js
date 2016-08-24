@@ -7,6 +7,20 @@ import L from 'leaflet';
  * @augments L.Marker
  */
 export default class Feature extends L.Marker {
+    static defaults = Object.assign(Object.create(L.Marker.prototype.options), {
+        contextmenu: true,
+        contextmenuItems: [{
+            text: 'Unknown feature',
+            disabled: true,
+            index: 0
+        }, {
+            separator: true,
+            index: 1
+        }],
+
+        rotateCondition: Feature.rotateCondition
+    })
+
     /**
      * See {@link http://leafletjs.com/reference-1.0.0.html#marker} for more details.
      * @param {object} latlng - geographical point [latitude, longitude]
@@ -17,31 +31,24 @@ export default class Feature extends L.Marker {
     }
 
     /**
-     * Factory
-     * @param {string} type
-     * @param {*} params
-     * @returns [Feature]
+     * Extends method from Leaflet.contextmenu plugin.
+     * @param {Event} event DOM event
+     * @param {string} [menuType] Uses different contextmenu, all options params must be defined with type prefix.
+     * @private
      */
-    static createFeature(type, ...params) {
-        const FeatureCtr = Feature.constructors[type];
-        return FeatureCtr? new FeatureCtr(...params) : undefined;
-    }
-
-    // Show custom contextmenu when dropping Feature on map.
     _showContextMenu(event, menuType) {
-        //if (event.originalEvent.type === 'drop' && this.options.onDropContextmenuItems) {
         if (menuType) {
-            this._map.once('contextmenu.hide', (function(ownItems, items, ownInherit, inherit) {
-                ownItems? (this.options.contextmenuItems = items) : (delete this.options.contextmenuItems);
-                ownInherit? (this.options.contextmenuInheritItems = inherit) :
+            const items = this.options.contextmenuItems;
+            const ownItems = Object.hasOwnProperty(this.options, 'contextmenuItems');
+            const inherit = this.options.contextmenuInheritItems;
+            const ownInherit = Object.hasOwnProperty(this.options, 'contextmenuInheritItems');
+
+            this._map.once('contextmenu.hide', function revertChanges() {
+                ownItems ? (this.options.contextmenuItems = items) :
+                    (delete this.options.contextmenuItems);
+                ownInherit ? (this.options.contextmenuInheritItems = inherit) :
                     (delete this.options.contextmenuInheritItems);
-            }).bind(
-                this,
-                Object.hasOwnProperty(this.options, 'contextmenuItems'),
-                this.options.contextmenuItems,
-                Object.hasOwnProperty(this.options, 'contextmenuInheritItems'),
-                this.options.contextmenuInheritItems
-            ));
+            }, this);
             this.options.contextmenuItems = this.options[`${menuType}ContextmenuItems`];
             this.options.contextmenuInheritItems = this.options[`${menuType}ContextmenuInheritItems`];
         }
@@ -49,9 +56,14 @@ export default class Feature extends L.Marker {
         super._showContextMenu(event);
     }
 
-    /** @param {L.Tooltip} tooltip */
+    /**
+     * Adapts tooltip offset's X axis when it's set to "auto" positioning.
+     * @param {L.Tooltip} tooltip
+     * @private
+     */
     _fixTooltipOffset(tooltip) {
-        let offset = tooltip.options.offset, direction = tooltip.options.direction;
+        const offset = tooltip.options.offset;
+        let direction = tooltip.options.direction;
 
         if (direction === 'auto') {
             direction = L.DomUtil.hasClass(tooltip._container, 'leaflet-tooltip-left')? 'left' : 'right';
@@ -62,39 +74,27 @@ export default class Feature extends L.Marker {
         }
     }
 
-    // no alt, ctrl, or shift pressed; not over another selectable marker
+
+    /**
+     * Additional condition regulates when rotating handler can start rotation.
+     * No alt, ctrl, or shift pressed; not when hovering another selectable marker.
+     * @param {Event} event
+     * @returns {boolean}
+     */
     static rotateCondition(event) {
-        const oEvent = event.originalEvent;
+        const oEvent = event.originalEvent || event;
         if (!oEvent.altKey && !oEvent.ctrlKey && !oEvent.shiftKey) {
-            let targetEl = oEvent.target, mapContainerEl = event.target.getContainer();
-            while (targetEl !== mapContainerEl) {
-                if (L.DomUtil.hasClass(targetEl, 'leaflet-marker-selectable')) {
-                    return false;
-                }
-                targetEl = targetEl.parentNode;
-            }
-            return true
+            return false;
         }
-        return false;
+        let targetEl = oEvent.target, mapContainerEl = event.target.getContainer();
+        while (targetEl !== mapContainerEl) {
+            if (L.DomUtil.hasClass(targetEl, 'leaflet-marker-selectable')) {
+                return false;
+            }
+            targetEl = targetEl.parentNode;
+        }
+        return true;
     }
 }
 
-// @namespace
-Feature.constructors = {};
-
-/** Inherit options (don't mutate L.Marker defaults) */
-Feature.prototype.options = Object.create(L.Marker.prototype.options);
-
-Feature.mergeOptions({
-    contextmenu: true,
-    contextmenuItems: [{
-        text: 'Unknown feature',
-        disabled: true,
-        index: 0
-    }, {
-        separator: true,
-        index: 1
-    }],
-
-    rotateCondition: Feature.rotateCondition
-});
+Feature.include({options: Feature.defaults});

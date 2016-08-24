@@ -9,28 +9,58 @@ import FigureIcon from './../FigureIcon';
  * @extends Feature
  */
 export default class FeatureCamera extends Feature {
+
+    static defaults = Object.assign(Object.create(Feature.defaults), {
+        // Only need single, reusable tooltip instance since we change popup content on open
+        tooltip: new L.tooltip({
+            offset: new L.Point(10, -15)
+        }),
+
+        // Leaflet.contextmenu options
+        contextmenuItems: [{
+            text: 'Camera',
+            iconCls: 'icon svmx feature camera',
+            disabled: true,
+            index: 0
+
+        }, {
+            separator: true,
+            index: 1
+        }],
+
+        onDropContextmenuItems: [{
+            text: 'locate',
+            iconCls: 'fa fa-compass',
+            callback: function(e) { alert('NOT IMPLEMENTED'); }
+        }, '-', {
+            text: 'add as Camera',
+            iconCls: 'icon svmx feature camera',
+            callback: function(e) { e.relatedTarget.addTo(this.features); }
+        }]
+    });
+
     /**
      * Feature of the camera marker.
      * @param {L.LatLng} latlng - geographical point [latitude, longitude]
      * @param {object} [options]
      */
     constructor(latlng, options = {}) {
-        if (!options.icon) {
+        if (!('name' in options) && 'id' in options) {
+            options.name = `Camera ${options.id}`
+        }
+        if (!('icon' in options)) {
             /** we must instantiate icons (because e.g. titles differs between Features) */
             options.icon = new FigureIcon({
                 className: 'FeatureCamera',
                 iconSize: [56, 50],
                 id: options.id,
                 status: options.status || 'unknown',
-                title: options.name || ('id' in options? `Camera ${options.id}` : '')
+                title: options.name
             });
         }
         super(latlng, options);
 
-        this.bindTooltip(this.options.title, {
-            offset: new L.Point(10, -15),
-            permanent: false
-        });
+        this.bindTooltip(this.options.tooltip);
         this.on('tooltipopen', FeatureCamera._onTooltipOpen, this);
     }
 
@@ -46,7 +76,7 @@ export default class FeatureCamera extends Feature {
 
         let content = [];
 
-        content.push(`<h4>${this.options.title}</h4>`);
+        content.push(`<h4>${this.options.name}</h4>`);
 
         content.push(`<table class="ui very basic table"><tbody>`,
             '<tr><td class="collapsing">State:</td>',
@@ -68,35 +98,4 @@ export default class FeatureCamera extends Feature {
     }
 }
 
-Feature.constructors.camera = FeatureCamera;
-
-
-FeatureCamera.include({
-    /** Inherit options */
-    options: Object.create(Feature.prototype.options)
-});
-
-
-FeatureCamera.mergeOptions({
-    // Leaflet.contextmenu options
-    contextmenuItems: [{
-        text: 'Camera',
-        iconCls: 'icon svmx feature camera',
-        disabled: true,
-        index: 0
-
-    }, {
-        separator: true,
-        index: 1
-    }],
-
-    onDropContextmenuItems: [{
-        text: 'locate',
-        iconCls: 'fa fa-compass',
-        callback: function(e) { alert('NOT IMPLEMENTED'); }
-    }, '-', {
-        text: 'add as Camera',
-        iconCls: 'icon svmx feature camera',
-        callback: function(e) { e.relatedTarget.addTo(this.features); }
-    }]
-});
+FeatureCamera.include({options: FeatureCamera.defaults});
