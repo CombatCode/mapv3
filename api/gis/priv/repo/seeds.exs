@@ -158,7 +158,7 @@ defmodule Seeds do
         if items_count < items_per_type do
             position = get_point_from_bounary(boundary) 
             go_id = :random.uniform(1000000)
-            go_angle = :rand.uniform(360)
+            go_angle = Float.ceil(:random.uniform() * 360, 2)
             object = Gis.Repo.insert!(%Gis.GisObject{go_id: go_id, go_name: "#{objtype.ot_name}: #{go_id}",
                                                      go_description: "Test Description",
                                                      go_attributes: %{}, go_enabled: true, go_angle: go_angle,
