@@ -1,6 +1,6 @@
 defmodule Gis.UserSocket do
   use Phoenix.Socket
-
+  require Logger
   ## Channels
   # channel "room:*", Gis.RoomChannel
 

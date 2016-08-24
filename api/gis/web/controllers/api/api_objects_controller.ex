@@ -24,6 +24,7 @@ defmodule Gis.Api.ObjectsController do
         {float_latmax, _} = Float.parse(latmax)
         {float_lonmin, _} = Float.parse(lonmin)
         {float_lonmax, _} = Float.parse(lonmax)
+        user = get_resp_header(conn, "username")
         objects = Gis.Repo.all(from o in Gis.GisObject,
                                  join: ma in Gis.GisMapAssoc, on: o.id == ma.gisobjects_id,
                                  join: ot in Gis.GisObjectType, on: o.gisobjecttypes_id == ot.id,

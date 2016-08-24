@@ -1,6 +1,9 @@
 defmodule Gis.GisOverlayerSet do
   use Gis.Web, :model
 
+  @derive [Poison.Encoder]
+
+
   schema "gisoverlayersets" do
     field :ovls_name, :string
     field :ovls_params, :map
