@@ -31,7 +31,17 @@ L.Handler.MarkerSelect = class MarkerSelect extends L.Handler {
             this._setIconStyles(true);
             marker.fire('select');
             marker._map.fire('layerselect', {layer: marker});
-            console.log('Marker ' + marker._leaflet_id + ' selected');
+        }
+    }
+
+    deselectAll() {
+        const map = this._marker._map;
+        if (map) {
+            map.eachLayer((layer) => {
+                if (layer.selecting && layer.selecting.selected()) {
+                    layer.selecting.deselect();
+                }
+            })
         }
     }
 
@@ -42,16 +52,18 @@ L.Handler.MarkerSelect = class MarkerSelect extends L.Handler {
             this._setIconStyles(false);
             marker.fire('deselect');
             marker._map.fire('layerdeselect', {layer: marker});
-            console.log('Marker ' + marker._leaflet_id + ' deselected');
         }
     }
 
-    _onClick() {
-        console.log('click!');
-        if (this._marker.options.selected) {
-            this.deselect()
-        } else {
+    /** @param {Event} event */
+    _onClick(event) {
+        if (!this._marker.options.selected) {
+            if (!event.originalEvent.ctrlKey) {
+                this.deselectAll();
+            }
             this.select()
+        } else if (event.originalEvent.ctrlKey) {
+            this.deselect()
         }
     }
 

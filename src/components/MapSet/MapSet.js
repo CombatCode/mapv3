@@ -1,5 +1,9 @@
 import L from 'leaflet';
 
+import '../../handlers/drop/Map.Drop';
+import { createFeature, FeatureGroup } from '../Feature/Features';
+import ControlRotate from './../Control/Control.Rotate';
+
 
 /**
  * Class representing MapSets
@@ -13,14 +17,11 @@ export default class MapSet {
      * @param {string} [name]
      * @param {object} [options]
      */
-    constructor(id = NaN, name = '', options = {}){
+    constructor(id = NaN, name = '', options = {}) {
         // Parameters in class body
         this.id = id;
         this.name = name;
-        this.options = options;
-
-        // Non optional settings
-        this.options.drawControl = true;
+        Object.assign(this.options, options);
 
         // Static settings
         this._containerId = 'mapv3';
@@ -32,8 +33,18 @@ export default class MapSet {
      * @returns {L.Map|*}
      */
     initialize() {
-        this._instance = new L.Map(this._containerId, this.options);
-        return this._instance;
+        let lmap = this._instance = new L.Map(this._containerId, this.options);
+        lmap._mapSet = this;
+        let features = this.features = lmap.features = new FeatureGroup({zoomToBoundsOnClick: false});
+        lmap.addControl(new ControlRotate({
+            content: '<i class="icon repeat"></i>'
+        }));
+
+        lmap.on('drop', this._onDrop, this);
+        lmap.once('zoomlevelschange', (e) => features.addTo(lmap));
+
+        window.mapSet = this;
+        return lmap;
     }
 
     /**
@@ -56,4 +67,55 @@ export default class MapSet {
     set setOptions(options) {
         Object.assign(this.options, options);
     }
+
+    _onDrop(event) {
+        event.originalEvent.preventDefault();
+        let dt = event.originalEvent.dataTransfer, data;
+
+        if (dt.types.includes('application/json')) {
+            data = dt.getData('application/json');
+        } else {
+            data = dt.getData('text');
+        }
+        try {
+            data = JSON.parse(data);
+        } catch(ex) {}
+
+        if (typeof data === 'object' && data !== null) {
+            let newFeature = createFeature(data.type, event.latlng, {id: data.id});
+            let map = this._instance;
+            if (newFeature instanceof L.Layer) {
+                newFeature._map = map;
+                newFeature._showContextMenu(event, 'onDrop');
+                map.once('contextmenu.hide', e => newFeature._map = undefined);
+            }
+        }
+    }
 }
+
+
+MapSet.prototype.options = {
+    drawControl:      true,
+
+    contextmenu:      true,
+    contextmenuWidth: 140,
+    contextmenuItems: [{
+        text:     'Center map here',
+        iconCls:  'fa fa-dot-circle-o',
+        callback: function centerMap(event) {
+            this.panTo(event.latlng);
+        }
+    }, '-', {
+        text:     'Zoom in',
+        iconCls:  'fa fa-search-plus',
+        callback: function zoomIn(event) {
+            this.zoomIn();
+        }
+    }, {
+        text:     'Zoom out',
+        iconCls:  'fa fa-search-minus',
+        callback: function zoomOut(event) {
+            this.zoomOut();
+        }
+    }]
+};

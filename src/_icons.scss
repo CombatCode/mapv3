@@ -1,0 +1,25 @@
+.icon {
+    $path: "../assets/";
+
+    &.svmx.feature {
+        &.camera {
+            background: url($path + "feature-camera-inuse.svg") center no-repeat;
+            transform: rotate(90deg);
+        }
+
+    }
+
+    &.svmx.status {
+        &.nocommunication {
+            background-image: url($path + "svmx-status-nocommunication.png");
+            width: 18px;
+            height: 18px;
+        }
+
+        &.unknown {
+            background-image: url($path + "svmx-status-unknown.png");
+            width: 18px;
+            height: 18px;
+        }
+    }
+}

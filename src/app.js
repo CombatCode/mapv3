@@ -1,5 +1,5 @@
 import L from 'leaflet';
-import 'leaflet-draw';
+import './leaflet-draw/leaflet.draw';
 import 'leaflet.markercluster';
 import 'leaflet-contextmenu';
 

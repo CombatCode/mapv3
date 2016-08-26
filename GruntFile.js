@@ -1,9 +1,11 @@
-module.exports=function(grunt){
+module.exports = function(grunt) {
     grunt.initConfig({
-        browserify:{
-            dist:{
-                options:{
-                    transform:[['babelify',{'loose':"all"}]]
+        browserify: {
+            dist: {
+                options: {
+                    transform: [['babelify', {
+                        "presets": ["es2015-loose", "stage-2"]
+                    }]]
                 },
                 files: {
                     './dist/app.js':['./src/app.js']
@@ -20,14 +22,14 @@ module.exports=function(grunt){
                 }
             }
         },
-        watch:{
-            scripts:{
-                files:['./src/**/*.js'],
-                tasks:['browserify']
+        watch: {
+            scripts: {
+                files: ['./src/**/*.js'],
+                tasks: ['browserify']
             },
-            styles:{
-                files:['./src/**/*.scss'],
-                tasks:['sass']
+            styles: {
+                files: ['./src/**/*.scss'],
+                tasks: ['sass']
             }
         }
     });
@@ -36,7 +38,7 @@ module.exports=function(grunt){
     grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.loadNpmTasks('grunt-contrib-sass');
 
-    grunt.registerTask('default',['watch']);
-    grunt.registerTask('build',['browserify', 'sass']);
+    grunt.registerTask('default', ['watch']);
+    grunt.registerTask('build', ['browserify', 'sass']);
 };
 
