@@ -1,4 +1,4 @@
-import { API } from './../settings';
+import { SETTINGS } from './../settings';
 
 
 /**
@@ -7,7 +7,7 @@ import { API } from './../settings';
  */
 export default class Socket {
     constructor() {
-        this.ws = new WebSocket(API.WS_ADDRESS);
+        this.ws = new WebSocket(SETTINGS.API.WS_ADDRESS);
     }
 
     get client() {

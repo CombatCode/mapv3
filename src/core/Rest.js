@@ -1,7 +1,7 @@
 import 'whatwg-fetch';
 import restful, { fetchBackend } from 'restful.js';
 
-import { API } from './../settings';
+import { SETTINGS } from './../settings';
 import Storage from './Storage';
 
 
@@ -11,7 +11,7 @@ import Storage from './Storage';
  */
 export default class Rest {
     constructor() {
-        this.api = restful(API.ADDRESS, fetchBackend(fetch));
+        this.api = restful(SETTINGS.API.ADDRESS, fetchBackend(fetch));
 
         let authStorage = new Storage(localStorage, 'auth');
 

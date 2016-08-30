@@ -74,27 +74,25 @@ export default class FeatureCamera extends Feature {
         let telemetryStatusTxt = 'Unknown status';
         let telemetryStatusIco = 'icon svmx status unknown';
 
-        let content = [];
+        let content = `
+            <h4>${this.options.name}</h4>
+            <table class="ui very basic table"><tbody>
+            <tr><td class="collapsing">State:</td>
+            <td class="collapsing"><i class="${stateIco}"></i></td>
+            <td class="collapsing">${stateTxt}</td><tr>
 
-        content.push(`<h4>${this.options.name}</h4>`);
+            <tr><td class="collapsing">Telemetry status:</td>
+            <td class="collapsing"><i class="${videoStatusIco}"></i></td>
+            <td class="collapsing">${videoStatusTxt}</td><tr>
 
-        content.push(`<table class="ui very basic table"><tbody>`,
-            '<tr><td class="collapsing">State:</td>',
-            `<td class="collapsing"><i class="${stateIco}"></i></td>`,
-            `<td class="collapsing">${stateTxt}</td><tr>`,
+            <tr><td class="collapsing">Video status:</td>
+            <td class="collapsing"><i class="${telemetryStatusIco}"></i></td>
+            <td class="collapsing">${telemetryStatusTxt}</td><tr>
+            </tbody></table>
+            <div><img src="/assets/noise.gif"></div>
+        `;
 
-            '<tr><td class="collapsing">Telemetry status:</td>',
-            `<td class="collapsing"><i class="${videoStatusIco}"></i></td>`,
-            `<td class="collapsing">${videoStatusTxt}</td><tr>`,
-
-            '<tr><td class="collapsing">Video status:</td>',
-            `<td class="collapsing"><i class="${telemetryStatusIco}"></i></td>`,
-            `<td class="collapsing">${telemetryStatusTxt}</td><tr>`,
-            `</tbody></table>`);
-
-        content.push('<div><img src="/assets/noise.gif"></div>');
-
-        event.tooltip.setContent(content.join(''));
+        event.tooltip.setContent(content);
     }
 }
 

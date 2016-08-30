@@ -43,7 +43,6 @@ export default class MapSet {
         lmap.on('drop', this._onDrop, this);
         lmap.once('zoomlevelschange', (e) => features.addTo(lmap));
 
-        window.mapSet = this;
         return lmap;
     }
 
