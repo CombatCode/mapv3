@@ -39,6 +39,7 @@ defmodule Gis.Router do
       get "/mapsets/:ms_id/maps/:map_id/overlayersets/", Api.OverlayerSetsController, :show
       get "/mapsets/:ms_id/maps/:map_id/overlayersets/:ovs_id/overlayers", Api.OverlayersController, :show
       get "/mapsets/:ms_id/maps/:map_id/features/:latmin/:lonmin/:latmax/:lonmax", Api.ObjectsController, :on_map
+      get "/mapsets/:ms_id/maps/:map_id/features/:latmin/:lonmin/:latmax/:lonmax/:perpage/:page", Api.ObjectsController, :on_map_filter
       get "/objecttypes/", Api.ObjectTypesController, :index
     end
     
