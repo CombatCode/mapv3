@@ -66,7 +66,6 @@ export default class MapSetComponent extends Component {
     fetchMap(mapID, mapSetID) {
         let mapSetResource = (new Rest()).client.one('mapsets', mapSetID);
         let mapResource = mapSetResource.one('maps', mapID);
-        // Clean up features list
         mapResource.get().then((response) => {
             let mapData = (response.body()).data();
             this.applyMapSet(mapSetID);

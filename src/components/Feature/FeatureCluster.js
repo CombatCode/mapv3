@@ -23,7 +23,7 @@ export default class FeatureCluster extends L.MarkerCluster {
         }
 
         let listBody = `
-            <ul class=style="list-style:none; padding: 0;">
+            <ul class="groupCluster">
                 ${listContent}
             <ul>
         `;
