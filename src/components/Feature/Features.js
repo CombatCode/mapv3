@@ -11,9 +11,15 @@ export { Feature, FeatureGroup, FeatureCluster, FeatureCamera };
  * @param {*} params latlng, options
  * @returns [Feature]
  */
-export const createFeature = function createFeature(type, ...params) {
+export const createFeature = function(type, ...params) {
+    // TODO: Clean up here, create module per feature type
     switch (type) {
-        case 'camera-ptz':
-        case 'camera': return new FeatureCamera(...params);
+        case 'camera_ptz':
+            return new FeatureCamera(...params);
+        case 'camera':
+            return new FeatureCamera(...params);
+        case 'sensor':
+            // Not implemented yet
+            return;
     }
 }

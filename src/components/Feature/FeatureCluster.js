@@ -10,22 +10,29 @@ import 'leaflet.markercluster';
 export default class FeatureCluster extends L.MarkerCluster {
     initialize(...params) {
         super.initialize(...params);
-        this.on('click', this._onClick, this);
-        this.on('dblclick', this._onDblClick, this);
+        this.on('mouseover', this._mouseOver, this);
+        this.on('mouseout', this._mouseOut, this);
     }
 
-    _onClick(event) {
-        // no 'singleclick' event like in ol3 :(
-        this._singleClickTimeout = this._singleClickTimeout || setTimeout(() => {
-            delete this._singleClickTimeout;
-            this.spiderfy();
-        }, 300);
+    _mouseOver() {
+        let listContent = '';
+        for(let feature of this.getAllChildMarkers()) {
+            listContent += `
+                <li>${feature.options.name}</li>
+            `;
+        }
+
+        let listBody = `
+            <ul class=style="list-style:none; padding: 0;">
+                ${listContent}
+            <ul>
+        `;
+
+        this.bindTooltip(listBody).openTooltip();
     }
 
-    _onDblClick(event) {
-        clearTimeout(this._singleClickTimeout);
-        delete this._singleClickTimeout;
-        this.zoomToBounds();
+    _mouseOut() {
+        this.closeTooltip();
     }
 }
 

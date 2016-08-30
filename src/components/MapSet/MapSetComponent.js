@@ -1,10 +1,11 @@
 import Rest from './../../core/Rest';
-import WS from './../../core/Storage';
+import Socket from './../../core/Socket';
 import Component from './../../core/Component';
 import MapSet from './MapSet';
 import Map from './../Map';
 import Overlay from './../Overlay';
 import { createFeature } from '../Feature/Features';
+import { SETTINGS } from './../../settings';
 
 
 /**
@@ -17,6 +18,8 @@ export default class MapSetComponent extends Component {
     constructor() {
         super();
         this.mapSet = {};
+        this.featuresIDsOnMap = [];
+        this.lockAddingLayers = false;
         this.state = {
             mapSetsEntitiesList: [],
             mapsEntities: {}
@@ -34,7 +37,7 @@ export default class MapSetComponent extends Component {
     }
 
     applyStatusMonitoring() {
-        let ws = new WS();
+        let ws = new Socket();
 
         ws.client.onopen = () => {
             // TODO: Send getBounds() to api
@@ -63,6 +66,7 @@ export default class MapSetComponent extends Component {
     fetchMap(mapID, mapSetID) {
         let mapSetResource = (new Rest()).client.one('mapsets', mapSetID);
         let mapResource = mapSetResource.one('maps', mapID);
+        // Clean up features list
         mapResource.get().then((response) => {
             let mapData = (response.body()).data();
             this.applyMapSet(mapSetID);
@@ -92,39 +96,58 @@ export default class MapSetComponent extends Component {
 
             this.mapSet.initialize();
             streetMap.addTo(this.mapSet.instance);
+
             this.fetchFeatures(mapID, mapSetID);
+
             this.parseOverlayers(mapData.gisoverlayersets);
+
             // XXX: Only for example.html as now
             let el = document.querySelector('#mapv3 .intro');
             el && el.remove();
+
+            this.mapSet.instance.on('moveend', () => {
+                this.lockAddingLayers = false;
+                this.fetchFeatures(mapID, mapSetID);
+            });
+            this.mapSet.instance.on('movestart', () => {
+                this.lockAddingLayers = true;
+            });
         });
     }
 
-    fetchFeatures(mapID, mapSetID) {
+    fetchFeatures(mapID, mapSetID, page = 0) {
         let mapSetResource = (new Rest()).client.one('mapsets', mapSetID);
         let mapResource = mapSetResource.one('maps', mapID);
-        mapResource.all('features').getAll().then((response) => {
-            let featuresList = [];
-            let featureData = response.body();
-            for (let featureEntity of featureData) {
-                let feature = featureEntity.data();
-                if (feature.go_type === 'camera_ptz') {
-                    featuresList.push(
-                        createFeature(
-                            'camera', [
-                                feature.go_position.lat,
-                                feature.go_position.lon
-                            ], {
-                                angle: feature.go_angle,
-                                name: feature.go_name,
-                                id: feature.id,
-                                status: feature.go_status || 'unknown'
-                            }
-                        )
+        let bounds = this.mapSet.instance.getBounds();
+        let featuresResourceUrl = `features/${bounds._southWest.lat}/${bounds._southWest.lng}/${bounds._northEast.lat}/${bounds._northEast.lng}`;
+        let featuresList = [];
+        mapResource.all(`${featuresResourceUrl}/${SETTINGS.API.DEFAULT_OFFSET}/${page}`).getAll().then((response) => {
+            let featureBody = response.body();
+            for (let featureEntity of featureBody) {
+                let featureData = featureEntity.data();
+                if (this.featuresIDsOnMap.indexOf(featureData.id) === -1) {
+                    let feature = createFeature(
+                        featureData.go_type, [
+                            featureData.go_position.lat,
+                            featureData.go_position.lon
+                        ], {
+                            angle: featureData.go_angle,
+                            name: featureData.go_name,
+                            id: featureData.id,
+                            status: featureData.go_status || 'unknown'
+                        }
                     );
+                    this.featuresIDsOnMap.push(featureData.id);
+                    feature && featuresList.push(feature);
                 }
             }
-            this.mapSet.features.addLayers(featuresList);
+            // Stop adding new layers when map is in move, coz this action fire fetching new collection of features
+            if (!this.lockAddingLayers) {
+                this.mapSet.features.addLayers(featuresList);
+                if (featureBody.length > 0) {
+                    this.fetchFeatures(mapID, mapSetID, ++page);
+                }
+            }
         });
     }
 
