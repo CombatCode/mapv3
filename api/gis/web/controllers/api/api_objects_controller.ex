@@ -30,7 +30,7 @@ defmodule Gis.Api.ObjectsController do
                                  join: ot in Gis.GisObjectType, on: o.gisobjecttypes_id == ot.id,
                                  where: ma.gismaps_id == ^map_id and st_x(o.go_position) >= ^float_latmin
                                   and st_x(o.go_position) <= ^float_latmax and st_y(o.go_position) <= ^float_lonmax
-                                  and st_y(o.go_position) <= ^float_lonmin,
+                                  and st_y(o.go_position) >= ^float_lonmin,
                                  select: %{id: o.id, go_id: o.go_id, go_description: o.go_description,
                                            go_attributes: o.go_attributes, go_enabled: o.go_enabled,
                                            go_angle: o.go_angle, go_position: o.go_position,
@@ -48,15 +48,15 @@ defmodule Gis.Api.ObjectsController do
 		  {perpage, _} = Integer.parse(perpage)
 		  IO.inspect(page)
 		  IO.inspect(perpage)
-		  limit = page * perpage
-		  offset = limit + perpage
+		  limit = perpage
+		  offset = limit * page
           user = get_resp_header(conn, "username")
           objects = Gis.Repo.all(from o in Gis.GisObject,
                                    join: ma in Gis.GisMapAssoc, on: o.id == ma.gisobjects_id,
                                    join: ot in Gis.GisObjectType, on: o.gisobjecttypes_id == ot.id,
                                    where: ma.gismaps_id == ^map_id and st_x(o.go_position) >= ^float_latmin
                                     and st_x(o.go_position) <= ^float_latmax and st_y(o.go_position) <= ^float_lonmax
-                                    and st_y(o.go_position) <= ^float_lonmin,
+                                    and st_y(o.go_position) >= ^float_lonmin,
 									order_by: [desc: o.id],
                                    select: %{id: o.id, go_id: o.go_id, go_enabled: o.go_enabled,
                                              go_angle: o.go_angle, go_position: o.go_position,
