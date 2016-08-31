@@ -20,6 +20,7 @@ export default class MapSetComponent extends Component {
         this.mapSet = {};
         this.featuresIDsOnMap = [];
         this.lockAddingLayers = false;
+        this.loaderCanBeVisible = false;
         this.state = {
             mapSetsEntitiesList: [],
             mapsEntities: {}
@@ -122,6 +123,13 @@ export default class MapSetComponent extends Component {
         let featuresResourceUrl = `features/${bounds._southWest.lat}/${bounds._southWest.lng}/${bounds._northEast.lat}/${bounds._northEast.lng}`;
         let featuresList = [];
         let featuresIdsList = [];
+        // don't show loader immediately, maybe it's a fast request?
+        this.loaderCanBeVisible = true;
+        setTimeout(() => {
+            if (this.loaderCanBeVisible) {
+                document.querySelector('.map-loader').className = 'map-loader visible';
+            }
+        }, 500);
         mapResource.all(`${featuresResourceUrl}/${SETTINGS.API.DEFAULT_OFFSET}/${page}`).getAll().then((response) => {
             let featureBody = response.body();
             for (let featureEntity of featureBody) {
@@ -148,6 +156,10 @@ export default class MapSetComponent extends Component {
                 this.mapSet.features.addLayers(featuresList);
                 if (featureBody.length > 0) {
                     this.fetchFeatures(mapID, mapSetID, ++page);
+                } else {
+                    // stop fetching new features
+                    this.loaderCanBeVisible = false;
+                    document.querySelector('.map-loader').className = 'map-loader hidden';
                 }
             }
         });
