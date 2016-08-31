@@ -46,7 +46,7 @@ Tasks v2
     - dynamiczne dorysowywanie obiektów np scenariusze alarmowe
 - nawigacja pomiędzy mapami (tył / przód), przemieszczanie się za pomocą place’ów, itp
 
-##### 3. ![](http://progressed.io/bar/100) Features  (geometries: markers, polygons)
+##### 3. ![](http://progressed.io/bar/70) Features  (geometries: markers, polygons)
 - ~~Pobieranie z BE~~
     - ~~Geojson~~
     - ~~Websocket’y~~
