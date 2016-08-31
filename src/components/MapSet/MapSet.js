@@ -4,6 +4,7 @@ import '../../handlers/selection/LassoSelect';
 import '../../handlers/drop/Map.Drop';
 import { createFeature, FeatureGroup } from '../Feature/Features';
 import ControlRotate from './../Control/Control.Rotate';
+import ControlSelectionMode from '../Control/ControlSelectionMode'
 
 
 /**
@@ -37,9 +38,11 @@ export default class MapSet {
         let lmap = this._instance = new L.Map(this._containerId, this.options);
         lmap._mapSet = this;
         let features = this.features = lmap.features = new FeatureGroup({zoomToBoundsOnClick: false});
+
         lmap.addControl(new ControlRotate({
             content: '<i class="icon repeat"></i>'
         }));
+        lmap.addControl(new ControlSelectionMode({}));
 
         lmap.on('drop', this._onDrop, this);
         lmap.once('zoomlevelschange', (e) => features.addTo(lmap));
