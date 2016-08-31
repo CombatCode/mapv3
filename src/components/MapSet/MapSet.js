@@ -42,7 +42,11 @@ export default class MapSet {
         lmap.addControl(new ControlRotate({
             content: '<i class="icon repeat"></i>'
         }));
-        lmap.addControl(new ControlSelectionMode({}));
+        lmap.addControl(new ControlSelectionMode({
+            contentLasso: '<i class="icon lasso-select"></i>',
+            contentBox: '<i class="icon box-select"></i>'
+
+        }));
 
         lmap.on('drop', this._onDrop, this);
         lmap.once('zoomlevelschange', (e) => features.addTo(lmap));
