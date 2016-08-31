@@ -83,7 +83,7 @@ export default class Feature extends L.Marker {
      */
     static rotateCondition(event) {
         const oEvent = event.originalEvent || event;
-        if (!oEvent.altKey && !oEvent.ctrlKey && !oEvent.shiftKey) {
+        if (oEvent.altKey || oEvent.ctrlKey || oEvent.shiftKey) {
             return false;
         }
         let targetEl = oEvent.target, mapContainerEl = event.target.getContainer();
