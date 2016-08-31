@@ -96,6 +96,7 @@ export default class MapSetComponent extends Component {
             this.mapSet.initialize();
             streetMap.addTo(this.mapSet.instance);
 
+            this.featuresIDsOnMap = [];
             this.fetchFeatures(mapID, mapSetID);
 
             this.parseOverlayers(mapData.gisoverlayersets);
@@ -120,6 +121,7 @@ export default class MapSetComponent extends Component {
         let bounds = this.mapSet.instance.getBounds();
         let featuresResourceUrl = `features/${bounds._southWest.lat}/${bounds._southWest.lng}/${bounds._northEast.lat}/${bounds._northEast.lng}`;
         let featuresList = [];
+        let featuresIdsList = [];
         mapResource.all(`${featuresResourceUrl}/${SETTINGS.API.DEFAULT_OFFSET}/${page}`).getAll().then((response) => {
             let featureBody = response.body();
             for (let featureEntity of featureBody) {
@@ -136,12 +138,13 @@ export default class MapSetComponent extends Component {
                             status: featureData.go_status || 'unknown'
                         }
                     );
-                    this.featuresIDsOnMap.push(featureData.id);
+                    featuresIdsList.push(featureData.id);
                     feature && featuresList.push(feature);
                 }
             }
             // Stop adding new layers when map is in move, coz this action fire fetching new collection of features
             if (!this.lockAddingLayers) {
+                this.featuresIDsOnMap = this.featuresIDsOnMap.concat(featuresIdsList);
                 this.mapSet.features.addLayers(featuresList);
                 if (featureBody.length > 0) {
                     this.fetchFeatures(mapID, mapSetID, ++page);
