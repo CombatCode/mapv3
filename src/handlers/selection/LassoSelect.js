@@ -4,50 +4,42 @@ import L from 'leaflet';
 L.Map.LassoSelect = class LassoSelect extends L.Handler {
 
     addHooks() {
-        this._map.on({
-            'mousedown': this._onStartEvent,
-        }, this);
+        this._map.on('mousedown', this._onMouseDown, this);
     }
 
     removeHooks() {
-        // todo: disable() called in the middle of drawing?
-        this._map.off({
-            'mousedown': this._onStartEvent,
-            'mousemove': this._onNextEvent,
-            'mouseup': this._onEndEvent
-        }, this);
+        this._map.off('mousedown', this._onMouseDown, this);
+        this.abort();
     }
 
     start(latLng) {
         this._polygon = new L.Polygon([latLng]);
-
         this._polygon.addTo(this._map);
-
-        this._map.on({
-            'mousemove': this._onNextEvent,
-            'mouseup': this._onEndEvent
-        }, this);
-
-        // Leaflet using lowercase name for 'latlng'?
-        this._map.fire('lassoselectstart', {latLngs: this._polygon.getLatLngs()});
+        this._setupEvents();
+        this._map.fire('lassoselectstart', {latLng: latLng});
     }
 
     end(latLng = undefined) {
-        const latLngs = this._polygon.getLatLngs().slice(-1)[0], lastLatLng = latLngs.slice(-1)[0];
         if (latLng) {
             this._polygon.addLatLng(latLng);
         }
-
-        this.select();
-        this._map.fire('lassoselectend', {latLngs: this._polygon.getLatLngs()});
         this._polygon.remove();
+        this._setupEvents(true);
+        this._select();
+        this._map.fire('lassoselectend', {latLngs: this._polygon.getLatLngs()});
     }
 
-    addPoint(latLng) {
+    abort() {
+        this._polygon.remove();
+        this._setupEvents(true);
+        this._map.fire('lassoselectabort', {latLngs: this._polygon.getLatLngs()});
+    }
+
+    next(latLng) {
         this._polygon.addLatLng(latLng);
     }
 
-    select() {
+    _select() {
         const bounds = this._polygon.getBounds();
         // pass as GeoJSON geometry so layerIntersectingPolygon doesn't need to call toGeoJSON() in a loop
         const polygon = this._polygon.toGeoJSON().geometry;
@@ -61,6 +53,36 @@ L.Map.LassoSelect = class LassoSelect extends L.Handler {
                 }
             }
         });
+    }
+
+    _setupEvents(restoreState = false) {
+        if (!restoreState) {
+            L.DomUtil.enableTextSelection();
+            L.DomUtil.enableImageDrag();
+            if (this._reenableMapDragging) {
+                delete this._reenableMapDragging;
+                this._map.dragging.enable();
+            }
+            L.DomEvent.off(document, {
+                contextmenu: L.DomEvent.stop,
+                mousemove: this._onMouseMove,
+                mouseup: this._onMouseUp,
+                keydown: this._onKeyDown
+            }, this);
+        } else {
+            L.DomUtil.disableTextSelection();
+            L.DomUtil.disableImageDrag();
+            if (this._map.dragging.enabled()) {
+                this._reenableMapDragging = true;
+                this._map.dragging.disable();
+            }
+            L.DomEvent.on(document, {
+                contextmenu: L.DomEvent.stop,
+                mousemove: this._onMouseMove,
+                mouseup: this._onMouseUp,
+                keydown: this._onKeyDown
+            }, this);
+        }
     }
 
     static layerInBounds(layer, bounds) {
@@ -121,46 +143,64 @@ L.Map.LassoSelect = class LassoSelect extends L.Handler {
     }
 
     /**
-     * @param {MouseEvent} event
+     * @param {MouseEvent} event Leaflet wrapped event
      * @private
      */
-    _onStartEvent(event) {
+    _onMouseDown(event) {
         if (!(this._map.options.lassoSelectStartCondition || LassoSelect.defaultStartCondition)(event)) {
             return;
         }
-        L.DomUtil.disableTextSelection();
-        L.DomUtil.disableImageDrag();
-        if (!event.originalEvent.shiftKey && this._map.dragging.enabled()) {
-            this._reenableMapDragging = true;
-            this._map.dragging.disable();
-        }
+
         this.start(event.latlng);
     }
 
     /**
-     * @param {MouseEvent} event
+     * @param {MouseEvent} event DOM event
      * @private
      */
-    _onNextEvent(event) {
-        this.addPoint(event.latlng);
+    _onMouseMove(event) {
+        this.next(this._map.mouseEventToLatLng(event));
     }
 
     /**
-     * @param {MouseEvent} event
+     * @param {MouseEvent} event DOM event
      * @private
      */
-    _onEndEvent(event) {
+    _onMouseUp(event) {
         L.DomUtil.enableTextSelection();
         L.DomUtil.enableImageDrag();
         if (this._reenableMapDragging) {
             delete this._reenableMapDragging;
             this._map.dragging.enable();
         }
-        this.end(event.latlng);
+        L.DomEvent.off(document, {
+            contextmenu: L.DomEvent.stop,
+            mousemove: this._onMouseMove,
+            mouseup: this._onMouseUp,
+            keydown: this._onKeyDown
+        }, this);
+
+        const latlng =  this._map.mouseEventToLatLng(event);
+        this.end(latlng);
+    }
+
+    /**
+     * @param {KeyboardEvent} event DOM event
+     * @private
+     */
+    _onKeyDown(event) {
+        event = {type: event.type, target: this._map, originalEvent: event}; //wrap in Leaflet-like event
+        if (!(this._map.options.lassoSelectAbortCondition || LassoSelect.defaultAbortCondition)(event)) {
+            this.abort();
+        }
     }
 
     static defaultStartCondition(event) {
         return event.originalEvent.ctrlKey;
+    }
+
+    static defaultAbortCondition(event) {
+        return event.originalEvent.keyCode === 27;
     }
 };
 
