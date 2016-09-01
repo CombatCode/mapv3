@@ -57,19 +57,6 @@ L.Map.LassoSelect = class LassoSelect extends L.Handler {
 
     _setupEvents(restoreState = false) {
         if (!restoreState) {
-            L.DomUtil.enableTextSelection();
-            L.DomUtil.enableImageDrag();
-            if (this._reenableMapDragging) {
-                delete this._reenableMapDragging;
-                this._map.dragging.enable();
-            }
-            L.DomEvent.off(document, {
-                contextmenu: L.DomEvent.stop,
-                mousemove: this._onMouseMove,
-                mouseup: this._onMouseUp,
-                keydown: this._onKeyDown
-            }, this);
-        } else {
             L.DomUtil.disableTextSelection();
             L.DomUtil.disableImageDrag();
             if (this._map.dragging.enabled()) {
@@ -77,6 +64,19 @@ L.Map.LassoSelect = class LassoSelect extends L.Handler {
                 this._map.dragging.disable();
             }
             L.DomEvent.on(document, {
+                contextmenu: L.DomEvent.stop,
+                mousemove: this._onMouseMove,
+                mouseup: this._onMouseUp,
+                keydown: this._onKeyDown
+            }, this);
+        } else {
+            L.DomUtil.enableTextSelection();
+            L.DomUtil.enableImageDrag();
+            if (this._reenableMapDragging) {
+                delete this._reenableMapDragging;
+                this._map.dragging.enable();
+            }
+            L.DomEvent.off(document, {
                 contextmenu: L.DomEvent.stop,
                 mousemove: this._onMouseMove,
                 mouseup: this._onMouseUp,
@@ -167,21 +167,7 @@ L.Map.LassoSelect = class LassoSelect extends L.Handler {
      * @private
      */
     _onMouseUp(event) {
-        L.DomUtil.enableTextSelection();
-        L.DomUtil.enableImageDrag();
-        if (this._reenableMapDragging) {
-            delete this._reenableMapDragging;
-            this._map.dragging.enable();
-        }
-        L.DomEvent.off(document, {
-            contextmenu: L.DomEvent.stop,
-            mousemove: this._onMouseMove,
-            mouseup: this._onMouseUp,
-            keydown: this._onKeyDown
-        }, this);
-
-        const latlng =  this._map.mouseEventToLatLng(event);
-        this.end(latlng);
+        this.end(this._map.mouseEventToLatLng(event));
     }
 
     /**
@@ -191,8 +177,9 @@ L.Map.LassoSelect = class LassoSelect extends L.Handler {
     _onKeyDown(event) {
         event = {type: event.type, target: this._map, originalEvent: event}; //wrap in Leaflet-like event
         if (!(this._map.options.lassoSelectAbortCondition || LassoSelect.defaultAbortCondition)(event)) {
-            this.abort();
+            return;
         }
+        this.abort();
     }
 
     static defaultStartCondition(event) {
