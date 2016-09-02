@@ -5,7 +5,6 @@ import 'leaflet-contextmenu';
 
 import './handlers/selection/Marker.Select';
 import './handlers/selection/Map.ClickDeselect';
-import './handlers/selection/Map.BoxSelect';
 import './handlers/rotation/Marker.Rotate';
 
 import './components/Control/Control.Rotate';
