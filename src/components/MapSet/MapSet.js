@@ -1,5 +1,6 @@
 import L from 'leaflet';
 
+import '../../handlers/selection/Map.BoxSelect';
 import '../../handlers/selection/LassoSelect';
 import '../../handlers/drop/Map.Drop';
 import { createFeature, FeatureGroup } from '../Feature/Features';

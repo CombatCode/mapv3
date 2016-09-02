@@ -4,6 +4,7 @@ import L from 'leaflet';
 L.Map.LassoSelect = class LassoSelect extends L.Handler {
 
     addHooks() {
+        this._polygon = new L.Polygon([]);
         this._map.on('mousedown', this._onMouseDown, this);
     }
 
@@ -13,30 +14,60 @@ L.Map.LassoSelect = class LassoSelect extends L.Handler {
     }
 
     start(latLng) {
+        this._addSelectionHooks();
         this._polygon = new L.Polygon([latLng]);
         this._polygon.addTo(this._map);
-        this._setupEvents();
-        this._map.fire('lassoselectstart', {latLng: latLng});
+        this._map.fire('lassoselectstart', {latLngs: [latLng]});
+    }
+
+    next(latLng) {
+        this._polygon.addLatLng(latLng);
     }
 
     end(latLng = undefined) {
         if (latLng) {
-            this._polygon.addLatLng(latLng);
+            this.next(latLng);
         }
+        this._removeSelectionHooks();
         this._polygon.remove();
-        this._setupEvents(true);
         this._select();
         this._map.fire('lassoselectend', {latLngs: this._polygon.getLatLngs()});
     }
 
     abort() {
         this._polygon.remove();
-        this._setupEvents(true);
+        this._removeSelectionHooks();
         this._map.fire('lassoselectabort', {latLngs: this._polygon.getLatLngs()});
     }
 
-    next(latLng) {
-        this._polygon.addLatLng(latLng);
+    _addSelectionHooks() {
+        L.DomUtil.disableTextSelection();
+        L.DomUtil.disableImageDrag();
+        if (this._map.dragging.enabled()) {
+            this._reenableMapDragging = true;
+            this._map.dragging.disable();
+        }
+        L.DomEvent.on(document, {
+            contextmenu: L.DomEvent.stop,
+            mousemove: this._onMouseMove,
+            mouseup: this._onMouseUp,
+            keydown: this._onKeyDown
+        }, this);
+    }
+
+    _removeSelectionHooks() {
+        L.DomUtil.enableTextSelection();
+        L.DomUtil.enableImageDrag();
+        if (this._reenableMapDragging) {
+            delete this._reenableMapDragging;
+            this._map.dragging.enable();
+        }
+        L.DomEvent.off(document, {
+            contextmenu: L.DomEvent.stop,
+            mousemove:   this._onMouseMove,
+            mouseup:     this._onMouseUp,
+            keydown:     this._onKeyDown
+        }, this);
     }
 
     _select() {
@@ -55,42 +86,59 @@ L.Map.LassoSelect = class LassoSelect extends L.Handler {
         });
     }
 
-    _setupEvents(restoreState = false) {
-        if (!restoreState) {
-            L.DomUtil.disableTextSelection();
-            L.DomUtil.disableImageDrag();
-            if (this._map.dragging.enabled()) {
-                this._reenableMapDragging = true;
-                this._map.dragging.disable();
-            }
-            L.DomEvent.on(document, {
-                contextmenu: L.DomEvent.stop,
-                mousemove: this._onMouseMove,
-                mouseup: this._onMouseUp,
-                keydown: this._onKeyDown
-            }, this);
-        } else {
-            L.DomUtil.enableTextSelection();
-            L.DomUtil.enableImageDrag();
-            if (this._reenableMapDragging) {
-                delete this._reenableMapDragging;
-                this._map.dragging.enable();
-            }
-            L.DomEvent.off(document, {
-                contextmenu: L.DomEvent.stop,
-                mousemove: this._onMouseMove,
-                mouseup: this._onMouseUp,
-                keydown: this._onKeyDown
-            }, this);
+    /**
+     * @param {MouseEvent} event Leaflet-wrapped DOM event
+     * @private
+     */
+    _onMouseDown(event) {
+        if (this._map.options.lassoSelectStartCondition(event)) {
+            this.start(event.latlng);
         }
     }
 
+    /**
+     * @param {MouseEvent} event DOM event
+     * @private
+     */
+    _onMouseMove(event) {
+        event = LassoSelect._toMapEvent(event, this._map);
+        this.next(event.latlng);
+    }
+
+    /**
+     * @param {MouseEvent} event DOM event
+     * @private
+     */
+    _onMouseUp(event) {
+        event = LassoSelect._toMapEvent(event, this._map);
+        if (this._map.options.lassoSelectEndCondition(event)) {
+            this.end(event.latlng);
+        }
+    }
+
+    /**
+     * @param {KeyboardEvent} event DOM event
+     * @private
+     */
+    _onKeyDown(event) {
+        event = LassoSelect._toMapEvent(event, this._map);
+        if (this._map.options.lassoSelectAbortCondition(event)) {
+            this.abort();
+        }
+    }
+
+    /**
+     * @param {L.Layer} layer
+     * @param {L.LatLngBounds} bounds
+     * @returns {boolean}
+     */
     static layerInBounds(layer, bounds) {
         if (layer.getBounds) {
             return layer.getBounds().isValid() && bounds.intersects(layer.getBounds());
         } else if (layer.getLatLng) {
             return bounds.contains(layer.getLatLng());
         }
+        return false;
     }
 
     /**
@@ -143,53 +191,62 @@ L.Map.LassoSelect = class LassoSelect extends L.Handler {
     }
 
     /**
-     * @param {MouseEvent} event Leaflet wrapped event
+     * @param {MouseEvent|KeyboardEvent} event DOM Event
+     * @returns {MouseEvent|KeyboardEvent} Leaflet wrapped Event
      * @private
      */
-    _onMouseDown(event) {
-        if (!(this._map.options.lassoSelectStartCondition || LassoSelect.defaultStartCondition)(event)) {
-            return;
-        }
-
-        this.start(event.latlng);
+    static _toMapEvent(event, map) {
+        return Object.assign({
+            type: event.type,
+            target: map,
+            originalEvent: event
+        }, event instanceof MouseEvent ? {
+            latlng: map.mouseEventToLatLng(event),
+            containerPoint: map.mouseEventToContainerPoint(event),
+            layerPoint: map.mouseEventToLayerPoint(event),
+        } : null);
     }
 
     /**
-     * @param {MouseEvent} event DOM event
-     * @private
+     * @param {Event} e
+     * @returns {boolean}
      */
-    _onMouseMove(event) {
-        this.next(this._map.mouseEventToLatLng(event));
+    static defaultStartCondition(e) {
+        return e.originalEvent.ctrlKey && ((e.originalEvent.which === 1) || (e.originalEvent.button === 1));
     }
 
     /**
-     * @param {MouseEvent} event DOM event
-     * @private
+     * @param {Event} e
+     * @returns {boolean}
      */
-    _onMouseUp(event) {
-        this.end(this._map.mouseEventToLatLng(event));
+    static defaultEndCondition(e) {
+        return (e.originalEvent.which === 1) || (e.originalEvent.button === 1);
     }
 
     /**
-     * @param {KeyboardEvent} event DOM event
-     * @private
+     * @param {Event} e
+     * @returns {boolean}
      */
-    _onKeyDown(event) {
-        event = {type: event.type, target: this._map, originalEvent: event}; //wrap in Leaflet-like event
-        if (!(this._map.options.lassoSelectAbortCondition || LassoSelect.defaultAbortCondition)(event)) {
-            return;
-        }
-        this.abort();
-    }
-
-    static defaultStartCondition(event) {
-        return event.originalEvent.ctrlKey;
-    }
-
-    static defaultAbortCondition(event) {
-        return event.originalEvent.keyCode === 27;
+    static defaultAbortCondition(e) {
+        return e.originalEvent.keyCode === 27;
     }
 };
 
 L.Map.addInitHook('addHandler', 'lassoSelect', L.Map.LassoSelect);
 
+// @namespace Map
+// @section Interaction Options
+L.Map.mergeOptions({
+    // Whether markers/paths on map can be selected using a free-drawn area.
+    // @type {boolean}
+    lassoSelect: false,
+    // Selection start condition. Checked on "mousedown" events. Defaults to primary button + ctrl key.
+    // @type {function(L.MouseEvent):boolean}
+    lassoSelectStartCondition: L.Map.LassoSelect.defaultStartCondition,
+    // Selection start condition. Checked on "mouseup" events. Defaults to primary button
+    // @type {function(L.MouseEvent):boolean}
+    lassoSelectEndCondition: L.Map.LassoSelect.defaultEndCondition,
+    // Selection abort condition. Checked on "keydown" events. Defaults to ESC key.
+    // @type {function(L.MouseEvent):boolean}
+    lassoSelectAbortCondition: L.Map.LassoSelect.defaultAbortCondition
+});
