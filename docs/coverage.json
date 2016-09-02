@@ -1,15 +1,8 @@
 {
-  "coverage": "63.46%",
-  "expectCount": 52,
+  "coverage": "48.52%",
+  "expectCount": 68,
   "actualCount": 33,
   "files": {
-    "src/settings.js": {
-      "expectCount": 1,
-      "actualCount": 0,
-      "undocumentLines": [
-        1
-      ]
-    },
     "src/core/Component.js": {
       "expectCount": 14,
       "actualCount": 10,
@@ -20,15 +13,19 @@
         15
       ]
     },
-    "src/components/Feature/Feature.js": {
+    "src/components/Feature/FeatureCluster.js": {
       "expectCount": 2,
-      "actualCount": 2,
-      "undocumentLines": []
+      "actualCount": 1,
+      "undocumentLines": [
+        11
+      ]
     },
-    "src/components/Feature/FeatureCamera.js": {
+    "src/components/Feature/FeatureGroup.js": {
       "expectCount": 2,
-      "actualCount": 2,
-      "undocumentLines": []
+      "actualCount": 1,
+      "undocumentLines": [
+        12
+      ]
     },
     "src/components/FigureIcon.js": {
       "expectCount": 4,
@@ -43,13 +40,33 @@
       "undocumentLines": []
     },
     "src/components/MapSet/MapSet.js": {
-      "expectCount": 9,
+      "expectCount": 8,
       "actualCount": 5,
       "undocumentLines": [
+        22,
+        57,
+        23
+      ]
+    },
+    "src/components/MapSet/MapSetComponent.js": {
+      "expectCount": 16,
+      "actualCount": 1,
+      "undocumentLines": [
+        54,
+        40,
         18,
-        47,
-        19,
-        20
+        21,
+        119,
+        67,
+        187,
+        30,
+        23,
+        22,
+        20,
+        168,
+        223,
+        201,
+        24
       ]
     },
     "src/components/Overlay.js": {
@@ -64,6 +81,13 @@
         14,
         21,
         13
+      ]
+    },
+    "src/settings.js": {
+      "expectCount": 1,
+      "actualCount": 0,
+      "undocumentLines": [
+        1
       ]
     },
     "src/core/Socket.js": {
@@ -83,6 +107,11 @@
         10,
         9
       ]
+    },
+    "src/components/Feature/Features.js": {
+      "expectCount": 1,
+      "actualCount": 1,
+      "undocumentLines": []
     }
   }
 }

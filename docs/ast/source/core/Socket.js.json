@@ -8,10 +8,10 @@
           "type": "ImportSpecifier",
           "local": {
             "type": "Identifier",
-            "name": "API",
+            "name": "SETTINGS",
             "range": [
               9,
-              12
+              17
             ],
             "loc": {
               "start": {
@@ -20,16 +20,16 @@
               },
               "end": {
                 "line": 1,
-                "column": 12
+                "column": 17
               }
             }
           },
           "imported": {
             "type": "Identifier",
-            "name": "API",
+            "name": "SETTINGS",
             "range": [
               9,
-              12
+              17
             ],
             "loc": {
               "start": {
@@ -38,13 +38,13 @@
               },
               "end": {
                 "line": 1,
-                "column": 12
+                "column": 17
               }
             }
           },
           "range": [
             9,
-            12
+            17
           ],
           "loc": {
             "start": {
@@ -53,7 +53,7 @@
             },
             "end": {
               "line": 1,
-              "column": 12
+              "column": 17
             }
           }
         }
@@ -63,23 +63,23 @@
         "value": "./../settings",
         "raw": "'./../settings'",
         "range": [
-          20,
-          35
+          25,
+          40
         ],
         "loc": {
           "start": {
             "line": 1,
-            "column": 20
+            "column": 25
           },
           "end": {
             "line": 1,
-            "column": 35
+            "column": 40
           }
         }
       },
       "range": [
         0,
-        36
+        41
       ],
       "loc": {
         "start": {
@@ -88,7 +88,7 @@
         },
         "end": {
           "line": 1,
-          "column": 36
+          "column": 41
         }
       },
       "trailingComments": [
@@ -96,8 +96,8 @@
           "type": "Block",
           "value": "*\n * Base class of our WebSocket client\n * @module core/Socket\n ",
           "range": [
-            39,
-            107
+            44,
+            112
           ],
           "loc": {
             "start": {
@@ -120,8 +120,8 @@
           "type": "Identifier",
           "name": "Socket",
           "range": [
-            129,
-            135
+            134,
+            140
           ],
           "loc": {
             "start": {
@@ -144,8 +144,8 @@
                 "type": "Identifier",
                 "name": "constructor",
                 "range": [
-                  142,
-                  153
+                  147,
+                  158
                 ],
                 "loc": {
                   "start": {
@@ -176,8 +176,8 @@
                           "object": {
                             "type": "ThisExpression",
                             "range": [
-                              166,
-                              170
+                              171,
+                              175
                             ],
                             "loc": {
                               "start": {
@@ -194,8 +194,8 @@
                             "type": "Identifier",
                             "name": "ws",
                             "range": [
-                              171,
-                              173
+                              176,
+                              178
                             ],
                             "loc": {
                               "start": {
@@ -209,8 +209,8 @@
                             }
                           },
                           "range": [
-                            166,
-                            173
+                            171,
+                            178
                           ],
                           "loc": {
                             "start": {
@@ -229,8 +229,8 @@
                             "type": "Identifier",
                             "name": "WebSocket",
                             "range": [
-                              180,
-                              189
+                              185,
+                              194
                             ],
                             "loc": {
                               "start": {
@@ -248,11 +248,47 @@
                               "type": "MemberExpression",
                               "computed": false,
                               "object": {
-                                "type": "Identifier",
-                                "name": "API",
+                                "type": "MemberExpression",
+                                "computed": false,
+                                "object": {
+                                  "type": "Identifier",
+                                  "name": "SETTINGS",
+                                  "range": [
+                                    195,
+                                    203
+                                  ],
+                                  "loc": {
+                                    "start": {
+                                      "line": 10,
+                                      "column": 32
+                                    },
+                                    "end": {
+                                      "line": 10,
+                                      "column": 40
+                                    }
+                                  }
+                                },
+                                "property": {
+                                  "type": "Identifier",
+                                  "name": "API",
+                                  "range": [
+                                    204,
+                                    207
+                                  ],
+                                  "loc": {
+                                    "start": {
+                                      "line": 10,
+                                      "column": 41
+                                    },
+                                    "end": {
+                                      "line": 10,
+                                      "column": 44
+                                    }
+                                  }
+                                },
                                 "range": [
-                                  190,
-                                  193
+                                  195,
+                                  207
                                 ],
                                 "loc": {
                                   "start": {
@@ -261,7 +297,7 @@
                                   },
                                   "end": {
                                     "line": 10,
-                                    "column": 35
+                                    "column": 44
                                   }
                                 }
                               },
@@ -269,23 +305,23 @@
                                 "type": "Identifier",
                                 "name": "WS_ADDRESS",
                                 "range": [
-                                  194,
-                                  204
+                                  208,
+                                  218
                                 ],
                                 "loc": {
                                   "start": {
                                     "line": 10,
-                                    "column": 36
+                                    "column": 45
                                   },
                                   "end": {
                                     "line": 10,
-                                    "column": 46
+                                    "column": 55
                                   }
                                 }
                               },
                               "range": [
-                                190,
-                                204
+                                195,
+                                218
                               ],
                               "loc": {
                                 "start": {
@@ -294,14 +330,14 @@
                                 },
                                 "end": {
                                   "line": 10,
-                                  "column": 46
+                                  "column": 55
                                 }
                               }
                             }
                           ],
                           "range": [
-                            176,
-                            205
+                            181,
+                            219
                           ],
                           "loc": {
                             "start": {
@@ -310,13 +346,13 @@
                             },
                             "end": {
                               "line": 10,
-                              "column": 47
+                              "column": 56
                             }
                           }
                         },
                         "range": [
-                          166,
-                          205
+                          171,
+                          219
                         ],
                         "loc": {
                           "start": {
@@ -325,13 +361,13 @@
                           },
                           "end": {
                             "line": 10,
-                            "column": 47
+                            "column": 56
                           }
                         }
                       },
                       "range": [
-                        166,
-                        206
+                        171,
+                        220
                       ],
                       "loc": {
                         "start": {
@@ -340,14 +376,14 @@
                         },
                         "end": {
                           "line": 10,
-                          "column": 48
+                          "column": 57
                         }
                       }
                     }
                   ],
                   "range": [
-                    156,
-                    212
+                    161,
+                    226
                   ],
                   "loc": {
                     "start": {
@@ -363,8 +399,8 @@
                 "generator": false,
                 "expression": false,
                 "range": [
-                  153,
-                  212
+                  158,
+                  226
                 ],
                 "loc": {
                   "start": {
@@ -380,8 +416,8 @@
               "kind": "constructor",
               "computed": false,
               "range": [
-                142,
-                212
+                147,
+                226
               ],
               "loc": {
                 "start": {
@@ -401,8 +437,8 @@
                 "type": "Identifier",
                 "name": "client",
                 "range": [
-                  222,
-                  228
+                  236,
+                  242
                 ],
                 "loc": {
                   "start": {
@@ -430,8 +466,8 @@
                         "object": {
                           "type": "ThisExpression",
                           "range": [
-                            248,
-                            252
+                            262,
+                            266
                           ],
                           "loc": {
                             "start": {
@@ -448,8 +484,8 @@
                           "type": "Identifier",
                           "name": "ws",
                           "range": [
-                            253,
-                            255
+                            267,
+                            269
                           ],
                           "loc": {
                             "start": {
@@ -463,8 +499,8 @@
                           }
                         },
                         "range": [
-                          248,
-                          255
+                          262,
+                          269
                         ],
                         "loc": {
                           "start": {
@@ -478,8 +514,8 @@
                         }
                       },
                       "range": [
-                        241,
-                        256
+                        255,
+                        270
                       ],
                       "loc": {
                         "start": {
@@ -494,8 +530,8 @@
                     }
                   ],
                   "range": [
-                    231,
-                    262
+                    245,
+                    276
                   ],
                   "loc": {
                     "start": {
@@ -511,8 +547,8 @@
                 "generator": false,
                 "expression": false,
                 "range": [
-                  228,
-                  262
+                  242,
+                  276
                 ],
                 "loc": {
                   "start": {
@@ -528,8 +564,8 @@
               "kind": "get",
               "computed": false,
               "range": [
-                218,
-                262
+                232,
+                276
               ],
               "loc": {
                 "start": {
@@ -545,8 +581,8 @@
             }
           ],
           "range": [
-            136,
-            264
+            141,
+            278
           ],
           "loc": {
             "start": {
@@ -560,8 +596,8 @@
           }
         },
         "range": [
-          123,
-          264
+          128,
+          278
         ],
         "loc": {
           "start": {
@@ -578,8 +614,8 @@
             "type": "Block",
             "value": "*\n * Base class of our WebSocket client\n * @module core/Socket\n ",
             "range": [
-              39,
-              107
+              44,
+              112
             ],
             "loc": {
               "start": {
@@ -596,8 +632,8 @@
         "trailingComments": []
       },
       "range": [
-        108,
-        264
+        113,
+        278
       ],
       "loc": {
         "start": {
@@ -614,8 +650,8 @@
           "type": "Block",
           "value": "*\n * Base class of our WebSocket client\n * @module core/Socket\n ",
           "range": [
-            39,
-            107
+            44,
+            112
           ],
           "loc": {
             "start": {
@@ -634,7 +670,7 @@
   "sourceType": "module",
   "range": [
     0,
-    264
+    278
   ],
   "loc": {
     "start": {
@@ -651,8 +687,8 @@
       "type": "Block",
       "value": "*\n * Base class of our WebSocket client\n * @module core/Socket\n ",
       "range": [
-        39,
-        107
+        44,
+        112
       ],
       "loc": {
         "start": {

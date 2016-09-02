@@ -32,13 +32,15 @@
 <nav class="navigation" data-ice="nav"><div>
   <ul>
     
-  <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-API">API</a></span></span></li>
+  <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-SETTINGS">SETTINGS</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/FigureIcon.js~FigureIcon.html">FigureIcon</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/Map.js~Map.html">Map</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/Overlay.js~Overlay.html">Overlay</a></span></span></li>
-<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/Feature</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/Feature/Feature.js~Feature.html">Feature</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/Feature/FeatureCamera.js~FeatureCamera.html">FeatureCamera</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/Feature</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/Feature/FeatureCluster.js~FeatureCluster.html">FeatureCluster</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/Feature/FeatureGroup.js~FeatureGroup.html">FeatureGroup</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-createFeature">createFeature</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/MapSet</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/MapSet/MapSet.js~MapSet.html">MapSet</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/MapSet/MapSetComponent.js~MapSetComponent.html">MapSetComponent</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">core</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/core/Component.js~Component.html">Component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/core/Rest.js~Rest.html">Rest</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/core/Socket.js~Socket.html">Socket</a></span></span></li>
@@ -50,6 +52,10 @@
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/components/MapSet/MapSet.js</h1>
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import L from &apos;leaflet&apos;;
+
+import &apos;../../handlers/drop/Map.Drop&apos;;
+import { createFeature, FeatureGroup } from &apos;../Feature/Features&apos;;
+import ControlRotate from &apos;./../Control/Control.Rotate&apos;;
 
 
 /**
@@ -64,14 +70,11 @@ export default class MapSet {
      * @param {string} [name]
      * @param {object} [options]
      */
-    constructor(id = NaN, name = &apos;&apos;, options = {}){
+    constructor(id = NaN, name = &apos;&apos;, options = {}) {
         // Parameters in class body
         this.id = id;
         this.name = name;
-        this.options = options;
-
-        // Non optional settings
-        this.options.drawControl = true;
+        Object.assign(this.options, options);
 
         // Static settings
         this._containerId = &apos;mapv3&apos;;
@@ -83,8 +86,17 @@ export default class MapSet {
      * @returns {L.Map|*}
      */
     initialize() {
-        this._instance = new L.Map(this._containerId, this.options);
-        return this._instance;
+        let lmap = this._instance = new L.Map(this._containerId, this.options);
+        lmap._mapSet = this;
+        let features = this.features = lmap.features = new FeatureGroup({zoomToBoundsOnClick: false});
+        lmap.addControl(new ControlRotate({
+            content: &apos;&lt;i class=&quot;icon repeat&quot;&gt;&lt;/i&gt;&apos;
+        }));
+
+        lmap.on(&apos;drop&apos;, this._onDrop, this);
+        lmap.once(&apos;zoomlevelschange&apos;, (e) =&gt; features.addTo(lmap));
+
+        return lmap;
     }
 
     /**
@@ -107,7 +119,58 @@ export default class MapSet {
     set setOptions(options) {
         Object.assign(this.options, options);
     }
+
+    _onDrop(event) {
+        event.originalEvent.preventDefault();
+        let dt = event.originalEvent.dataTransfer, data;
+
+        if (dt.types.includes(&apos;application/json&apos;)) {
+            data = dt.getData(&apos;application/json&apos;);
+        } else {
+            data = dt.getData(&apos;text&apos;);
+        }
+        try {
+            data = JSON.parse(data);
+        } catch(ex) {}
+
+        if (typeof data === &apos;object&apos; &amp;&amp; data !== null) {
+            let newFeature = createFeature(data.type, event.latlng, {id: data.id});
+            let map = this._instance;
+            if (newFeature instanceof L.Layer) {
+                newFeature._map = map;
+                newFeature._showContextMenu(event, &apos;onDrop&apos;);
+                map.once(&apos;contextmenu.hide&apos;, e =&gt; newFeature._map = undefined);
+            }
+        }
+    }
 }
+
+
+MapSet.prototype.options = {
+    drawControl:      true,
+
+    contextmenu:      true,
+    contextmenuWidth: 140,
+    contextmenuItems: [{
+        text:     &apos;Center map here&apos;,
+        iconCls:  &apos;fa fa-dot-circle-o&apos;,
+        callback: function centerMap(event) {
+            this.panTo(event.latlng);
+        }
+    }, &apos;-&apos;, {
+        text:     &apos;Zoom in&apos;,
+        iconCls:  &apos;fa fa-search-plus&apos;,
+        callback: function zoomIn(event) {
+            this.zoomIn();
+        }
+    }, {
+        text:     &apos;Zoom out&apos;,
+        iconCls:  &apos;fa fa-search-minus&apos;,
+        callback: function zoomOut(event) {
+            this.zoomOut();
+        }
+    }]
+};
 </code></pre>
 
 </div>
