@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <base data-ice="baseUrl" href="../../../../">
+  <title data-ice="title">src/components/MapSet/MapSetComponent.js | API Document</title>
+  <link type="text/css" rel="stylesheet" href="css/style.css">
+  <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
+  <script src="script/prettify/prettify.js"></script>
+  
+  
+  <script src="script/manual.js"></script>
+</head>
+<body class="layout-container" data-ice="rootContainer">
+
+<header>
+  <a href="./">Home</a>
+  
+  <a href="identifiers.html">Reference</a>
+  <a href="source.html">Source</a>
+  
+  
+  <div class="search-box">
+  <span>
+    <img src="./image/search.png">
+    <span class="search-input-edge"></span><input class="search-input"><span class="search-input-edge"></span>
+  </span>
+    <ul class="search-result"></ul>
+  </div>
+</header>
+
+<nav class="navigation" data-ice="nav"><div>
+  <ul>
+    
+  <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-SETTINGS">SETTINGS</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/FigureIcon.js~FigureIcon.html">FigureIcon</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/Map.js~Map.html">Map</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/Overlay.js~Overlay.html">Overlay</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/Feature</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/Feature/FeatureCluster.js~FeatureCluster.html">FeatureCluster</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/Feature/FeatureGroup.js~FeatureGroup.html">FeatureGroup</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-createFeature">createFeature</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/MapSet</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/MapSet/MapSet.js~MapSet.html">MapSet</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/MapSet/MapSetComponent.js~MapSetComponent.html">MapSetComponent</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">core</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/core/Component.js~Component.html">Component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/core/Rest.js~Rest.html">Rest</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/core/Socket.js~Socket.html">Socket</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/core/Storage.js~Storage.html">Storage</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-applyComponent">applyComponent</a></span></span></li>
+</ul>
+</div>
+</nav>
+
+<div class="content" data-ice="content"><h1 data-ice="title">src/components/MapSet/MapSetComponent.js</h1>
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import Rest from &apos;./../../core/Rest&apos;;
+import Socket from &apos;./../../core/Socket&apos;;
+import Component from &apos;./../../core/Component&apos;;
+import MapSet from &apos;./MapSet&apos;;
+import Map from &apos;./../Map&apos;;
+import Overlay from &apos;./../Overlay&apos;;
+import { createFeature } from &apos;../Feature/Features&apos;;
+import { SETTINGS } from &apos;./../../settings&apos;;
+
+
+/**
+ * MapSet Component (View and Controller)
+ * @module components/MapSetComponent
+ * @augments Component
+ */
+export default class MapSetComponent extends Component {
+
+    constructor() {
+        super();
+        this.mapSet = {};
+        this.featuresIDsOnMap = [];
+        this.lockAddingLayers = false;
+        this.loaderCanBeVisible = false;
+        this.state = {
+            mapSetsEntitiesList: [],
+            mapsEntities: {}
+        };
+    }
+
+    initialize() {
+        let mapSetsCollection = (new Rest()).client.all(&apos;mapsets&apos;);
+        mapSetsCollection.getAll().then((response) =&gt; {
+            this.setState({
+                mapSetsEntitiesList: response.body()
+            });
+        });
+        this.applyStatusMonitoring();
+    }
+
+    applyStatusMonitoring() {
+        let ws = new Socket();
+
+        ws.client.onopen = () =&gt; {
+            // TODO: Send getBounds() to api
+        };
+
+        ws.client.onmessage = (msg) =&gt; {
+            let {status, id} = JSON.parse(msg.data);
+            let cameraEl = document.querySelector(`.FeatureCamera[data-id=&quot;${id}&quot;]`);
+            cameraEl.setAttribute(&apos;data-status&apos;, status);
+        };
+    }
+
+    applyMapSet(mapSetID) {
+        for (let mapSetEntity of this.state.mapSetsEntitiesList) {
+            if (mapSetEntity.id() === mapSetID) {
+                let mapSetData = mapSetEntity.data();
+                if (this.mapSet.instance) {
+                    this.mapSet.instance.remove();
+                }
+
+                this.mapSet = new MapSet(mapSetData.id, mapSetData.ms_name, {});
+            }
+        }
+    }
+
+    fetchMap(mapID, mapSetID) {
+        let mapSetResource = (new Rest()).client.one(&apos;mapsets&apos;, mapSetID);
+        let mapResource = mapSetResource.one(&apos;maps&apos;, mapID);
+        mapResource.get().then((response) =&gt; {
+            let mapData = (response.body()).data();
+            this.applyMapSet(mapSetID);
+            const streetMap = new Map(
+                &apos;http://a.tile.openstreetmap.org/{z}/{x}/{y}.png&apos;,
+                {
+                    attribution: &apos;Teleste.com&apos;,
+                    maxZoom: 18
+                }
+            );
+            this.mapSet.setOptions = {
+                center: [
+                    mapData.map_center.lat,
+                    mapData.map_center.lon,
+                ],
+                maxBounds: [
+                    [
+                        mapData.map_restricted_extent[0].lat,
+                        mapData.map_restricted_extent[0].lon
+                    ], [
+                        mapData.map_restricted_extent[1].lat,
+                        mapData.map_restricted_extent[1].lon
+                    ]
+                ],
+                zoom: 8,
+            };
+
+            this.mapSet.initialize();
+            streetMap.addTo(this.mapSet.instance);
+
+            this.featuresIDsOnMap = [];
+            this.fetchFeatures(mapID, mapSetID);
+
+            this.parseOverlayers(mapData.gisoverlayersets);
+
+            // XXX: Only for example.html as now
+            let el = document.querySelector(&apos;#mapv3 .intro&apos;);
+            el &amp;&amp; el.remove();
+
+            this.mapSet.instance.on(&apos;moveend&apos;, () =&gt; {
+                this.lockAddingLayers = false;
+                this.fetchFeatures(mapID, mapSetID);
+            });
+            this.mapSet.instance.on(&apos;movestart&apos;, () =&gt; {
+                this.lockAddingLayers = true;
+            });
+        });
+    }
+
+    fetchFeatures(mapID, mapSetID, page = 0) {
+        let mapSetResource = (new Rest()).client.one(&apos;mapsets&apos;, mapSetID);
+        let mapResource = mapSetResource.one(&apos;maps&apos;, mapID);
+        let bounds = this.mapSet.instance.getBounds();
+        let featuresResourceUrl = `features/${bounds._southWest.lat}/${bounds._southWest.lng}/${bounds._northEast.lat}/${bounds._northEast.lng}`;
+        let featuresList = [];
+        let featuresIdsList = [];
+        // don&apos;t show loader immediately, maybe it&apos;s a fast request?
+        this.loaderCanBeVisible = true;
+        setTimeout(() =&gt; {
+            if (this.loaderCanBeVisible) {
+                document.querySelector(&apos;.map-loader&apos;).className = &apos;map-loader visible&apos;;
+            }
+        }, 500);
+        mapResource.all(`${featuresResourceUrl}/${SETTINGS.API.DEFAULT_OFFSET}/${page}`).getAll().then((response) =&gt; {
+            let featureBody = response.body();
+            for (let featureEntity of featureBody) {
+                let featureData = featureEntity.data();
+                if (this.featuresIDsOnMap.indexOf(featureData.id) === -1) {
+                    let feature = createFeature(
+                        featureData.go_type, [
+                            featureData.go_position.lat,
+                            featureData.go_position.lon
+                        ], {
+                            angle: featureData.go_angle,
+                            name: featureData.go_name,
+                            id: featureData.id,
+                            status: featureData.go_status || &apos;unknown&apos;
+                        }
+                    );
+                    featuresIdsList.push(featureData.id);
+                    feature &amp;&amp; featuresList.push(feature);
+                }
+            }
+            // Stop adding new layers when map is in move, coz this action fire fetching new collection of features
+            if (!this.lockAddingLayers) {
+                this.featuresIDsOnMap = this.featuresIDsOnMap.concat(featuresIdsList);
+                this.mapSet.features.addLayers(featuresList);
+                if (featureBody.length &gt; 0) {
+                    this.fetchFeatures(mapID, mapSetID, ++page);
+                } else {
+                    // stop fetching new features
+                    this.loaderCanBeVisible = false;
+                    document.querySelector(&apos;.map-loader&apos;).className = &apos;map-loader hidden&apos;;
+                }
+            }
+        });
+    }
+
+    parseOverlayers(overlayerSet) {
+        let overlayControl = {};
+        for(let overlayer of overlayerSet.overlayers) {
+            overlayControl[overlayer.ovl_name] = new Overlay(
+                &apos;http://almaqam.net/images/black-opacity-80.png&apos;,
+                [
+                    [
+                        overlayer.ovl_attributes.bounds[0].latmin,
+                        overlayer.ovl_attributes.bounds[0].lonmin
+                    ], [
+                        overlayer.ovl_attributes.bounds[1].latmax,
+                        overlayer.ovl_attributes.bounds[1].lonmax
+                    ]
+                ]
+            )
+        }
+        L.control.layers(null, overlayControl).addTo(this.mapSet.instance);
+    }
+
+    fetchMapsList(mapSetID) {
+        let mapSetResource = (new Rest()).client.one(&apos;mapsets&apos;, mapSetID);
+        let mapsCollection = mapSetResource.all(&apos;maps&apos;);
+        mapsCollection.getAll().then((response) =&gt; {
+            this.setState({
+                mapsEntities: {
+                    mapSetID: mapSetID,
+                    body: response.body()
+                }
+            });
+        });
+    }
+
+    // TODO: Move it into separated component
+    renderMapsList(mapSetID) {
+        const $mapsElements = document.createElement(&apos;ul&apos;);
+        for (let mapEntity of this.state.mapsEntities.body) {
+            const $mapEl = document.createElement(&apos;li&apos;);
+            let mapData = mapEntity.data();
+
+            $mapEl.setAttribute(&apos;data-id&apos;, mapData.id);
+            $mapEl.setAttribute(&apos;data-name&apos;, mapData.map_name);
+            $mapEl.setAttribute(&apos;data-mapset-id&apos;, mapSetID);
+            $mapEl.appendChild(
+                document.createTextNode(
+                    mapData.map_name
+                )
+            );
+            $mapEl.onclick = () =&gt; {
+                this.fetchMap(mapData.id, mapSetID);
+            };
+            $mapsElements.appendChild($mapEl);
+        }
+        return $mapsElements;
+    }
+
+    render() {
+        const $mapSetsElements = document.createElement(&apos;ul&apos;);
+
+        // Create nodes
+        if (this.state.mapSetsEntitiesList) {
+            for (let mapSetEntity of this.state.mapSetsEntitiesList) {
+                const $mapSetEl = document.createElement(&apos;li&apos;);
+                let mapSetData = mapSetEntity.data();
+                // Set attributes
+                $mapSetEl.setAttribute(&apos;data-id&apos;, mapSetData.id);
+                $mapSetEl.setAttribute(&apos;data-name&apos;, mapSetData.ms_name);
+                // Setup visible name
+                $mapSetEl.appendChild(
+                    document.createTextNode(
+                        mapSetData.ms_name
+                    )
+                );
+                // Verify if mapSet has childs
+                if (this.state.mapsEntities.mapSetID === mapSetData.id) {
+                    $mapSetEl.appendChild(
+                        this.renderMapsList(mapSetData.id)
+                    );
+                } else {
+                    // Setup click events
+                    $mapSetEl.onclick = () =&gt; {
+                        this.fetchMapsList(mapSetData.id);
+                    };
+                }
+                // Append to list container
+                $mapSetsElements.appendChild($mapSetEl);
+            }
+        }
+        return $mapSetsElements;
+    }
+}
+</code></pre>
+
+</div>
+
+<footer class="footer">
+  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(0.4.8)</span></a>
+</footer>
+
+<script src="script/search_index.js"></script>
+<script src="script/search.js"></script>
+<script src="script/pretty-print.js"></script>
+<script src="script/inherited-summary.js"></script>
+<script src="script/test-summary.js"></script>
+<script src="script/inner-link.js"></script>
+<script src="script/patch-for-local.js"></script>
+</body>
+</html>

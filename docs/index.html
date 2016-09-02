@@ -32,13 +32,15 @@
 <nav class="navigation" data-ice="nav"><div>
   <ul>
     
-  <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-API">API</a></span></span></li>
+  <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-SETTINGS">SETTINGS</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/FigureIcon.js~FigureIcon.html">FigureIcon</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/Map.js~Map.html">Map</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/Overlay.js~Overlay.html">Overlay</a></span></span></li>
-<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/Feature</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/Feature/Feature.js~Feature.html">Feature</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/Feature/FeatureCamera.js~FeatureCamera.html">FeatureCamera</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/Feature</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/Feature/FeatureCluster.js~FeatureCluster.html">FeatureCluster</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/Feature/FeatureGroup.js~FeatureGroup.html">FeatureGroup</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-createFeature">createFeature</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/MapSet</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/MapSet/MapSet.js~MapSet.html">MapSet</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/MapSet/MapSetComponent.js~MapSetComponent.html">MapSetComponent</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">core</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/core/Component.js~Component.html">Component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/core/Rest.js~Rest.html">Rest</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/core/Socket.js~Socket.html">Socket</a></span></span></li>
@@ -53,8 +55,8 @@
 <h2 id="tasks">Tasks</h2>
 <h5 id="1-http-progressed-io-bar-61-features-geometries-markers-polygons-">1. <img src="http://progressed.io/bar/61" alt=""> Features  (geometries: markers, polygons)</h5>
 <ul>
-<li>Pobieranie z BE<ul>
-<li>Ustalenie struktury protoko&#x142;&#xF3;w</li>
+<li><del>Pobieranie z BE</del><ul>
+<li><del>Ustalenie struktury protoko&#x142;&#xF3;w</del></li>
 </ul>
 </li>
 <li>Rysowanie na mapie<ul>
@@ -65,18 +67,18 @@
 </li>
 <li><a href="https://github.com/CombatCode/mapv3/pull/2">PR#2</a> <del>Grupowanie</del></li>
 <li>Przenoszenie</li>
-<li>Menu kontekstowe</li>
+<li><del>Menu kontekstowe</del></li>
 <li>Tooltip&#x2019;y</li>
-<li>obracanie kamer</li>
+<li><del>obracanie kamer</del></li>
 <li><a href="https://github.com/CombatCode/mapv3/pull/1">PR#1</a> <del>Podpisy pod markerami</del> </li>
-<li>Zaznaczanie feature&#x2019;&#xF3;w<ul>
-<li>pojedyncze (klik na obszarze mapy)</li>
-<li>grupowe &#x201C;box&#x201D;</li>
+<li><del>Zaznaczanie feature&#x2019;&#xF3;w</del><ul>
+<li><del>pojedyncze (klik na obszarze mapy)</del></li>
+<li><del>grupowe &#x201C;box&#x201D;</del></li>
 </ul>
 </li>
 <li>D&amp;D<ul>
 <li>z mapy np na inne widgety aplikacji</li>
-<li>na map&#x119; lokalizacja istniej&#x105;cych lub dodawanie nowego obiektu</li>
+<li><del>na map&#x119; lokalizacja istniej&#x105;cych lub dodawanie nowego obiektu</del></li>
 </ul>
 </li>
 </ul>
@@ -86,15 +88,15 @@
 <li><a href="https://github.com/CombatCode/mapv3/pull/3">PR#3</a> <img src="http://progressed.io/bar/50" alt=""> Leaflet.draw is not supporting yet leaflet 1.x <del>narz&#x119;dzie do mierzenia odleg&#x142;o&#x15B;ci i obszaru</del></li>
 <li><del>wyb&#xF3;r docelowej mapy z listy</del></li>
 </ul>
-<h5 id="4-http-progressed-io-bar-10-warstwy-dodatkowe-overlays-">4. <img src="http://progressed.io/bar/10" alt=""> Warstwy dodatkowe (overlays)</h5>
+<h5 id="4-http-progressed-io-bar-100-warstwy-dodatkowe-overlays-">4. <img src="http://progressed.io/bar/100" alt=""> Warstwy dodatkowe (overlays)</h5>
 <h5 id="5-http-progressed-io-bar-100-modu-komunikacji-via-rest">5. <img src="http://progressed.io/bar/100" alt=""> Modu&#x142; komunikacji via REST</h5>
-<h5 id="6-http-progressed-io-bar-0-modu-komunikacji-via-websockets">6. <img src="http://progressed.io/bar/0" alt=""> Modu&#x142; komunikacji via Websockets</h5>
+<h5 id="6-http-progressed-io-bar-100-modu-komunikacji-via-websockets">6. <img src="http://progressed.io/bar/100" alt=""> Modu&#x142; komunikacji via Websockets</h5>
 <h5 id="7-http-progressed-io-bar-100-architektura-aplikacji-transpilacji">7. <img src="http://progressed.io/bar/100" alt=""> Architektura aplikacji, transpilacji</h5>
 <h5 id="8-http-progressed-io-bar-100-modu-komponent-w-one-way-binding-">8. <img src="http://progressed.io/bar/100" alt=""> Modu&#x142; komponent&#xF3;w (one-way binding)</h5>
-<h5 id="9-http-progressed-io-bar-0-design-dla-prezentacji">9. <img src="http://progressed.io/bar/0" alt=""> Design dla prezentacji</h5>
+<h5 id="9-http-progressed-io-bar-100-design-dla-prezentacji">9. <img src="http://progressed.io/bar/100" alt=""> Design dla prezentacji</h5>
 <h2 id="tasks-v2">Tasks v2</h2>
-<h5 id="1-modu-widget-a-do-systemu-vmxwebbp">1. Modu&#x142; widget&#x2019;a do systemu VMXwebbp</h5>
-<h5 id="2-mapy">2. Mapy</h5>
+<h5 id="1-http-progressed-io-bar-0-modu-widget-a-do-systemu-vmxwebbp">1. <img src="http://progressed.io/bar/0" alt=""> Modu&#x142; widget&#x2019;a do systemu VMXwebbp</h5>
+<h5 id="2-http-progressed-io-bar-10-mapy">2. <img src="http://progressed.io/bar/10" alt=""> Mapy</h5>
 <ul>
 <li>API zewn&#x119;trzne widget&#x2019;a<ul>
 <li>listowanie obiekt&#xF3;w po typie na widocznych obszarze mapy (wyszukiwanie w drzewie kamer)</li>
@@ -103,27 +105,27 @@
 </li>
 <li>nawigacja pomi&#x119;dzy mapami (ty&#x142; / prz&#xF3;d), przemieszczanie si&#x119; za pomoc&#x105; place&#x2019;&#xF3;w, itp</li>
 </ul>
-<h5 id="3-features-geometries-markers-polygons-">3. Features  (geometries: markers, polygons)</h5>
+<h5 id="3-http-progressed-io-bar-70-features-geometries-markers-polygons-">3. <img src="http://progressed.io/bar/70" alt=""> Features  (geometries: markers, polygons)</h5>
 <ul>
-<li>Pobieranie z BE<ul>
-<li>Geojson</li>
-<li>Websocket&#x2019;y</li>
-<li>Filtracja przes&#x142;anych element&#xF3;w na podstawie praw dost&#x119;pu.</li>
+<li><del>Pobieranie z BE</del><ul>
+<li><del>Geojson</del></li>
+<li><del>Websocket&#x2019;y</del></li>
+<li><del>Filtracja przes&#x142;anych element&#xF3;w na podstawie praw dost&#x119;pu.</del></li>
 </ul>
 </li>
-<li>Statusowanie<ul>
-<li>Cache (BE)</li>
-<li>Rejestracja (optymalizacja, nas&#x142;uchiwanie)</li>
+<li><del>Statusowanie</del><ul>
+<li><del>Cache (BE)</del></li>
+<li><del>Rejestracja (optymalizacja, nas&#x142;uchiwanie)</del></li>
 </ul>
 </li>
 <li>Filtrowanie</li>
 <li>Obracanie (PTZ  - sterowanie, kalibracja)</li>
 <li>Obs&#x142;uga polygon&#xF3;w (edycja)</li>
-<li>Menu kontekstowe</li>
-<li>Tooltip&#x2019;y</li>
+<li><del>Menu kontekstowe</del></li>
+<li><del>Tooltip&#x2019;y</del></li>
 <li><a href="https://github.com/CombatCode/mapv3/pull/1">PR#1</a> <del>Podpisy pod markerami</del> </li>
-<li>Zaznaczanie feature&#x2019;&#xF3;w<ul>
-<li>grupowe &#x201C;lasso&#x201D;</li>
+<li><del>Zaznaczanie feature&#x2019;&#xF3;w</del><ul>
+<li><del>grupowe &#x201C;lasso&#x201D;</del></li>
 </ul>
 </li>
 </ul>

@@ -32,13 +32,15 @@
 <nav class="navigation" data-ice="nav"><div>
   <ul>
     
-  <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-API">API</a></span></span></li>
+  <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-SETTINGS">SETTINGS</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/FigureIcon.js~FigureIcon.html">FigureIcon</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/Map.js~Map.html">Map</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/Overlay.js~Overlay.html">Overlay</a></span></span></li>
-<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/Feature</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/Feature/Feature.js~Feature.html">Feature</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/Feature/FeatureCamera.js~FeatureCamera.html">FeatureCamera</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/Feature</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/Feature/FeatureCluster.js~FeatureCluster.html">FeatureCluster</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/Feature/FeatureGroup.js~FeatureGroup.html">FeatureGroup</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-createFeature">createFeature</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/MapSet</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/MapSet/MapSet.js~MapSet.html">MapSet</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/MapSet/MapSetComponent.js~MapSetComponent.html">MapSetComponent</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">core</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/core/Component.js~Component.html">Component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/core/Rest.js~Rest.html">Rest</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/core/Socket.js~Socket.html">Socket</a></span></span></li>
@@ -51,13 +53,6 @@
 <div class="content" data-ice="content"><h1 data-ice="title">src/handlers/rotation/Marker.Rotate.js</h1>
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import L from &apos;leaflet&apos;;
 
-
-// @section Marker options
-L.Marker.mergeOptions({
-    // @option selectable: Boolean = true
-    // Whether the marker can be rotated using mouse/touch events or not.
-    rotatable: false,
-});
 
 /**
  * Handler providing rotation for L.Marker instance. Disabled by default.
@@ -93,7 +88,7 @@ L.Handler.MarkerRotate = class MarkerRotate extends L.Handler {
         if (this._marker._map) {
             this._marker._map.on({
                 &apos;mousedown&apos;: this._onMapMouseDown,
-                &apos;mouseup&apos;: this._onMapMouseUp,
+                &apos;mouseup&apos;: this._onMapMouseUp
             }, this);
         }
     }
@@ -103,14 +98,18 @@ L.Handler.MarkerRotate = class MarkerRotate extends L.Handler {
             this._marker._map.off({
                 &apos;mousedown&apos;: this._onMapMouseDown,
                 &apos;mouseup&apos;: this._onMapMouseUp,
-                &apos;mousemove&apos;: this._onMapMouseMove,
+                &apos;mousemove&apos;: this._onMapMouseMove
             }, this);
         }
     }
 
     _onMapMouseDown(event) {
         const map = event.target, marker = this._marker;
+        if (marker.options.rotateCondition &amp;&amp; !marker.options.rotateCondition(event)) {
+            return;
+        }
 
+        this._rotating = true;
         this._startAngle = marker.options.angle;
         if (map.dragging.enabled()) {
             this._reenableMapDragging = true;
@@ -124,8 +123,10 @@ L.Handler.MarkerRotate = class MarkerRotate extends L.Handler {
     }
 
     _onMapMouseUp(event) {
+        if (!this._rotating) {return;}
         const map = event.target, marker = this._marker;
 
+        delete this._rotating;
         delete this._startAngle;
         if (this._reenableMapDragging) {
             delete this._reenableMapDragging;
@@ -150,6 +151,18 @@ L.Handler.MarkerRotate = class MarkerRotate extends L.Handler {
     }
 };
 
+// @namespace L.Marker
+// @section Options
+L.Marker.mergeOptions({
+    // Whether the marker can be rotated using mouse/touch events or not.
+    // @type {boolean}
+    rotatable: false,
+    // Condition to start rotation
+    // @type {Function(Event):boolean=}
+    rotateCondition: undefined
+});
+
+
 // Add init hook for MarkerSelect handler
 L.Marker.addInitHook(function() {
     if (L.Handler.MarkerRotate) {
@@ -161,7 +174,7 @@ L.Marker.addInitHook(function() {
     }
 });
 
-// Overwrites L.Marker setPos method.
+// Overwrites L.Marker _setPos method.
 function setPos(pos) {
     setPos.base.call(this, pos);
 

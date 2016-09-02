@@ -1,26 +1,20 @@
 window.esdocSearchIndex = [
   [
-    "vmx-widget-map.v3/src/settings.js~api",
-    "variable/index.html#static-variable-API",
-    "<span>API</span> <span class=\"search-result-import-path\">vmx-widget-map.v3/src/settings.js</span>",
-    "variable"
-  ],
-  [
     "vmx-widget-map.v3/src/core/component.js~component",
     "class/src/core/Component.js~Component.html",
     "<span>Component</span> <span class=\"search-result-import-path\">vmx-widget-map.v3/src/core/Component.js</span>",
     "class"
   ],
   [
-    "vmx-widget-map.v3/src/components/feature/feature.js~feature",
-    "class/src/components/Feature/Feature.js~Feature.html",
-    "<span>Feature</span> <span class=\"search-result-import-path\">vmx-widget-map.v3/src/components/Feature/Feature.js</span>",
+    "vmx-widget-map.v3/src/components/feature/featurecluster.js~featurecluster",
+    "class/src/components/Feature/FeatureCluster.js~FeatureCluster.html",
+    "<span>FeatureCluster</span> <span class=\"search-result-import-path\">vmx-widget-map.v3/src/components/Feature/FeatureCluster.js</span>",
     "class"
   ],
   [
-    "vmx-widget-map.v3/src/components/feature/featurecamera.js~featurecamera",
-    "class/src/components/Feature/FeatureCamera.js~FeatureCamera.html",
-    "<span>FeatureCamera</span> <span class=\"search-result-import-path\">vmx-widget-map.v3/src/components/Feature/FeatureCamera.js</span>",
+    "vmx-widget-map.v3/src/components/feature/featuregroup.js~featuregroup",
+    "class/src/components/Feature/FeatureGroup.js~FeatureGroup.html",
+    "<span>FeatureGroup</span> <span class=\"search-result-import-path\">vmx-widget-map.v3/src/components/Feature/FeatureGroup.js</span>",
     "class"
   ],
   [
@@ -42,6 +36,12 @@ window.esdocSearchIndex = [
     "class"
   ],
   [
+    "vmx-widget-map.v3/src/components/mapset/mapsetcomponent.js~mapsetcomponent",
+    "class/src/components/MapSet/MapSetComponent.js~MapSetComponent.html",
+    "<span>MapSetComponent</span> <span class=\"search-result-import-path\">vmx-widget-map.v3/src/components/MapSet/MapSetComponent.js</span>",
+    "class"
+  ],
+  [
     "vmx-widget-map.v3/src/components/overlay.js~overlay",
     "class/src/components/Overlay.js~Overlay.html",
     "<span>Overlay</span> <span class=\"search-result-import-path\">vmx-widget-map.v3/src/components/Overlay.js</span>",
@@ -52,6 +52,12 @@ window.esdocSearchIndex = [
     "class/src/core/Rest.js~Rest.html",
     "<span>Rest</span> <span class=\"search-result-import-path\">vmx-widget-map.v3/src/core/Rest.js</span>",
     "class"
+  ],
+  [
+    "vmx-widget-map.v3/src/settings.js~settings",
+    "variable/index.html#static-variable-SETTINGS",
+    "<span>SETTINGS</span> <span class=\"search-result-import-path\">vmx-widget-map.v3/src/settings.js</span>",
+    "variable"
   ],
   [
     "vmx-widget-map.v3/src/core/socket.js~socket",
@@ -69,6 +75,12 @@ window.esdocSearchIndex = [
     "vmx-widget-map.v3/src/core/component.js~applycomponent",
     "function/index.html#static-function-applyComponent",
     "<span>applyComponent</span> <span class=\"search-result-import-path\">vmx-widget-map.v3/src/core/Component.js</span>",
+    "function"
+  ],
+  [
+    "vmx-widget-map.v3/src/components/feature/features.js~createfeature",
+    "function/index.html#static-function-createFeature",
+    "<span>createFeature</span> <span class=\"search-result-import-path\">vmx-widget-map.v3/src/components/Feature/Features.js</span>",
     "function"
   ],
   [
@@ -408,34 +420,34 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
-    "src/components/control/control.rotate.js",
-    "file/src/components/Control/Control.Rotate.js.html",
-    "src/components/Control/Control.Rotate.js",
+    "src/components/feature/featurecluster.js",
+    "file/src/components/Feature/FeatureCluster.js.html",
+    "src/components/Feature/FeatureCluster.js",
     "file"
   ],
   [
-    "src/components/feature/feature.js",
-    "file/src/components/Feature/Feature.js.html",
-    "src/components/Feature/Feature.js",
-    "file"
-  ],
-  [
-    "src/components/feature/feature.js~feature#constructor",
-    "class/src/components/Feature/Feature.js~Feature.html#instance-constructor-constructor",
-    "src/components/Feature/Feature.js~Feature#constructor",
+    "src/components/feature/featurecluster.js~featurecluster#initialize",
+    "class/src/components/Feature/FeatureCluster.js~FeatureCluster.html#instance-method-initialize",
+    "src/components/Feature/FeatureCluster.js~FeatureCluster#initialize",
     "method"
   ],
   [
-    "src/components/feature/featurecamera.js",
-    "file/src/components/Feature/FeatureCamera.js.html",
-    "src/components/Feature/FeatureCamera.js",
+    "src/components/feature/featuregroup.js",
+    "file/src/components/Feature/FeatureGroup.js.html",
+    "src/components/Feature/FeatureGroup.js",
     "file"
   ],
   [
-    "src/components/feature/featurecamera.js~featurecamera#constructor",
-    "class/src/components/Feature/FeatureCamera.js~FeatureCamera.html#instance-constructor-constructor",
-    "src/components/Feature/FeatureCamera.js~FeatureCamera#constructor",
+    "src/components/feature/featuregroup.js~featuregroup#initialize",
+    "class/src/components/Feature/FeatureGroup.js~FeatureGroup.html#instance-method-initialize",
+    "src/components/Feature/FeatureGroup.js~FeatureGroup#initialize",
     "method"
+  ],
+  [
+    "src/components/feature/features.js",
+    "file/src/components/Feature/Features.js.html",
+    "src/components/Feature/Features.js",
+    "file"
   ],
   [
     "src/components/figureicon.js",
@@ -516,15 +528,105 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
-    "src/components/mapset/mapset.js~mapset#options",
-    "class/src/components/MapSet/MapSet.js~MapSet.html#instance-member-options",
-    "src/components/MapSet/MapSet.js~MapSet#options",
-    "member"
-  ],
-  [
     "src/components/mapset/mapset.js~mapset#setoptions",
     "class/src/components/MapSet/MapSet.js~MapSet.html#instance-set-setOptions",
     "src/components/MapSet/MapSet.js~MapSet#setOptions",
+    "member"
+  ],
+  [
+    "src/components/mapset/mapsetcomponent.js",
+    "file/src/components/MapSet/MapSetComponent.js.html",
+    "src/components/MapSet/MapSetComponent.js",
+    "file"
+  ],
+  [
+    "src/components/mapset/mapsetcomponent.js~mapsetcomponent#applymapset",
+    "class/src/components/MapSet/MapSetComponent.js~MapSetComponent.html#instance-method-applyMapSet",
+    "src/components/MapSet/MapSetComponent.js~MapSetComponent#applyMapSet",
+    "method"
+  ],
+  [
+    "src/components/mapset/mapsetcomponent.js~mapsetcomponent#applystatusmonitoring",
+    "class/src/components/MapSet/MapSetComponent.js~MapSetComponent.html#instance-method-applyStatusMonitoring",
+    "src/components/MapSet/MapSetComponent.js~MapSetComponent#applyStatusMonitoring",
+    "method"
+  ],
+  [
+    "src/components/mapset/mapsetcomponent.js~mapsetcomponent#constructor",
+    "class/src/components/MapSet/MapSetComponent.js~MapSetComponent.html#instance-constructor-constructor",
+    "src/components/MapSet/MapSetComponent.js~MapSetComponent#constructor",
+    "method"
+  ],
+  [
+    "src/components/mapset/mapsetcomponent.js~mapsetcomponent#featuresidsonmap",
+    "class/src/components/MapSet/MapSetComponent.js~MapSetComponent.html#instance-member-featuresIDsOnMap",
+    "src/components/MapSet/MapSetComponent.js~MapSetComponent#featuresIDsOnMap",
+    "member"
+  ],
+  [
+    "src/components/mapset/mapsetcomponent.js~mapsetcomponent#fetchfeatures",
+    "class/src/components/MapSet/MapSetComponent.js~MapSetComponent.html#instance-method-fetchFeatures",
+    "src/components/MapSet/MapSetComponent.js~MapSetComponent#fetchFeatures",
+    "method"
+  ],
+  [
+    "src/components/mapset/mapsetcomponent.js~mapsetcomponent#fetchmap",
+    "class/src/components/MapSet/MapSetComponent.js~MapSetComponent.html#instance-method-fetchMap",
+    "src/components/MapSet/MapSetComponent.js~MapSetComponent#fetchMap",
+    "method"
+  ],
+  [
+    "src/components/mapset/mapsetcomponent.js~mapsetcomponent#fetchmapslist",
+    "class/src/components/MapSet/MapSetComponent.js~MapSetComponent.html#instance-method-fetchMapsList",
+    "src/components/MapSet/MapSetComponent.js~MapSetComponent#fetchMapsList",
+    "method"
+  ],
+  [
+    "src/components/mapset/mapsetcomponent.js~mapsetcomponent#initialize",
+    "class/src/components/MapSet/MapSetComponent.js~MapSetComponent.html#instance-method-initialize",
+    "src/components/MapSet/MapSetComponent.js~MapSetComponent#initialize",
+    "method"
+  ],
+  [
+    "src/components/mapset/mapsetcomponent.js~mapsetcomponent#loadercanbevisible",
+    "class/src/components/MapSet/MapSetComponent.js~MapSetComponent.html#instance-member-loaderCanBeVisible",
+    "src/components/MapSet/MapSetComponent.js~MapSetComponent#loaderCanBeVisible",
+    "member"
+  ],
+  [
+    "src/components/mapset/mapsetcomponent.js~mapsetcomponent#lockaddinglayers",
+    "class/src/components/MapSet/MapSetComponent.js~MapSetComponent.html#instance-member-lockAddingLayers",
+    "src/components/MapSet/MapSetComponent.js~MapSetComponent#lockAddingLayers",
+    "member"
+  ],
+  [
+    "src/components/mapset/mapsetcomponent.js~mapsetcomponent#mapset",
+    "class/src/components/MapSet/MapSetComponent.js~MapSetComponent.html#instance-member-mapSet",
+    "src/components/MapSet/MapSetComponent.js~MapSetComponent#mapSet",
+    "member"
+  ],
+  [
+    "src/components/mapset/mapsetcomponent.js~mapsetcomponent#parseoverlayers",
+    "class/src/components/MapSet/MapSetComponent.js~MapSetComponent.html#instance-method-parseOverlayers",
+    "src/components/MapSet/MapSetComponent.js~MapSetComponent#parseOverlayers",
+    "method"
+  ],
+  [
+    "src/components/mapset/mapsetcomponent.js~mapsetcomponent#render",
+    "class/src/components/MapSet/MapSetComponent.js~MapSetComponent.html#instance-method-render",
+    "src/components/MapSet/MapSetComponent.js~MapSetComponent#render",
+    "method"
+  ],
+  [
+    "src/components/mapset/mapsetcomponent.js~mapsetcomponent#rendermapslist",
+    "class/src/components/MapSet/MapSetComponent.js~MapSetComponent.html#instance-method-renderMapsList",
+    "src/components/MapSet/MapSetComponent.js~MapSetComponent#renderMapsList",
+    "method"
+  ],
+  [
+    "src/components/mapset/mapsetcomponent.js~mapsetcomponent#state",
+    "class/src/components/MapSet/MapSetComponent.js~MapSetComponent.html#instance-member-state",
+    "src/components/MapSet/MapSetComponent.js~MapSetComponent#state",
     "member"
   ],
   [
@@ -714,6 +816,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/handlers/drop/map.drop.js",
+    "file/src/handlers/drop/Map.Drop.js.html",
+    "src/handlers/drop/Map.Drop.js",
+    "file"
+  ],
+  [
     "src/handlers/rotation/marker.rotate.js",
     "file/src/handlers/rotation/Marker.Rotate.js.html",
     "src/handlers/rotation/Marker.Rotate.js",
@@ -735,6 +843,12 @@ window.esdocSearchIndex = [
     "src/handlers/selection/marker.select.js",
     "file/src/handlers/selection/Marker.Select.js.html",
     "src/handlers/selection/Marker.Select.js",
+    "file"
+  ],
+  [
+    "src/leaflet-draw/leaflet.draw.js",
+    "file/src/leaflet-draw/leaflet.draw.js.html",
+    "src/leaflet-draw/leaflet.draw.js",
     "file"
   ],
   [
