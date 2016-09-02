@@ -1,0 +1,43 @@
+/**
+ * This file is intended to place global styles for this application
+ */
+@-moz-keyframes spin { 100% { -moz-transform: rotate(360deg); } }
+@-webkit-keyframes spin { 100% { -webkit-transform: rotate(360deg); } }
+@keyframes spin { 100% { -webkit-transform: rotate(360deg); transform:rotate(360deg); } }
+
+.map-loader {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.2);
+    z-index: 999;
+    pointer-events: none;
+    text-align: center;
+    display: none;
+    text-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+    &.visible {
+        display: block;
+    }
+    &.hidden {
+        display: none;
+    }
+    .circle {
+        color: #fff;
+        font-size: 40px;
+        position: absolute;
+        top: 38%;
+        margin: 0;
+        transform-origin: 50% 74%;
+        -webkit-animation:spin 1s linear infinite;
+        -moz-animation:spin 1s linear infinite;
+        animation:spin 1s linear infinite;
+    }
+    span {
+        color: #fff;
+        position: absolute;
+        top: 47%;
+        margin-left: -27px;
+    }
+}
