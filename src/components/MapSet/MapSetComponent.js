@@ -121,6 +121,9 @@ export default class MapSetComponent extends Component {
         let mapResource = mapSetResource.one('maps', mapID);
         let bounds = this.mapSet.instance.getBounds();
         let featuresResourceUrl = `features/${bounds._southWest.lat}/${bounds._southWest.lng}/${bounds._northEast.lat}/${bounds._northEast.lng}`;
+        // Count offset based on the zoom level
+        // Smaller zoom level cause smaller offset
+        let currentOffset = parseInt(SETTINGS.API.DEFAULT_OFFSET / (this.mapSet.instance.getZoom() * 4));
         let featuresList = [];
         let featuresIdsList = [];
         // don't show loader immediately, maybe it's a fast request?
@@ -130,7 +133,7 @@ export default class MapSetComponent extends Component {
                 document.querySelector('.map-loader').className = 'map-loader visible';
             }
         }, 500);
-        mapResource.all(`${featuresResourceUrl}/${SETTINGS.API.DEFAULT_OFFSET}/${page}`).getAll().then((response) => {
+        mapResource.all(`${featuresResourceUrl}/${currentOffset}/${page}`).getAll().then((response) => {
             let featureBody = response.body();
             for (let featureEntity of featureBody) {
                 let featureData = featureEntity.data();
