@@ -9,10 +9,10 @@ defmodule Gis.GisMap do
     field :map_zoom, :map
     field :map_attributes, :map
     field :map_default, :boolean, default: false
-    field :map_geographic, :boolean, default: true
     field :map_center, Geo.Point
     field :map_max_extent, Geo.Geometry
     field :map_restricted_extent, Geo.Geometry
+    belongs_to :gismaptypes, Gis.GisMapType
     belongs_to :gismapsets, Gis.GisMapSet
     belongs_to :gisoverlayersets, Gis.GisOverlayerSet
     has_many :gismapassocs, Gis.GisMapAssoc
