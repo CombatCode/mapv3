@@ -68,16 +68,11 @@ export default class MapSetComponent extends Component {
         let mapSetResource = (new Rest()).client.one('mapsets', mapSetID);
         let mapResource = mapSetResource.one('maps', mapID);
         mapResource.get().then((response) => {
-            let mapData = (response.body()).data();
             this.applyMapSet(mapSetID);
-            const streetMap = new Map(
-                'http://a.tile.openstreetmap.org/{z}/{x}/{y}.png',
-                {
-                    attribution: 'Teleste.com',
-                    maxZoom: 18
-                }
-            );
-            this.mapSet.setOptions = {
+            let mapInstance;
+            let mapOverlay;
+            let mapData = (response.body()).data();
+            let defaultMapOptions = {
                 center: [
                     mapData.map_center.lat,
                     mapData.map_center.lon,
@@ -94,8 +89,24 @@ export default class MapSetComponent extends Component {
                 zoom: 8,
             };
 
+            if (mapData.gismaptypes.map_type_geographic) {
+                let {url_pattern, options} = mapData.gismaptypes.map_type_attributes;
+                mapInstance = new Map(url_pattern, options);
+                Object.assign(defaultMapOptions , {crs: L.CRS.EPSG3857});
+            } else {
+                let {overlay_url, bounds} = mapData.gismaptypes.map_type_attributes;
+                mapOverlay = new Overlay(overlay_url, bounds);
+                mapInstance = new Map('', {});
+                Object.assign(defaultMapOptions , {crs: L.CRS.Simple});
+            }
+            window.map = this.mapSet;
+            this.mapSet.setOptions = defaultMapOptions;
             this.mapSet.initialize();
-            streetMap.addTo(this.mapSet.instance);
+
+            if (mapOverlay) {
+                mapOverlay.addTo(this.mapSet.instance);
+            }
+            mapInstance.addTo(this.mapSet.instance);
 
             this.featuresIDsOnMap = [];
             this.fetchFeatures(mapID, mapSetID);
@@ -123,7 +134,7 @@ export default class MapSetComponent extends Component {
         let featuresResourceUrl = `features/${bounds._southWest.lat}/${bounds._southWest.lng}/${bounds._northEast.lat}/${bounds._northEast.lng}`;
         // Count offset based on the zoom level
         // Smaller zoom level cause smaller offset
-        let currentOffset = parseInt(SETTINGS.API.DEFAULT_OFFSET / (this.mapSet.instance.getZoom() * 4));
+        let currentOffset = parseInt(SETTINGS.API.DEFAULT_OFFSET / ((this.mapSet.instance.getZoom() + 1) * 4));
         let featuresList = [];
         let featuresIdsList = [];
         // don't show loader immediately, maybe it's a fast request?
