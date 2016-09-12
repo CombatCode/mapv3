@@ -28,7 +28,7 @@ map_types = [
         map_type_name: "Kosmos",
         map_type_attributes: %{
             bounds: [[0,0], [1000,1000]],
-            overlay_url: "http://leafletjs.com/examples/crs-simple/uqm_map_full.png"
+            overlay_url: "http://www.qarmazi.com/5/2015/07/garage-planing-software-contemporary-home-plans-estimated-cost-to-build.jpg"
         }
     }
 ]
