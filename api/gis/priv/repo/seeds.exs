@@ -9,17 +9,34 @@
 #
 # We recommend using the bang functions (`insert!`, `update!`
 # and so on) as they will fail if something goes wrong.
-
 m = 20
 m_per_ms = 3
-objects_per_map = 1000
+objects_per_map = 300
 map_data = %{latmin: 42.25, latmax: 51.100, lonmin: -5.2, lonmax: 8.23}
 object_types = ["camera", "sensor", "camera_ptz"]
 angle_variation = [0.0, 360.0]
+map_types = [
+    %{
+        map_type_geographic: true,
+        map_type_name: "OpenStreet",
+        map_type_attributes: %{
+            url_pattern: "http://a.tile.openstreetmap.org/{z}/{x}/{y}.png",
+            options: %{attribution: "Teleste.com", maxZoom: 18}
+        }
+    }, %{
+        map_type_geographic: false,
+        map_type_name: "Kosmos",
+        map_type_attributes: %{
+            bounds: [[0,0], [1000,1000]],
+            overlay_url: "http://www.qarmazi.com/5/2015/07/garage-planing-software-contemporary-home-plans-estimated-cost-to-build.jpg"
+        }
+    }
+]
 
 defmodule Seeds do
-    def import_data(map_data, object_types, m, m_per_ms, av, opm) do
+    def import_data(map_data, object_types, m, m_per_ms, av, opm, map_types) do
         Gis.Repo.delete_all(Gis.GisMapAssoc)
+        Gis.Repo.delete_all(Gis.GisMapType)
         Gis.Repo.delete_all(Gis.GisMap)
         Gis.Repo.delete_all(Gis.GisMapSet)
         Gis.Repo.delete_all(Gis.GisOverlayer)
@@ -28,10 +45,11 @@ defmodule Seeds do
         Gis.Repo.delete_all(Gis.GisObject)
         Gis.Repo.delete_all(Gis.GisObjectType)
         Gis.Repo.delete_all(Gis.GisIconSet)
+        objects_map_types = import_maptypes(map_types, [])
         iconset = import_iconset()
         iconitem = import_iconsetitem(iconset)
         object_types = import_objecttypes(object_types, iconset)
-        import_mapsets(m, m_per_ms, map_data, object_types, opm)
+        import_mapsets(m, m_per_ms, map_data, object_types, opm, objects_map_types)
     end
 
 # olvs_name, ovls_params, ovls_order	
@@ -41,13 +59,26 @@ defmodule Seeds do
         ovl_set
     end
 
-    def import_mapsets(m, m_per_ms, md, ot, opm) do
+    def import_maptypes(map_types, objects_map_types) do
+        if length(map_types) > 0 do
+            map_type = List.first(map_types)
+            object = Gis.Repo.insert!(%Gis.GisMapType{map_type_geographic: map_type.map_type_geographic, map_type_name: map_type.map_type_name, map_type_attributes: map_type.map_type_attributes})
+            map_types = List.delete(map_types, map_type)
+            objects_map_types = objects_map_types ++ [object]
+            import_maptypes(map_types, objects_map_types)
+        else
+            IO.puts("Map Types import success")
+            objects_map_types
+        end
+    end
+
+    def import_mapsets(m, m_per_ms, md, ot, opm, objects_map_types) do
         how_many_map_sets = div m, m_per_ms
         if how_many_map_sets > 0 do
             ms = Gis.Repo.insert!(%Gis.GisMapSet{ms_name: "MapSets #{m}", ms_equal: false}, log: false)
             ovl_set = import_overlayerset(m)
-            import_map(ms, md, ot, m_per_ms, ovl_set, ot, opm)
-            import_mapsets(m - m_per_ms , m_per_ms, md, ot, opm)
+            import_map(ms, md, ot, m_per_ms, ovl_set, ot, opm, objects_map_types)
+            import_mapsets(m - m_per_ms , m_per_ms, md, ot, opm, objects_map_types)
         else
             IO.puts("Import success")          
         end
@@ -55,26 +86,36 @@ defmodule Seeds do
 
 # map_name, map_zoom, map_features, map_default, map_geographic, map_center, map_max_extent, 
 # map_restricted_extent, gismapsets_id, gisoverlayersets_id
-    def import_map(ms, md, ot, m_per_ms, ovl_set, object_types, objects_per_map) do
+    def import_map(ms, md, ot, m_per_ms, ovl_set, object_types, objects_per_map, objects_map_types) do
         :random.seed(:erlang.now())
-        map_boundary = get_boundary(md)
-        
+        map_boundary = %{}
+        random_map_type = Enum.random(objects_map_types)
+
+        map_boundary =
+            case random_map_type.map_type_geographic do
+                true -> get_boundary(md)
+                false ->
+                    [minbound, maxbound] = random_map_type.map_type_attributes.bounds
+                    [latmin, lonmin] = minbound
+                    [latmax, lonmax] = maxbound
+                    %{latmin: latmin, latmax: latmax, lonmin: lonmin, lonmax: lonmax}
+            end
 
         map_extent = %Geo.MultiPoint{coordinates: [{map_boundary.latmin, map_boundary.lonmin}, 
                                                 {map_boundary.latmax, map_boundary.lonmax}], srid: 4326}
         map_center = %Geo.Point{coordinates: {(map_boundary.latmin + map_boundary.latmax)/2, 
                                               (map_boundary.lonmin + map_boundary.lonmax)/2}, srid: 4326}
         if m_per_ms > 0 do	
-            m = Gis.Repo.insert!(%Gis.GisMap{map_name: "Map #{m_per_ms}", map_zoom: %{zoom_levels: []}, 
+            m = Gis.Repo.insert!(%Gis.GisMap{map_name: "Map #{m_per_ms}", map_zoom: %{zoom_levels: []},
                                              map_attributes: %{}, map_default: false,
-                                             map_geographic: true, map_center: map_center, map_max_extent: nil,
+                                             map_center: map_center, map_max_extent: nil,
                                              map_restricted_extent: map_extent, gismapsets_id: ms.id,
-                                             gisoverlayersets_id: ovl_set.id
+                                             gisoverlayersets_id: ovl_set.id, gismaptypes_id: random_map_type.id
                                              })
             ovl = import_overlayer("OVLTEST #{m_per_ms}", ovl_set, map_boundary)
             objects = import_objects(object_types, objects_per_map, map_boundary)
             import_mapassoc(objects, m)
-            import_map(ms, md, ot, m_per_ms - 1, ovl_set, object_types, objects_per_map)
+            import_map(ms, md, ot, m_per_ms - 1, ovl_set, object_types, objects_per_map, objects_map_types)
         else
             IO.puts("Map import success")
         end
@@ -190,4 +231,4 @@ defmodule Seeds do
 
 end
 
-Seeds.import_data(map_data, object_types, m, m_per_ms, angle_variation, objects_per_map)
+Seeds.import_data(map_data, object_types, m, m_per_ms, angle_variation, objects_per_map, map_types)

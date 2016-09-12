@@ -11,6 +11,7 @@
     "leaflet-contextmenu": "^1.1.0",
     "leaflet-draw": "Leaflet/Leaflet.draw#master",
     "leaflet.markercluster": "^1.0.0-rc.1.0",
+    "phoenix": "^1.2.0",
     "restful.js": "^0.9.6",
     "uuid4": "^1.0.0",
     "whatwg-fetch": "^1.0.0"
