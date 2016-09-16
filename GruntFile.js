@@ -18,7 +18,7 @@ module.exports = function(grunt) {
                     style: 'compressed'
                 },
                 files: {
-                    './dist/main.css': './src/app.scss',
+                    './dist/app.css': './src/app.scss'
                 }
             }
         },
@@ -36,7 +36,7 @@ module.exports = function(grunt) {
 
     grunt.loadNpmTasks('grunt-browserify');
     grunt.loadNpmTasks('grunt-contrib-watch');
-    grunt.loadNpmTasks('grunt-contrib-sass');
+    grunt.loadNpmTasks('grunt-sass');
 
     grunt.registerTask('default', ['watch']);
     grunt.registerTask('build', ['browserify', 'sass']);
