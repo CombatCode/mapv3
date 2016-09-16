@@ -13,14 +13,16 @@ defmodule Gis do
       # Start the endpoint when the application starts
       supervisor(Gis.Endpoint, []),
       # Start your own worker by calling: Gis.Worker.start_link(arg1, arg2, arg3)
-      # worker(Gis.Worker, [arg1, arg2, arg3]),
+      worker(Longpoll.Dbworker, [[name: Longpoll.Dbworker]]),
+      worker(Longpoll.Worker, [[name: Longpoll.Worker]]),
+      worker(Longpoll.Rights, [[name: Longpoll.Rights]]),
     ]
 
     # See http://elixir-lang.org/docs/stable/elixir/Supervisor.html
     # for other strategies and supported options
     opts = [strategy: :one_for_one, name: Gis.Supervisor]
     Supervisor.start_link(children, opts)
-  end
+end
 
   # Tell Phoenix to update the endpoint configuration
   # whenever the application is updated.
