@@ -19,7 +19,7 @@ defmodule Gis.Mixfile do
   def application do
     [mod: {Gis, []},
      applications: [:phoenix, :phoenix_pubsub, :phoenix_html, :cowboy, :logger, :gettext,
-                    :phoenix_ecto, :postgrex]]
+                    :phoenix_ecto, :postgrex, :httpoison]]
   end
 
   # Specifies which paths to compile per environment.
@@ -39,7 +39,9 @@ defmodule Gis.Mixfile do
      {:gettext, "~> 0.11"},
      {:cowboy, "~> 1.0"},
      {:geo, "~> 1.1"},
-     {:credo, "~> 0.4", only: [:dev, :test]}]
+     {:credo, "~> 0.4", only: [:dev, :test]},
+     {:amnesia, github: "meh/amnesia", tag: :master},
+   {:httpoison, "~> 0.9.0"}]
   end
 
   # Aliases are shortcuts or tasks specific to the current project.
