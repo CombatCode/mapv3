@@ -102,11 +102,11 @@ defmodule Longpoll.Dbworker do
   end
 
   def handle_info({:brodcast_to_users_by_device, device, status}, state) do
-    users = Amnesia.transaction! do
+    gis_register = Amnesia.transaction! do
       CD.GisRegister.read(device)
     end #|> Map.get(:users) |> MapSet.to_list()
-    if users != nil do
-      IO.inspect(users)
+    if gis_register != nil do
+      IO.inspect(gis_register)
     end
     # @TODO: handle boadcast by stream Task.async and Taks.wait
     {:noreply, state}
@@ -114,14 +114,14 @@ defmodule Longpoll.Dbworker do
 
   def handle_info({:register_user_to_device, user, device}, state) do
     Amnesia.transaction do
-      users = CD.GisRegister.read(device)
-      if users == nil do
-        users = MapSet.new([user])
-      else
-        users = MapSet.put(users, user)
+      gis_register = CD.GisRegister.read(device)
+      IO.inspect(gis_register)
+      new_users = MapSet.new([user])
+      if gis_register != nil do
+        new_users = MapSet.union(new_users, Map.get(gis_register, :users))
       end
-      IO.inspect(users)
-      %CD.GisRegister{id: device, users: users} |> CD.GisRegister.write
+      IO.inspect(gis_register)
+      %CD.GisRegister{id: device, users: new_users} |> CD.GisRegister.write
     end
     {:noreply, state}
   end
