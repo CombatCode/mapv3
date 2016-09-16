@@ -4,12 +4,12 @@
 @import '../assets/images/icons';
 @import '../assets/fonts/icons_map_v3/icons_map_v3';
 
+@import 'components/Control/Loader';
 @import 'components/Feature/FeatureCamera';
 @import 'components/Feature/FeatureLink';
 @import 'components/Feature/FeatureMap';
 @import 'components/Feature/FeatureCluster';
 @import 'handlers/selection/Marker.Select';
-@import 'global';
 
 
 /* Local css styles for example.html page */

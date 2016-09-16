@@ -1,0 +1,99 @@
+.leaflet-ui-loader {
+    $size: 2.28571429rem;
+    $loader-color: #767676;
+    $loader-background-color: rgba(255,255,255,.3); // rgba(255,255,255,.15);
+
+    /* Active Animation */
+    @-webkit-keyframes loader {
+        from {
+            -webkit-transform: rotate(0deg);
+            transform: rotate(0deg);
+        }
+        to {
+            -webkit-transform: rotate(360deg);
+            transform: rotate(360deg);
+        }
+    }
+    @keyframes loader {
+        from {
+            -webkit-transform: rotate(0deg);
+            transform: rotate(0deg);
+        }
+        to {
+            -webkit-transform: rotate(360deg);
+            transform: rotate(360deg);
+        }
+    }
+
+    & {
+        display: none;
+        // sizing
+        width: $size;
+        height: $size;
+        font-size: 1em;
+        // positioning
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        margin: 0;
+        text-align: center;
+        z-index: 1000;
+        -webkit-transform: translateX(-50%) translateY(-50%);
+        transform: translateX(-50%) translateY(-50%);
+    }
+
+    &:before, &:after {
+        content: '';
+        // sizing
+        width: $size;
+        height: $size;
+        margin: 0 0 0 $size / -2;
+        // positioning
+        position: absolute;
+        top: 0;
+        left: 50%;
+        // styling
+        border-radius: 500rem;
+        border-style: solid;
+        border-width: .2em;
+    }
+
+    &:before {
+        border-color: $loader-background-color;
+    }
+
+    &:after {
+        border-color: $loader-color transparent transparent;
+
+        -webkit-animation: loader .6s linear;
+        animation: loader .6s linear;
+        -webkit-animation-iteration-count: infinite;
+        animation-iteration-count: infinite;
+    }
+
+    &.active, &.visible {
+        display: block;
+    }
+    &.inline.active, &.inline.visible {
+        display: inline-block;
+    }
+
+    &.inline {
+        position: relative;
+        vertical-align: middle;
+        margin: 0;
+        left: 0;
+        top: 0;
+        -webkit-transform: none;
+        transform: none;
+    }
+
+    &.text {
+        min-width: 2.28571429rem;
+        padding-top: 3.07142857rem;
+        width: auto !important;
+        height: auto !important;
+        text-align: center;
+        font-style: normal;
+    }
+}
