@@ -78,19 +78,19 @@ export default class MapSet {
 
     _onDrop(event) {
         event.originalEvent.preventDefault();
-        let dt = event.originalEvent.dataTransfer, data;
+        let dt = event.originalEvent.dataTransfer;
+        let data;
 
         if (dt.types.includes('application/json')) {
             data = dt.getData('application/json');
         } else {
             data = dt.getData('text');
         }
-        try {
-            data = JSON.parse(data);
-        } catch(ex) {}
+
+        data = JSON.parse(data);
 
         if (typeof data === 'object' && data !== null) {
-            let newFeature = createFeature(data.type, event.latlng, {id: data.id});
+            let newFeature = createFeature(data.type, event.latlng, data);
             let map = this._instance;
             if (newFeature instanceof L.Layer) {
                 newFeature._map = map;
