@@ -1,6 +1,8 @@
 $font-path: '../assets/fonts/' !default;
-$image-path: '../assets/' !default;
+$image-path: '../assets/images/' !default;
 
+// Compass URL Helpers
+// http://compass-style.org/reference/compass/helpers/urls/
 @function font-url($path, $only-path: false, $cache-buster: false) {
     $font-path: "/fonts/" !default;
     $font-path: $font-path;

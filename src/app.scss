@@ -1,11 +1,61 @@
 @import 'core/leaflet-contextmenu';
 
 @import '../assets/assets';
+@import '../assets/images/icons';
 @import '../assets/fonts/icons_map_v3/icons_map_v3';
-@import '../assets/icons';
+
 @import 'components/Feature/FeatureCamera';
 @import 'components/Feature/FeatureLink';
 @import 'components/Feature/FeatureMap';
 @import 'components/Feature/FeatureCluster';
 @import 'handlers/selection/Marker.Select';
 @import 'global';
+
+
+/* Local css styles for example.html page */
+body.container {
+    color: #222;
+    background-color: #fafafa;
+    min-width: 1200px;
+}
+
+body.container > header {
+    margin-bottom: 40px;
+}
+
+body.container > header > img {
+    height: 50px;
+}
+
+#mapv3 {
+    height: 600px;
+}
+
+#mapv3 .intro {
+    text-align: center;
+    background: #333;
+    color: #fff;
+    padding: 3px;
+    margin: 47px -14px 0;
+}
+
+#mapsetsList li {
+    cursor: pointer;
+    padding: 4px 0;
+}
+
+#mapsetsList > ul {
+    padding-left: 20px;
+    list-style-image: image-url('assets/images/dir.png');
+}
+
+#mapsetsList > ul ul {
+    padding-left: 20px;
+    list-style-image: image-url('assets/images/map.png');
+}
+
+.ui.card {
+    display: inline-block;
+    margin: 10px 17px !important;
+    width: 256px;
+}
