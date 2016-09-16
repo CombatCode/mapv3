@@ -34,21 +34,6 @@ export default class MapSetComponent extends Component {
                 mapSetsEntitiesList: response.body()
             });
         });
-        this.applyStatusMonitoring();
-    }
-
-    applyStatusMonitoring() {
-        let ws = new Socket();
-
-        ws.client.onopen = () => {
-            // TODO: Send getBounds() to api
-        };
-
-        ws.client.onmessage = (msg) => {
-            let {status, id} = JSON.parse(msg.data);
-            let cameraEl = document.querySelector(`.FeatureCamera[data-id="${id}"]`);
-            cameraEl.setAttribute('data-status', status);
-        };
     }
 
     applyMapSet(mapSetID) {
@@ -102,6 +87,7 @@ export default class MapSetComponent extends Component {
             window.map = this.mapSet;
             this.mapSet.setOptions = defaultMapOptions;
             this.mapSet.initialize();
+            this.mapSet.compoennt = this;
 
             if (mapOverlay) {
                 mapOverlay.addTo(this.mapSet.instance);
@@ -221,6 +207,7 @@ export default class MapSetComponent extends Component {
             $mapEl.setAttribute('data-id', mapData.id);
             $mapEl.setAttribute('data-name', mapData.map_name);
             $mapEl.setAttribute('data-mapset-id', mapSetID);
+            $mapEl.setAttribute('draggable', 'true');
             $mapEl.appendChild(
                 document.createTextNode(
                     mapData.map_name
@@ -228,6 +215,17 @@ export default class MapSetComponent extends Component {
             );
             $mapEl.onclick = () => {
                 this.fetchMap(mapData.id, mapSetID);
+            };
+            $mapEl.ondragstart = (event) => {
+                event.dataTransfer.setData(
+                    'application/json',
+                    JSON.stringify({
+                        type: 'map_link',
+                        name: mapData.map_name,
+                        mapID: mapData.id,
+                        mapSetID: mapSetID
+                    })
+                )
             };
             $mapsElements.appendChild($mapEl);
         }

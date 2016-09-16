@@ -1,0 +1,19 @@
+.FeatureLink {
+    padding: 2px;
+    text-align: center;
+    .wrapper {
+        .icon {
+            width: 26px;
+            height: 26px;
+            background: no-repeat 0 0 url('../assets/external_link.png') transparent;
+            background-size: contain;
+            display: inline-block;
+            margin: 0;
+        }
+    }
+    figcaption {
+        color: #fff;
+        font-weight: 600;
+        text-shadow: 0 0 4px #000;
+    }
+}

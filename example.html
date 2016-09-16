@@ -115,6 +115,32 @@
                     <div class="three wide column" style="border-left: 1px solid #dedede;">
                         <h2>Mapsets</h2>
                         <section id="mapsetsList"></section>
+                        <h2>Example links</h2>
+                        <a
+                            href="http://google.pl"
+                            ondragstart="event.dataTransfer.setData(
+                                    'application/json',
+                                    JSON.stringify({
+                                        type: 'external_link',
+                                        name:'Google',
+                                        href: 'http://google.pl'
+                                })
+                            )">
+                            Google
+                        </a>
+                        <br>
+                        <a
+                            href="http://oktawave.com"
+                            ondragstart="event.dataTransfer.setData(
+                                    'application/json',
+                                    JSON.stringify({
+                                        type: 'external_link',
+                                        name:'Oktawave',
+                                        href: 'http://oktawave.com'
+                                    })
+                                )">
+                            Oktawave
+                        </a>
                     </div>
                 </div>
             </section>
