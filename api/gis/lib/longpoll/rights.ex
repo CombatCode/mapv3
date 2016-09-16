@@ -78,7 +78,6 @@ defmodule Longpoll.Rights do
         is_list(rights) -> for x <- rights, do: %{"AccessRightType" => x}
         true -> [%{"AccessRightType" => rights}]
       end
-      IO.puts("Damian jeszcze nie ... ")
       {:ok, cmd_bachcheckrights} = %{"Msg" => %{
               "CmdBatchCheckRight" => %{
               "TransactionNo" => transation_n,

@@ -104,23 +104,22 @@ defmodule Longpoll.Dbworker do
   def handle_info({:brodcast_to_users_by_device, device, status}, state) do
     gis_register = Amnesia.transaction! do
       CD.GisRegister.read(device)
-    end #|> Map.get(:users) |> MapSet.to_list()
-    if gis_register != nil do
-      IO.inspect(gis_register)
     end
-    # @TODO: handle boadcast by stream Task.async and Taks.wait
+    if gis_register != nil do
+#      Gis.Endpoint.broadcast("polling:mm", "change", status)
+      users = Map.get(gis_register, :users)
+      get_all_rights(users, status)
+    end
     {:noreply, state}
   end
 
   def handle_info({:register_user_to_device, user, device}, state) do
     Amnesia.transaction do
       gis_register = CD.GisRegister.read(device)
-      IO.inspect(gis_register)
       new_users = MapSet.new([user])
       if gis_register != nil do
         new_users = MapSet.union(new_users, Map.get(gis_register, :users))
       end
-      IO.inspect(gis_register)
       %CD.GisRegister{id: device, users: new_users} |> CD.GisRegister.write
     end
     {:noreply, state}
@@ -145,6 +144,10 @@ defmodule Longpoll.Dbworker do
       ^user -> {:reply, :ok, state}
       nil -> {:reply, :not_exists, state}
     end
+  end
+
+  def get_all_rights(users, status) do
+    Enum.map(users, &Task.start_link(fn -> Gis.Endpoint.broadcast("polling:" <> &1, "change", status) end))
   end
 
 end
