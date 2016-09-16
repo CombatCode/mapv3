@@ -41,7 +41,7 @@ export default class MapSet {
         let features = this.features = lmap.features = new FeatureGroup({zoomToBoundsOnClick: false});
 
         lmap.addControl(new ControlRotate({
-            content: '<i class="icon repeat"></i>'
+            content: '<i class="icon rotate"></i>'
         }));
         lmap.addControl(new ControlSelectionMode({
             contentLasso: '<i class="icon lasso-select"></i>',

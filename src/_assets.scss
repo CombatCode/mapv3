@@ -1,0 +1,24 @@
+$font-path: '../assets/fonts/' !default;
+$image-path: '../assets/' !default;
+
+@function font-url($path, $only-path: false, $cache-buster: false) {
+    $font-path: "/fonts/" !default;
+    $font-path: $font-path;
+    @if (str-slice($path, 0, 12)=="icons_map_v3") {
+        $font-path: $font-path + "icons_map_v3/";
+    }
+    $font-path: $font-path + $path;
+    @if $only-path {
+        @return $font-path;
+    }
+    @return url($font-path);
+}
+
+@function image-url($path, $only-path: false, $cache-buster: false) {
+    $image-path: "/image/" !default;
+    $image-path: $image-path + $path;
+    @if $only-path {
+        @return $image-path;
+    }
+    @return url($image-path);
+}
