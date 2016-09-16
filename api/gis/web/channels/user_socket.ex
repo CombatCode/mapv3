@@ -1,8 +1,10 @@
 defmodule Gis.UserSocket do
   use Phoenix.Socket
   require Logger
+
   ## Channels
-  # channel "room:*", Gis.RoomChannel
+  channel "polling:*", Gis.PollingChannel
+
 
   ## Transports
   transport :websocket, Phoenix.Transports.WebSocket
@@ -20,6 +22,7 @@ defmodule Gis.UserSocket do
   # See `Phoenix.Token` documentation for examples in
   # performing token verification on connect.
   def connect(_params, socket) do
+    IO.puts("CONNECT")
     {:ok, socket}
   end
 
