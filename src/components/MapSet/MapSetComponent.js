@@ -85,7 +85,7 @@ export default class MapSetComponent extends Component {
             }
             window.map = this.mapSet;
             this.mapSet.setOptions = defaultMapOptions;
-            this.mapSet.initialize();
+            this.mapSet.initialize( document.querySelector('.mapV3-map') );
             this.mapSet.compoennt = this;
 
             if (mapOverlay) {

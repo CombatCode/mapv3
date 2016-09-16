@@ -89,7 +89,7 @@ export default class FeatureCamera extends Feature {
             <td class="collapsing"><i class="${telemetryStatusIco}"></i></td>
             <td class="collapsing">${telemetryStatusTxt}</td><tr>
             </tbody></table>
-            <div><img src="/assets/noise.gif"></div>
+            <div><img src="/assets/images/noise.gif"></div>
         `;
 
         event.tooltip.setContent(content);

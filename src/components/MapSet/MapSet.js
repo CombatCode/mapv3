@@ -28,16 +28,16 @@ export default class MapSet {
         Object.assign(this.options, options);
 
         // Static settings
-        this._containerId = 'mapv3';
         this._instance = L.Map;
     }
 
     /**
      * Lazy initialize of L.Map instance
-     * @returns {L.Map|*}
+     * @param {HTMLElement|string} container Element
+     * @returns {L.Map}
      */
-    initialize() {
-        let lmap = this._instance = new L.Map(this._containerId, this.options);
+    initialize(container) {
+        let lmap = this._instance = new L.Map(container, this.options);
         lmap._mapSet = this;
         let features = this.features = lmap.features = new FeatureGroup({zoomToBoundsOnClick: false});
 

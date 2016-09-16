@@ -4,11 +4,15 @@ module.exports = function(grunt) {
             dist: {
                 options: {
                     transform: [['babelify', {
-                        "presets": ["es2015-loose", "stage-2"]
-                    }]]
+                        "presets": ["es2015-loose", "stage-2"],
+                    }]],
+                    browserifyOptions: {
+                        standalone: 'mapv3'
+                    }
                 },
                 files: {
-                    './dist/app.js':['./src/app.js']
+                    './dist/widget.js': './src/widget.js',
+                    './dist/app.js': './src/app.js'
                 }
             }
         },
@@ -18,6 +22,7 @@ module.exports = function(grunt) {
                     style: 'compressed'
                 },
                 files: {
+                    './dist/widget.css': './src/widget.scss',
                     './dist/app.css': './src/app.scss'
                 }
             }

@@ -1,0 +1,35 @@
+@import '../node_modules/leaflet/dist/leaflet'; // .css
+@import '../node_modules/leaflet-draw/dist/leaflet.draw'; // .css
+@import '../node_modules/Leaflet.markercluster/dist/MarkerCluster'; // .css
+@import '../node_modules/Leaflet.markercluster/dist/MarkerCluster.Default'; // .css
+@import '../node_modules/leaflet-contextmenu/dist/leaflet.contextmenu.min'; // .css
+@import 'core/leaflet-contextmenu';
+
+@import '../assets/assets';
+@import '../assets/images/icons';
+@import '../assets/fonts/icons_map_v3/icons_map_v3';
+
+@import 'components/Control/Loader';
+@import 'components/Feature/FeatureCamera';
+@import 'components/Feature/FeatureLink';
+@import 'components/Feature/FeatureMap';
+@import 'components/Feature/FeatureCluster';
+@import 'handlers/selection/Marker.Select';
+
+
+.mapV3-container {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+
+    & > :first-child {
+        flex-grow: 1;
+        flex-shrink: 0;
+    }
+
+    & > :last-child {
+        width: 200px;
+    }
+}
