@@ -3,6 +3,7 @@ import FeatureGroup from './FeatureGroup';
 import FeatureCluster from './FeatureCluster';
 import FeatureCamera from './FeatureCamera';
 import FeatureLink from './FeatureLink';
+import FeatureAlarm from './FeatureAlarm';
 import FeatureMap from './FeatureMap';
 
 export { Feature, FeatureGroup, FeatureCluster, FeatureCamera };
@@ -24,6 +25,8 @@ export const createFeature = function(type, ...params) {
             return new FeatureLink(...params);
         case 'map_link':
             return new FeatureMap(...params);
+        case 'alarm':
+            return new FeatureAlarm(...params);
         case 'sensor':
             // Not implemented yet
             return;
