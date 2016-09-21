@@ -6,7 +6,10 @@
             background: url($path + "feature-camera-inuse.svg") center no-repeat;
             transform: rotate(90deg);
         }
-
+        &.alarm {
+            background: url($path + "feature-alarm,sensor.svg") center no-repeat;
+            transform: rotate(90deg);
+        }
     }
 
     &.svmx.status {

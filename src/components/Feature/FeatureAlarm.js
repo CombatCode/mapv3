@@ -33,13 +33,14 @@ export default class FeatureAlarm extends Feature {
      */
     constructor(latlng, options = {}) {
         if (!('name' in options) && 'id' in options) {
-            options.name = 'Alarm ${options.id}'
+            options.name = 'Alarm ${options.id}';
         }
         if (!('icon' in options)) {
             options.icon = new FigureIcon({
                 className: 'FeatureAlarm',
                 iconSize: [28, 28],
                 id: options.id,
+                status: options.status || 'unknown',
                 title: options.name
             });
         }
