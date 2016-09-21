@@ -22,10 +22,7 @@ export default class FeatureLink extends Feature {
         onDropContextmenuItems: [{
             text: 'add as a External Link',
             iconCls: 'icon svmx feature link',
-            callback: function(e) {
-                console.debug('here', e);
-                e.relatedTarget.addTo(this.features);
-            }
+            callback: function(e) { e.relatedTarget.addTo(this.features); }
         }]
     });
 
