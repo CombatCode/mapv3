@@ -28,16 +28,17 @@ export default class FigureIcon extends L.Icon {
         figure.appendChild(imgWrapper);
 
         if (id) {
-            figure.setAttribute("data-id", id);
+            figure.setAttribute('data-id', id);
         }
 
         if (status) {
-            figure.setAttribute("data-status", status);
+            figure.setAttribute('data-status', status);
         }
 
         if (title) {
             let figCaption = document.createElement('figcaption');
             let titleNode  = document.createTextNode(title);
+            figure.setAttribute('data-title', title);
             figCaption.appendChild(titleNode);
             figure.appendChild(figCaption);
         }

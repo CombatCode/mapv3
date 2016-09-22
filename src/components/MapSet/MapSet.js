@@ -99,6 +99,17 @@ export default class MapSet {
             }
         }
     }
+
+    /**
+     * Grab all visible (not clustered) camera features using Query Selector (currently best option)
+     * @returns {Array} - formatted array ID+Name for socket channels
+     */
+    get visibleFeaturesIdentificators() {
+        let elementsList = document.querySelectorAll('.leaflet-marker-pane > figure.FeatureCamera');
+        return Array.from(elementsList, function(el) {
+            return `${ el.getAttribute('data-id') }${ el.getAttribute('data-title') }`
+        });
+    }
 }
 
 
