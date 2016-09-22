@@ -19,7 +19,7 @@ export default class Feature extends L.Marker {
         }],
 
         rotateCondition: Feature.rotateCondition
-    })
+    });
 
     /**
      * See {@link http://leafletjs.com/reference-1.0.0.html#marker} for more details.

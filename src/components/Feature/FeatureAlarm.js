@@ -40,7 +40,7 @@ export default class FeatureAlarm extends Feature {
                 className: 'FeatureAlarm',
                 iconSize: [28, 28],
                 id: options.id,
-                status: options.status || 'unknown',
+                status: options.status || 'off',
                 title: options.name
             });
         }
