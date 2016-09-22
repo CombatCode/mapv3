@@ -51,10 +51,9 @@ defmodule Gis.PollingChannel do
     devices = Longpoll.Dbworker.get_objects()
     # Chunk devices into groups per 1000 objects
     devices_chunk = Enum.chunk(devices.gis_objects, 1000, 1000, [])
-#    IO.inspect(devices_chunk)
     right_devices = get_all_rights(user, devices_chunk, "ObjView")
     Longpoll.Dbworker.cache_rights(user, right_devices, "ObjView")
-    IO.puts("DAMIAN JUZ")
+    push socket, "register:start", %{status: "get ready to rumble!"}
     {:noreply, socket}
   end
 

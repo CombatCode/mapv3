@@ -24,7 +24,7 @@ class App {
                .receive("ok", () => is_joined = true)
     chan.onError(e => console.log("something went wrong", e))
     chan.onClose(e => console.log("channel closed", e))
-    chan.on("register:msg", msg => {
+    chan.on("register:start", msg => {
       $messages.append(this.messageTemplate(msg))
       scrollTo(0, document.body.scrollHeight)
     })
