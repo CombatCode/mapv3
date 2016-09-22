@@ -1,3 +1,4 @@
+import { Socket } from "phoenix"
 import L from 'leaflet';
 import './leaflet-draw/leaflet.draw';
 import 'leaflet.markercluster';

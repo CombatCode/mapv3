@@ -1,5 +1,7 @@
+import { Socket } from "phoenix"
+
+import Storage from './../../core/Storage';
 import Rest from './../../core/Rest';
-import Socket from './../../core/Socket';
 import Component from './../../core/Component';
 import MapSet from './MapSet';
 import Map from './../Map';
@@ -25,6 +27,13 @@ export default class MapSetComponent extends Component {
             mapSetsEntitiesList: [],
             mapsEntities: {}
         };
+        this.user = (new Storage(localStorage, 'auth')).getItem('username');
+        let socket = new Socket(SETTINGS.API.WS_ADDRESS, {
+            logger: ((kind, msg, data) => { console.log(`${kind}: ${msg}`, data) })
+        });
+        socket.connect({user_id: this.user});
+        this.chan = socket.channel(`polling:${ this.user }`, {});
+        this.chan.join();
     }
 
     initialize() {
@@ -160,9 +169,14 @@ export default class MapSetComponent extends Component {
                     // stop fetching new features
                     this.loaderCanBeVisible = false;
                     document.querySelector('.map-loader').className = 'map-loader hidden';
+                    this.registerFeatures();
                 }
             }
         });
+    }
+
+    registerFeatures() {
+        this.chan.push("register", {user: 'guest', objects: this.mapSet.visibleFeaturesIdentificators});
     }
 
     parseOverlayers(overlayerSet) {

@@ -45,9 +45,6 @@ export default class FeatureCamera extends Feature {
      * @param {object} [options]
      */
     constructor(latlng, options = {}) {
-        if (!('name' in options) && 'id' in options) {
-            options.name = `Camera ${options.id}`
-        }
         if (!('icon' in options)) {
             /** we must instantiate icons (because e.g. titles differs between Features) */
             options.icon = new FigureIcon({
