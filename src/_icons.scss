@@ -7,7 +7,7 @@
             transform: rotate(90deg);
         }
         &.alarm {
-            background: url($path + "feature-alarm,sensor.svg") center no-repeat;
+            background: url($path + "feature-alarm-sensor.svg") center no-repeat;
             transform: rotate(90deg);
         }
     }
