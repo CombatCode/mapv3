@@ -27,14 +27,12 @@ defmodule Gis.PollingChannel do
 
 
   def handle_in("register", %{"user" => user, "objects" => objects}, socket)  do
-#    IO.inspect(objects)
-    {status, objects_parsed} = Poison.decode(objects)
     user_in_cache = Longpoll.Dbworker.check_if_user_exists(user)
-    if status == :ok and  is_list(objects_parsed) and user_in_cache == :ok do
+    if is_list(objects) and user_in_cache == :ok do
       #register user on
-      status_register = Longpoll.Dbworker.register_user_on(socket.assigns.user_id, objects_parsed)
+      status_register = Longpoll.Dbworker.register_user_on(socket.assigns.user_id, objects)
       polled_objects = case status_register do
-        :ok -> attach_to_polling(user, objects_parsed)
+        :ok -> attach_to_polling(user, objects)
 
         _ -> %{}
       end
@@ -42,7 +40,6 @@ defmodule Gis.PollingChannel do
       IO.puts("NO! NOT AGAIN")
     end
     IO.inspect(polled_objects)
-#    IO.inspect(status)
     {:reply, {:ok, %{objects: polled_objects}}, socket}
   end
 
