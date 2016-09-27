@@ -51,7 +51,7 @@ var App = (function () {
     chan.onClose(function (e) {
       return console.log("channel closed", e);
     });
-    chan.on("register:msg", function (msg) {
+    chan.on("register:start", function (msg) {
       $messages.append(_this.messageTemplate(msg));
       scrollTo(0, document.body.scrollHeight);
     });
