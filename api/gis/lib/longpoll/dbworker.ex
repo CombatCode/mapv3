@@ -114,8 +114,6 @@ defmodule Longpoll.Dbworker do
   end
 
   def handle_info({:register_user_to_device, user, device}, state) do
-    IO.puts("DEVICE")
-    IO.inspect(device)
     Amnesia.transaction do
       gis_register = CD.GisRegister.read(device)
       new_users = MapSet.new([user])

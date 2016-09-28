@@ -12,7 +12,6 @@ defmodule Gis.PollingChannel do
     else
       {:ok, socket}
     end
-
   end
 
   def attach_to_polling(user, devices) do
@@ -33,13 +32,11 @@ defmodule Gis.PollingChannel do
       status_register = Longpoll.Dbworker.register_user_on(socket.assigns.user_id, objects)
       polled_objects = case status_register do
         :ok -> attach_to_polling(user, objects)
-
         _ -> %{}
       end
     else
       IO.puts("NO! NOT AGAIN")
     end
-    IO.inspect(polled_objects)
     {:reply, {:ok, %{objects: polled_objects}}, socket}
   end
 
