@@ -4,6 +4,7 @@
   "description": "Map widget based on the leaflet",
   "main": "index.js",
   "dependencies": {
+    "babel-preset-es2015": "^6.14.0",
     "babel-preset-es2015-loose": "^7.0.0",
     "babel-preset-stage-2": "^6.13.0",
     "grunt": "^0.4.5",
