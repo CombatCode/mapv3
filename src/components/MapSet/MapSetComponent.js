@@ -29,6 +29,7 @@ export default class MapSetComponent extends Component {
             mapsEntities: {}
         };
         this.user = (new Storage(localStorage, 'auth')).getItem('username');
+        // TODO: Remove this console logs after merging it with WebApp
         let socket = new Socket(SETTINGS.API.WS_ADDRESS, {
             logger: ((kind, msg, data) => { console.log(kind); console.log(msg); console.log(data); })
         });
@@ -36,7 +37,6 @@ export default class MapSetComponent extends Component {
         this.chan = socket.channel(`polling:${ this.user }`, {});
         this.chan.join();
         this.chan.on('change', (object) => {
-            console.log('change', object);
             this.updateFeatures(object);
         });
     }
@@ -98,6 +98,7 @@ export default class MapSetComponent extends Component {
                 mapInstance = new Map('', {});
                 Object.assign(defaultMapOptions , {crs: L.CRS.Simple});
             }
+            // TODO: Remove this window debbugger after merge to our webapp
             window.map = this.mapSet;
             this.mapSet.setOptions = defaultMapOptions;
             this.mapSet.initialize();

@@ -27,7 +27,7 @@ export const createFeature = function(type, ...params) {
             return new FeatureMap(...params);
         case 'alarm':
             return new FeatureAlarm(...params);
-        case 'sensor':
+        case 'Sensor':
             // Not implemented yet
             return;
     }
