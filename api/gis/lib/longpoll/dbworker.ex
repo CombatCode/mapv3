@@ -108,12 +108,14 @@ defmodule Longpoll.Dbworker do
     if gis_register != nil do
 #      Gis.Endpoint.broadcast("polling:mm", "change", status)
       users = Map.get(gis_register, :users)
-      get_all_rights(users, status)
+      get_all_rights(users, %{device => status})
     end
     {:noreply, state}
   end
 
   def handle_info({:register_user_to_device, user, device}, state) do
+    IO.puts("DEVICE")
+    IO.inspect(device)
     Amnesia.transaction do
       gis_register = CD.GisRegister.read(device)
       new_users = MapSet.new([user])
