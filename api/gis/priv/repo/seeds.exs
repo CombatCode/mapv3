@@ -13,7 +13,7 @@ m = 20
 m_per_ms = 3
 objects_per_map = 300
 map_data = %{latmin: 42.25, latmax: 51.100, lonmin: -5.2, lonmax: 8.23}
-object_types = ["camera", "sensor", "camera_ptz"]
+object_types = ["Camera", "Sensor", "Camera_ptz"]
 angle_variation = [0.0, 360.0]
 map_types = [
     %{
