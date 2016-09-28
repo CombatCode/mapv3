@@ -65,7 +65,6 @@ export default class FeatureCamera extends Feature {
 
     static _onTooltipOpen(event) {
         this._fixTooltipOffset(event.tooltip);
-        debugger;
         let content = `
             <h4>${this.options.name}</h4>
             <p>${JSON.stringify(this.options.statuses)}</p>
