@@ -145,7 +145,7 @@ defmodule Longpoll.Worker do
                      statuses: %{sts_type => properties}}
           end
           Process.send(Longpoll.Dbworker, {:brodcast_to_users_by_device, device_id_type,
-                                           %{sts: sts_type, prop: properties}}, [])
+                                           %{id: device_id, type: device_type, sts: sts_type, prop: properties}}, [])
           Process.send(Longpoll.Dbworker, {:put_status_to_cache, device_id_type,
             %{id: status_device.id, type: status_device.type, statuses: status_device.statuses}}, [])
           system_objects = Map.put(system_objects, device_id <> device_type, status_device)
