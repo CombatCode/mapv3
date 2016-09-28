@@ -7,37 +7,26 @@
 
 .map-loader {
     position: absolute;
-    top: 0;
+    top: 584px;
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(0, 0, 0, 0.2);
+    background: rgba(0, 0, 0, 0.4);
     z-index: 999;
     pointer-events: none;
     text-align: center;
     display: none;
-    text-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+    text-shadow: 0 0 5px rgba(0, 0, 0, 0.8);
     &.visible {
         display: block;
     }
     &.hidden {
         display: none;
     }
-    .circle {
-        color: #fff;
-        font-size: 40px;
-        position: absolute;
-        top: 38%;
-        margin: 0;
-        transform-origin: 50% 74%;
-        -webkit-animation:spin 1s linear infinite;
-        -moz-animation:spin 1s linear infinite;
-        animation:spin 1s linear infinite;
-    }
     span {
         color: #fff;
         position: absolute;
-        top: 47%;
         margin-left: -27px;
+        top: -1px;
     }
 }

@@ -38,7 +38,8 @@ export default class MapSet {
     initialize() {
         let lmap = this._instance = new L.Map(this._containerId, this.options);
         lmap._mapSet = this;
-        let features = this.features = lmap.features = new FeatureGroup({zoomToBoundsOnClick: false});
+        // wtf?
+        let features = this.features = lmap.features = new FeatureGroup({zoomToBoundsOnClick: false, chunkedLoading: true});
 
         lmap.addControl(new ControlRotate({
             content: '<i class="icon repeat"></i>'
