@@ -20,6 +20,7 @@ export default class MapSetComponent extends Component {
     constructor() {
         super();
         this.mapSet = {};
+        this.featuresOnMap = {};
         this.featuresIDsOnMap = [];
         this.lockAddingLayers = false;
         this.loaderCanBeVisible = false;
@@ -28,12 +29,16 @@ export default class MapSetComponent extends Component {
             mapsEntities: {}
         };
         this.user = (new Storage(localStorage, 'auth')).getItem('username');
+        // TODO: Remove this console logs after merging it with WebApp
         let socket = new Socket(SETTINGS.API.WS_ADDRESS, {
-            logger: ((kind, msg, data) => { console.log(`${kind}: ${msg}`, data) })
+            logger: ((kind, msg, data) => { console.log(kind); console.log(msg); console.log(data); })
         });
         socket.connect({user_id: this.user});
         this.chan = socket.channel(`polling:${ this.user }`, {});
         this.chan.join();
+        this.chan.on('change', (object) => {
+            this.updateFeatures(object);
+        });
     }
 
     initialize() {
@@ -93,6 +98,7 @@ export default class MapSetComponent extends Component {
                 mapInstance = new Map('', {});
                 Object.assign(defaultMapOptions , {crs: L.CRS.Simple});
             }
+            // TODO: Remove this window debbugger after merge to our webapp
             window.map = this.mapSet;
             this.mapSet.setOptions = defaultMapOptions;
             this.mapSet.initialize();
@@ -103,6 +109,7 @@ export default class MapSetComponent extends Component {
             }
             mapInstance.addTo(this.mapSet.instance);
 
+            this.featuresOnMap = {};
             this.featuresIDsOnMap = [];
             this.fetchFeatures(mapID, mapSetID);
 
@@ -144,6 +151,9 @@ export default class MapSetComponent extends Component {
             for (let featureEntity of featureBody) {
                 let featureData = featureEntity.data();
                 if (this.featuresIDsOnMap.indexOf(featureData.id) === -1) {
+                    // Since ID is not a unique (wtf) we need a unique key value
+                    // based on id + type
+                    let featureKey = `${featureData.go_id}${featureData.go_type}`;
                     let feature = createFeature(
                         featureData.go_type, [
                             featureData.go_position.lat,
@@ -152,11 +162,14 @@ export default class MapSetComponent extends Component {
                             angle: featureData.go_angle,
                             name: featureData.go_name,
                             id: featureData.id,
-                            status: featureData.go_status || 'unknown'
+                            key: featureKey
                         }
                     );
-                    featuresIdsList.push(featureData.id);
-                    feature && featuresList.push(feature);
+                    if (feature) {
+                        featuresIdsList.push(featureData.id);
+                        featuresList.push(feature);
+                        this.featuresOnMap[featureKey] = feature;
+                    }
                 }
             }
             // Stop adding new layers when map is in move, coz this action fire fetching new collection of features
@@ -176,7 +189,19 @@ export default class MapSetComponent extends Component {
     }
 
     registerFeatures() {
-        this.chan.push("register", {user: 'guest', objects: this.mapSet.visibleFeaturesIdentificators});
+        this.chan.push(
+            'register',
+            {
+                user: 'guest',
+                objects: this.mapSet.visibleFeaturesIdentificators
+            }
+        ).receive('ok', (msg) => this.updateFeatures(msg.objects) );
+    }
+
+    updateFeatures(object) {
+        for (let key in object) {
+            this.featuresOnMap[key].options.statuses = object[key].statuses
+        }
     }
 
     parseOverlayers(overlayerSet) {

@@ -17,7 +17,7 @@ export default class FigureIcon extends L.Icon {
      */
     createIcon(oldIcon) {
         let figure = document.createElement('figure');
-        let {title, id, status} = this.options;
+        let {title, id, key} = this.options;
         let imgWrapper = document.createElement('div');
         let imgFaker = document.createElement('i');
 
@@ -31,8 +31,8 @@ export default class FigureIcon extends L.Icon {
             figure.setAttribute('data-id', id);
         }
 
-        if (status) {
-            figure.setAttribute('data-status', status);
+        if (key) {
+            figure.setAttribute('data-key', key);
         }
 
         if (title) {

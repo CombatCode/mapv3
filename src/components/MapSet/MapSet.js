@@ -108,7 +108,7 @@ export default class MapSet {
     get visibleFeaturesIdentificators() {
         let elementsList = document.querySelectorAll('.leaflet-marker-pane > figure.FeatureCamera');
         return Array.from(elementsList, function(el) {
-            return `${ el.getAttribute('data-id') }${ el.getAttribute('data-title') }`
+            return el.getAttribute('data-key')
         });
     }
 }
@@ -116,7 +116,6 @@ export default class MapSet {
 
 MapSet.prototype.options = {
     drawControl:      true,
-
     contextmenu:      true,
     contextmenuWidth: 140,
     contextmenuItems: [{

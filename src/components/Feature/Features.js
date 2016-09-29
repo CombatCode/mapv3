@@ -17,9 +17,9 @@ export { Feature, FeatureGroup, FeatureCluster, FeatureCamera };
 export const createFeature = function(type, ...params) {
     // TODO: Clean up here, create module per feature type
     switch (type) {
-        case 'camera_ptz':
+        case 'Camera_ptz':
             return new FeatureCamera(...params);
-        case 'camera':
+        case 'Camera':
             return new FeatureCamera(...params);
         case 'external_link':
             return new FeatureLink(...params);
@@ -27,7 +27,7 @@ export const createFeature = function(type, ...params) {
             return new FeatureMap(...params);
         case 'alarm':
             return new FeatureAlarm(...params);
-        case 'sensor':
+        case 'Sensor':
             // Not implemented yet
             return;
     }
