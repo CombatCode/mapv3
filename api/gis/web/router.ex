@@ -41,9 +41,10 @@ defmodule Gis.Router do
       get "/mapsets/:ms_id/maps/:map_id/features/:latmin/:lonmin/:latmax/:lonmax", Api.ObjectsController, :on_map
       get "/mapsets/:ms_id/maps/:map_id/features/:latmin/:lonmin/:latmax/:lonmax/:perpage/:page", Api.ObjectsController, :on_map_filter
       get "/objecttypes/", Api.ObjectTypesController, :index
+      get "/feature/:feature_id/type/:feature_type/locations", Api.MapSetsController, :locations
     end
     
-    # socket "/ws", Gis do
-    #   channel "rooms:*", RoomChannel
-    # end
+#     socket "/ws", Gis do
+#       channel "rooms:*", Gis.PollingChannel
+#     end
 end

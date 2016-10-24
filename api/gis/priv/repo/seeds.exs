@@ -108,8 +108,8 @@ defmodule Seeds do
         if m_per_ms > 0 do	
             m = Gis.Repo.insert!(%Gis.GisMap{map_name: "Map #{m_per_ms}", map_zoom: %{zoom_levels: []},
                                              map_attributes: %{}, map_default: false,
-                                             map_center: map_center, map_max_extent: nil,
-                                             map_restricted_extent: map_extent, gismapsets_id: ms.id,
+                                             map_geographic: true, map_center: map_center, map_max_extent: nil,
+                                             map_restricted_extent: map_extent, gis_map_set_id: ms.id,
                                              gisoverlayersets_id: ovl_set.id, gismaptypes_id: random_map_type.id
                                              })
             ovl = import_overlayer("OVLTEST #{m_per_ms}", ovl_set, map_boundary)
@@ -125,7 +125,7 @@ defmodule Seeds do
     def import_mapassoc(objects, m) do
         case objects do
             [h|t] -> 
-                ma = Gis.Repo.insert!(%Gis.GisMapAssoc{gismaps_id: m.id, gisobjects_id: h.id})
+                ma = Gis.Repo.insert!(%Gis.GisMapAssoc{gis_map_id: m.id, gis_object_id: h.id})
                 import_mapassoc(t, m)
             [] -> 
                 IO.puts("Import map assocs")
