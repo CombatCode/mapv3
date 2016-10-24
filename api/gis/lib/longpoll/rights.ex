@@ -7,7 +7,7 @@ defmodule Longpoll.Rights do
   end
   
   def get_rights(user, chunk, rights) do
-	  GenServer.call(__MODULE__, {:get_rights, user, chunk, rights}, 10000)
+	  GenServer.call(__MODULE__, {:get_rights, user, chunk, rights}, 1000000)
   end
 
 # CALLBACKS
@@ -19,13 +19,13 @@ defmodule Longpoll.Rights do
     pass = "suser"
     clientip = "192.168.8.38"
     sessionkey = "70ca3048900b5c1f9dbfbe28426e1"
-    options = [hackney: [basic_auth: {user, pass}],
-               connect_timeout: 3000000, 
+    options = [hackney: [basic_auth: {user, pass}, pool: :rights_pool],
+               connect_timeout: :infinity,
                recv_timeout: :infinity, 
-               timeout: 3000000,
+               timeout: :infinity,
                stream_to: self,
              ]
-			 	 
+
     headers = [{"Content-Type", "application/x-www-form-urlencoded"},
                {"Connection", "Keep-Alive"}]
 
@@ -93,11 +93,11 @@ defmodule Longpoll.Rights do
           Map.put(:jsondata, cmd_bachcheckrights) |>
           URI.encode_query
 
-        # response = HTTPoison.post!(url, data, headers, options)
-        # IO.inspect(response)
+#         response = HTTPoison.post!(url, data, headers, options)
+#         IO.inspect(response)
         %HTTPoison.AsyncResponse{id: id} = HTTPoison.post!(url, data, headers, options)
         response = collect_response(id, self, <<>>)
-            # {:ok, response} = response.body |> Poison.decode
+#            {:ok, response} = response.body |> Poison.decode
             cmd_response = Map.get(response, "CmdResponse")
             call_result = Map.get(cmd_response, "CallResult")
             if call_result == "X_OK" do

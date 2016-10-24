@@ -54,7 +54,7 @@ defmodule Longpoll.Worker do
     pass = "suser"
     clientip = "192.168.8.38"
     sessionkey = "70ca3048900b5c1f9dbfbe28426e1"
-    options = [hackney: [basic_auth: {user, pass}],
+    options = [hackney: [basic_auth: {user, pass}, poll: :status_poll],
                connect_timeout: 3000000, 
                recv_timeout: :infinity, 
                timeout: 3000000,

@@ -15,7 +15,20 @@ defmodule Gis do
       # Start your own worker by calling: Gis.Worker.start_link(arg1, arg2, arg3)
       worker(Longpoll.Dbworker, [[name: Longpoll.Dbworker]]),
       worker(Longpoll.Worker, [[name: Longpoll.Worker]]),
-      worker(Longpoll.Rights, [[name: Longpoll.Rights]]),
+#      worker(Longpoll.Rights, [[name: Longpoll.Rights]], id: :lr0),
+      # @TODO: Move it to separate supervisor
+      worker(Longpoll.Rights, [[name: Rights1]], id: :lr1),
+      worker(Longpoll.Rights, [[name: Rights2]], id: :lr2),
+      worker(Longpoll.Rights, [[name: Rights3]], id: :lr3),
+      worker(Longpoll.Rights, [[name: Rights4]], id: :lr4),
+      worker(Longpoll.Rights, [[name: Rights5]], id: :lr5),
+      worker(Longpoll.Rights, [[name: Rights6]], id: :lr6),
+      worker(Longpoll.Rights, [[name: Rights7]], id: :lr7),
+      worker(Longpoll.Rights, [[name: Rights8]], id: :lr8),
+      worker(Longpoll.Rights, [[name: Rights9]], id: :lr9),
+      worker(Longpoll.Rights, [[name: Rights10]], id: :lr10),
+      :hackney_pool.child_spec(:rights_pool,  [timeout: 30000000, max_connections: 10]),
+      :hackney_pool.child_spec(:status_poll,  [timeout: 30000000, max_connections: 1]),
     ]
 
     # See http://elixir-lang.org/docs/stable/elixir/Supervisor.html

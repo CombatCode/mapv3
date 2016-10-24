@@ -34,5 +34,10 @@ defmodule Gis.GisObject do
     |> cast(params, [:go_id, :go_description, :go_attributes, :go_enabled, :go_angle, :go_position])
     |> validate_required([:go_id, :go_description, :go_attributes, :go_enabled, :go_angle, :go_position])
   end
-
+    
+    defmodule Queries do
+        def all() do
+          
+        end
+    end
 end
